@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ asset('images/unpam-logo.png') }}" type="image">
-    <title>Registrasi</title>
+    <title>Login</title>
 
     {{-- Bootstrap CSS --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -64,31 +64,22 @@
 
     </nav>
 
-    <div class="container-fluid">
-        <div class="container d-flex justify-content-between border mx-auto mt-4 p-0 rounded-3 shadow-sm">
-            <div class="register-image col-6">
-                <img src="{{ asset('images/cbt.jpg') }}" alt="foto register page" class="rounded-start img-fluid h-100">
+    <div class="container-fluid d-flex align-items-center" style="height: 88vh">
+        <div class="container col-5 d-block border mx-auto p-0 rounded-3 shadow-sm">
+            <div class="login-image col-12">
+                <img src="{{ asset('images/cbt.jpg') }}" alt="foto login page" class="rounded-start img-fluid w-100" style="height: 13rem">
             </div>
-            <div class="register-page col-6 p-3">
-                <h3 class="text-center fw-bold">Daftar Akun</h3>
-                <hr>
-                <div class="register-form">
+            <div class="login-page col-12 py-3 px-5">
+                <div class="login-form px-5">
+                    <h3 class="text-center fw-bold">Login</h3>
+                    <hr>
                     <form action="{{ $page_meta['url'] }}" method="POST">
                         @method($page_meta['method'])
                         @csrf
                         <div class="col-12 mb-3">
-                            <label for="namaLengkap">Nama Lengkap</label>
-                            <input type="text" name="nama_lengkap" id="namaLengkap" class="form-control @error('nama_lengkap') is-invalid @enderror" autocomplete="off" value="{{ old('nama_lengkap', $register->nama_lengkap) }}" required>
-                            @error('nama_lengkap')
-                                <div class="invalid-feedback d-block">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class="col-12 mb-3">
                             <label for="userEmail">Email</label>
-                            <input type="email" name="user_email" id="userEmail" class="form-control @error ('user_email') is-invalid @enderror" autocomplete="off" value="{{ old('user_email', $register->user_email) }}" required>
-                            @error('user_email')
+                            <input type="email" name="email" id="userEmail" class="form-control @error ('email') is-invalid @enderror" autocomplete="off" value="{{ old('email') }}" required>
+                            @error('email')
                                 <div class="invalid-feedback d-block">
                                     {{ $message }}
                                 </div>
@@ -96,7 +87,7 @@
                         </div>
                         <div class="col-12 mb-3">
                             <label for="userPassword">Password</label>
-                            <input type="password" name="password" id="userPassword" class="form-control @error ('user_password') is-invalid @enderror" autocomplete="off" required>
+                            <input type="password" name="password" id="userPassword" class="form-control @error ('password') is-invalid @enderror" autocomplete="off" required>
                             @error('password')
                                 <div class="invalid-feedback d-block">
                                     {{ $message }}
@@ -104,19 +95,7 @@
                             @enderror
                         </div>
                         <div class="col-12 mb-3">
-                            <label for="userPasswordConfirm">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" id="userPasswordConfirm" class="form-control @error ('user_password') is-invalid @enderror" autocomplete="off" required>
-                            @error('password_confirmation')
-                                <div class="invalid-feedback d-block">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class="col-12 mb-1 text-end">
-                            <a href="" class="text-decoration-none">Sudah memiliki akun?</a>
-                        </div>
-                        <div class="col-12 mb-3">
-                            <button type="submit" class="btn btn-primary col-12">Kirim</button>
+                            <button type="submit" class="btn btn-primary col-12">Login</button>
                         </div>
                     </form>
                 </div>
