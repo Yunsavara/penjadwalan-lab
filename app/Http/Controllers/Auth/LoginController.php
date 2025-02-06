@@ -45,6 +45,7 @@ class LoginController extends Controller
     {
         return $user->role->name === 'admin' ? 'admin.dashboard' : 'home';
         return $user->role->name === 'laboran' ? 'laboran.dashboard' : 'home';
+        return $user->role->name === 'user' ? 'dashboard' : 'home';
 
     }
 

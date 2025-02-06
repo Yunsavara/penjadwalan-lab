@@ -2,9 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,6 +31,10 @@ Route::group(['middleware' => ['role:admin']], function() {
 
 Route::group(['middleware' => ['role:laboran']], function() {
     Route::get('/laboran/dashboard', [DashboardController::class,'laboran'])->name('laboran.dashboard');
+});
+
+Route::group(['middleware' => ['role:user']], function() {
+    Route::get('/dashboard', [DashboardController::class,'user'])->name('dashboard');
 });
 
 // Route::get('/admin', [AdminController::class, 'index'])
