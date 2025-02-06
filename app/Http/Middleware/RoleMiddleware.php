@@ -16,7 +16,7 @@ class RoleMiddleware
      */
 
      public function handle(Request $request, Closure $next, $role)
-    {
+     {
         $user = auth()->user();
 
         // Jika tidak login, tolak akses
@@ -35,6 +35,6 @@ class RoleMiddleware
         }
 
         return $next($request);
-    }
+     }
 
 }
