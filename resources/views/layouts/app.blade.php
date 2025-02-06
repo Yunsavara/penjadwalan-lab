@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}" type="text/css">
     <title>@yield('title', 'AdminSite')</title>
+    <title>Document</title>
 </head>
 <body>
 
@@ -51,7 +52,6 @@
     </section>
     <!-- NAVBAR -->
 
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="{{ asset('js/script.js') }}"></script>
 </body>
 </html>
