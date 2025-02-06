@@ -44,6 +44,8 @@ class LoginController extends Controller
     private function getRedirectRoute($user)
     {
         return $user->role->name === 'admin' ? 'admin.dashboard' : 'home';
+        return $user->role->name === 'laboran' ? 'laboran.dashboard' : 'home';
+
     }
 
     public function logout(Request $request)

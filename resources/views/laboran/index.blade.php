@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Admin')
+@section('title', 'Dashboard Laboran')
 
 @section('content')
 <form action="{{ route('logout') }}" method="POST">
