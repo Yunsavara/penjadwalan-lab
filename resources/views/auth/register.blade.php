@@ -113,7 +113,7 @@
                             @enderror
                         </div>
                         <div class="col-12 mb-1 text-end">
-                            <a href="" class="text-decoration-none">Sudah memiliki akun?</a>
+                            <a href="{{ route('login') }}" class="text-decoration-none">Sudah memiliki akun?</a>
                         </div>
                         <div class="col-12 mb-3">
                             <button type="submit" class="btn btn-primary col-12">Kirim</button>
