@@ -18,6 +18,7 @@ class RoleMiddleware
      public function handle(Request $request, Closure $next, $role)
      {
         $user = auth()->user();
+        // Auth::logout();
 
         // Jika tidak login, tolak akses
         if (!$user) {
@@ -25,9 +26,9 @@ class RoleMiddleware
         }
 
         // Jika user adalah superadmin, beri akses ke semua halaman
-        if ($user->role->name === 'superadmin') {
-            return $next($request);
-        }
+        // if ($user->role->name === 'superadmin') {
+        //     return $next($request);
+        // }
 
         // Jika role user tidak sesuai dengan middleware, tolak akses
         if ($user->role->name !== $role) {

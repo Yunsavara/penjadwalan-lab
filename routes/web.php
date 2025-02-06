@@ -27,7 +27,11 @@ Route::group(['middleware'=> 'auth'], function() {
 });
 
 Route::group(['middleware' => ['role:admin']], function() {
-    Route::get('/admin/dashboard', [DashboardController::class,'index'])->name('admin.dashboard');
+    Route::get('/admin/dashboard', [DashboardController::class,'admin'])->name('admin.dashboard');
+});
+
+Route::group(['middleware' => ['role:laboran']], function() {
+    Route::get('/laboran/dashboard', [DashboardController::class,'laboran'])->name('laboran.dashboard');
 });
 
 // Route::get('/admin', [AdminController::class, 'index'])
