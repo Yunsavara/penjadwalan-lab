@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -26,20 +27,24 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        // Ambil data login dari request
-        $credentials = $request->only('email', 'password');
+        // Cari user berdasarkan email
+        $user = User::where('email', $request->email)->first();
 
-        // Coba login
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-
-            // Redirect berdasarkan role
-            return redirect()->route($this->getRedirectRoute($user));
+        if (!$user) {
+            return back()->withErrors(['email' => 'Email tidak ditemukan.']);
         }
 
-        // Jika login gagal
-        return back()->withErrors(['email' => 'Email atau password salah.']);
+        // Cek password secara manual
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['password' => 'Password salah.']);
+        }
+
+        // Jika email & password benar, lakukan login
+        Auth::login($user);
+
+        return redirect()->route($this->getRedirectRoute($user));
     }
+
 
     private function getRedirectRoute($user)
     {
