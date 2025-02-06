@@ -26,7 +26,7 @@ Route::group(['middleware'=> 'auth'], function() {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
-Route::group(['middleware' => ['role:laboran']], function() {
+Route::group(['middleware' => ['role:admin']], function() {
     Route::get('/admin/dashboard', [DashboardController::class,'index'])->name('admin.dashboard');
 });
 
