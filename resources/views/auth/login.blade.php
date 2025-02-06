@@ -65,9 +65,9 @@
     </nav>
 
     <div class="container-fluid d-flex align-items-center" style="height: 88vh">
-        <div class="container col-5 d-block border mx-auto p-0 rounded-3 shadow-sm">
+        <div class="container col-5 d-block border mx-auto p-0 rounded-3 shadow">
             <div class="login-image col-12">
-                <img src="{{ asset('images/cbt.jpg') }}" alt="foto login page" class="rounded-start img-fluid w-100" style="height: 13rem">
+                <img src="{{ asset('images/cbt.jpg') }}" alt="foto login page" class="rounded-top img-fluid w-100" style="height: 13rem">
             </div>
             <div class="login-page col-12 py-3 px-5">
                 <div class="login-form px-5">
