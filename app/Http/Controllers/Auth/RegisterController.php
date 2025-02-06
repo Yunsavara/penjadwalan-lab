@@ -11,7 +11,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 class RegisterController extends Controller
 {
     public function index(){
-        return view("auth.index", [
+        return view("auth.register", [
             'register' => new User(),
             'page_meta' => [
                 'method' => 'POST',
@@ -39,12 +39,16 @@ class RegisterController extends Controller
                 'data' => $register
             ], 201);
 
+            // Return Redirect Jangan Lupa
+
         } catch (\Exception $e) {
             DB::rollBack();
 
+            // Return Redirect Jangan Lupa
+
             return response()->json([
                 'message' => 'Data gagal terinput',
-                'error' => $e->getMessage() // Pesan error untuk debugging
+                'error' => $e->getMessage()
             ], 500);
         }
     }
