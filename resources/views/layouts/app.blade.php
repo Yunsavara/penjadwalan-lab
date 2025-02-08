@@ -3,55 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" type="text/css">
-    <title>@yield('title', 'AdminSite')</title>
-    <title>Document</title>
+    <link rel="icon" href="{{ asset('images/unpam-logo.png') }}" type="image">
+    <title>@yield('title', 'Penjadwalan Lab')</title>
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+     <!-- Font Poppin -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link
+         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+         rel="stylesheet">
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    @include('layouts.sidebar')
-    <!-- SIDEBAR -->
+    {{-- Header atau Navbar --}}
+    @include('layouts.header')
 
-    <!-- NAVBAR -->
-    <section id="content">
-        <nav>
-            <i class='bx bx-menu toggle-sidebar'></i>
-            <form action="#">
-                <div class="form-group">
-                    <input type="text" placeholder="Search...">
-                    <i class='bx bx-search icon'></i>
-                </div>
-            </form>
-            <a href="#" class="nav-link">
-                <i class='bx bxs-bell icon'></i>
-                <span class="badge">5</span>
-            </a>
-            <a href="#" class="nav-link">
-                <i class='bx bxs-message-square-dots icon'></i>
-                <span class="badge">8</span>
-            </a>
-            <span class="divider"></span>
-            <div class="profile">
-                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cGVvcGxlfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="">
-                <ul class="profile-link">
-                    <li><a href="#"><i class='bx bxs-user-circle icon'></i> Profile</a></li>
-                    <li><a href="#"><i class='bx bxs-cog'></i> Settings</a></li>
-                    <li><a href="#"><i class='bx bxs-log-out-circle'></i> Logout</a></li>
-                </ul>
-            </div>
-        </nav>
-        <!-- NAVBAR -->
+    <div class="wrapper">
 
-        <!-- MAIN -->
-        <main>
+        {{-- Sidebar --}}
+        @include('layouts.sidebar')
+
+        {{-- Content --}}
+        <div class="content">
+
+            <!-- Search Box Disini Biar Lebarnya Sesuai Dengan Content -->
+            @include('layouts.search-box')
+
             @yield('content')
-        </main>
-        <!-- MAIN -->
-    </section>
-    <!-- NAVBAR -->
+        </div>
 
+    </div>
+
+    <script>
+        feather.replace();
+    </script>
     <script src="{{ asset('js/script.js') }}"></script>
 </body>
 </html>

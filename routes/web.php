@@ -1,15 +1,16 @@
 <?php
 
+use App\Http\Controllers\Admin\RolesController;
+use App\Http\Controllers\Admin\UsersController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\DashboardController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
 Route::group(['middleware' => 'guest'], function() {
+    // Home
+    Route::get('/', [LoginController::class, 'home'])->name('home');
+
     // Registrasi Route
 
     Route::get('/register', [RegisterController::class,'index'])->name('register');
@@ -26,7 +27,14 @@ Route::group(['middleware'=> 'auth'], function() {
 });
 
 Route::group(['middleware' => ['role:admin']], function() {
+    // Dashboard
     Route::get('/admin/dashboard', [DashboardController::class,'admin'])->name('admin.dashboard');
+
+    // Manajemen - Pengguna
+    Route::get('/admin/pengguna', [UsersController::class, 'index'])->name('admin.pengguna');
+
+    // Manajemen - Roles
+    Route::get('/admin/roles', [RolesController::class, 'index'])->name('admin.roles');
 });
 
 Route::group(['middleware' => ['role:laboran']], function() {
@@ -34,8 +42,5 @@ Route::group(['middleware' => ['role:laboran']], function() {
 });
 
 Route::group(['middleware' => ['role:user']], function() {
-    Route::get('/dashboard', [DashboardController::class,'user'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class,'user'])->name('user.dashboard');
 });
-
-// Route::get('/admin', [AdminController::class, 'index'])
-//     ->middleware('role:admin');

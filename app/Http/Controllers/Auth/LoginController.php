@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
+    public function home(){
+        return view('welcome');
+    }
+
     public function index(){
         return view("auth.login", [
             'page_meta' => [
@@ -53,7 +57,7 @@ class LoginController extends Controller
         } elseif ($user->role->name === 'laboran') {
             return 'laboran.dashboard';
         } elseif ($user->role->name === 'user') {
-            return 'dashboard';
+            return 'user.dashboard';
         }
 
         return 'home';
@@ -67,6 +71,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login')->with('status', 'Anda telah logout.');
+        return redirect('/login');
     }
 }

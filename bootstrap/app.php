@@ -12,6 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
+            'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'role' => App\Http\Middleware\RoleMiddleware::class,
         ]);
     })

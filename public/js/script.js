@@ -1,148 +1,153 @@
-// SIDEBAR DROPDOWN
-const allDropdown = document.querySelectorAll('#sidebar .side-dropdown');
-const sidebar = document.getElementById('sidebar');
+// Toggle Sidebar
+function initSidebar(){
+    const menuBar = document.getElementById("menuBar");
+    const sideBar = document.querySelector(".sidebar");
 
-allDropdown.forEach(item=> {
-	const a = item.parentElement.querySelector('a:first-child');
-	a.addEventListener('click', function (e) {
-		e.preventDefault();
+    menuBar.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (window.innerWidth <= 768) {
+            sideBar.classList.toggle("active");
+            sideBar.classList.remove("hidden");
+        } else {
+            sideBar.classList.toggle("hidden");
+            sideBar.classList.remove("active");
+        }
+    });
 
-		if(!this.classList.contains('active')) {
-			allDropdown.forEach(i=> {
-				const aLink = i.parentElement.querySelector('a:first-child');
-
-				aLink.classList.remove('active');
-				i.classList.remove('show');
-			})
-		}
-
-		this.classList.toggle('active');
-		item.classList.toggle('show');
-	})
-})
-
-
-
-
-
-// SIDEBAR COLLAPSE
-const toggleSidebar = document.querySelector('nav .toggle-sidebar');
-const allSideDivider = document.querySelectorAll('#sidebar .divider');
-
-if(sidebar.classList.contains('hide')) {
-	allSideDivider.forEach(item=> {
-		item.textContent = '-'
-	})
-	allDropdown.forEach(item=> {
-		const a = item.parentElement.querySelector('a:first-child');
-		a.classList.remove('active');
-		item.classList.remove('show');
-	})
-} else {
-	allSideDivider.forEach(item=> {
-		item.textContent = item.dataset.text;
-	})
+    document.addEventListener("click", (event) => {
+        if (window.innerWidth <= 768 && !sideBar.contains(event.target) && !menuBar.contains(event.target)) {
+            sideBar.classList.remove("active");
+            sideBar.classList.add("hidden");
+        }
+    });
 }
 
-toggleSidebar.addEventListener('click', function () {
-	sidebar.classList.toggle('hide');
+initSidebar();
 
-	if(sidebar.classList.contains('hide')) {
-		allSideDivider.forEach(item=> {
-			item.textContent = '-'
-		})
+// Sidebar Dropdown Menu
+function initDropdown(){
+    const dropdownToggles = document.querySelectorAll(".sidebar-toggle");
 
-		allDropdown.forEach(item=> {
-			const a = item.parentElement.querySelector('a:first-child');
-			a.classList.remove('active');
-			item.classList.remove('show');
-		})
-	} else {
-		allSideDivider.forEach(item=> {
-			item.textContent = item.dataset.text;
-		})
-	}
-})
+    dropdownToggles.forEach((dropdownToggle) => {
+        dropdownToggle.addEventListener("click", (e) => {
+            e.preventDefault();
 
+            // Tutup semua dropdown yang sedang terbuka
+            dropdownToggles.forEach((otherToggle) => {
+                if (otherToggle !== dropdownToggle) {
+                    const otherMenu = otherToggle.nextElementSibling;
+                    const otherIcon = otherToggle.querySelector(".dropdown-icon");
 
+                    if (otherMenu && otherMenu.classList.contains("dropdown-menu")) {
+                        otherMenu.classList.remove("active");
+                        otherMenu.style.maxHeight = "0";
+                        otherIcon.classList.remove("active");
+                    }
+                }
+            });
 
+            // Buka atau tutup dropdown yang diklik
+            const dropdownMenu = dropdownToggle.nextElementSibling;
+            const dropdownIcon = dropdownToggle.querySelector(".dropdown-icon");
 
-sidebar.addEventListener('mouseleave', function () {
-	if(this.classList.contains('hide')) {
-		allDropdown.forEach(item=> {
-			const a = item.parentElement.querySelector('a:first-child');
-			a.classList.remove('active');
-			item.classList.remove('show');
-		})
-		allSideDivider.forEach(item=> {
-			item.textContent = '-'
-		})
-	}
-})
+            if (dropdownMenu && dropdownMenu.classList.contains("dropdown-menu")) {
+                dropdownMenu.classList.toggle("active");
+                dropdownIcon.classList.toggle("active");
 
+                // Animasi Dropdown
+                if (dropdownMenu.classList.contains("active")) {
+                    dropdownMenu.style.maxHeight = dropdownMenu.scrollHeight + "px";
+                } else {
+                    dropdownMenu.style.maxHeight = "0";
+                }
+            }
+        });
+    });
 
+    // Pastikan dropdown menu terbuka jika ada item aktif di dalamnya
+    document.querySelectorAll(".dropdown-menu").forEach((menu) => {
+        const activeItem = menu.querySelector(".sidebar-item.active");
+        if (activeItem) {
+            console.log("Dropdown menu ditemukan dan harus terbuka!"); // Tes log
+            menu.classList.add("active");
+            menu.style.maxHeight = menu.scrollHeight + "px";
 
-sidebar.addEventListener('mouseenter', function () {
-	if(this.classList.contains('hide')) {
-		allDropdown.forEach(item=> {
-			const a = item.parentElement.querySelector('a:first-child');
-			a.classList.remove('active');
-			item.classList.remove('show');
-		})
-		allSideDivider.forEach(item=> {
-			item.textContent = item.dataset.text;
-		})
-	}
-})
+            // Tambahkan class active ke parent dropdown-container
+            const parentContainer = menu.closest(".dropdown-container");
+            if (parentContainer) {
+                parentContainer.classList.add("active");
+            }
 
-
-
-
-// PROFILE DROPDOWN
-const profile = document.querySelector('nav .profile');
-const imgProfile = profile.querySelector('img');
-const dropdownProfile = profile.querySelector('.profile-link');
-
-imgProfile.addEventListener('click', function () {
-	dropdownProfile.classList.toggle('show');
-})
-
-
-
-
-// MENU
-const allMenu = document.querySelectorAll('main .content-data .head .menu');
-
-allMenu.forEach(item=> {
-	const icon = item.querySelector('.icon');
-	const menuLink = item.querySelector('.menu-link');
-
-	icon.addEventListener('click', function () {
-		menuLink.classList.toggle('show');
-	})
-})
+            // Ubah icon dropdown jadi active juga
+            const parentToggle = menu.previousElementSibling;
+            if (parentToggle && parentToggle.classList.contains("sidebar-toggle")) {
+                const dropdownIcon = parentToggle.querySelector(".dropdown-icon");
+                dropdownIcon.classList.add("active");
+            }
+        }
+    });
 
 
+}
 
-window.addEventListener('click', function (e) {
-	if(e.target !== imgProfile) {
-		if(e.target !== dropdownProfile) {
-			if(dropdownProfile.classList.contains('show')) {
-				dropdownProfile.classList.remove('show');
-			}
-		}
-	}
+initDropdown();
 
-	allMenu.forEach(item=> {
-		const icon = item.querySelector('.icon');
-		const menuLink = item.querySelector('.menu-link');
+// Tampilin menu pas klik profil di navbar
+function initProfilMenu() {
+    const profil = document.querySelector(".foto-profil-login");
+    const profilMenu = document.querySelector(".profil-menu");
 
-		if(e.target !== icon) {
-			if(e.target !== menuLink) {
-				if (menuLink.classList.contains('show')) {
-					menuLink.classList.remove('show')
-				}
-			}
-		}
-	})
-})
+    profil.addEventListener("click", () => {
+        profilMenu.classList.toggle("active");
+    })
+
+    // Diluar profil ketutup
+    function closeProfilMenu(e){
+        if(!profil.contains(e.target) && !profilMenu.contains(e.target)){
+            profilMenu.classList.remove("active");
+        }
+    }
+
+    document.addEventListener("click", closeProfilMenu);
+}
+
+initProfilMenu();
+
+function initNotification() {
+    const notificationIcon = document.getElementById("notificationIcon");
+    const notifList = document.querySelector(".notif-list");
+
+    notificationIcon.addEventListener("click", () => {
+        notifList.classList.toggle("active");
+    })
+
+    function closeNotifList(e) {
+        if(!notificationIcon.contains(e.target) && !notifList.contains(e.target)){
+            notifList.classList.remove("active");
+        }
+    }
+
+    document.addEventListener("click", closeNotifList);
+}
+
+initNotification();
+
+// Fungsi Munculin Search Box
+function initSearchBox() {
+    const searchIcon = document.getElementById("searchIcon");
+    const searchBox = document.querySelector(".search-container");
+
+    searchIcon.addEventListener("click", () => {
+        searchBox.classList.toggle("active");
+    })
+
+    function closeSearchBox(e) {
+        if(!searchIcon.contains(e.target) && !searchBox.contains(e.target)){
+            searchBox.classList.remove("active");
+        }
+    }
+
+    document.addEventListener("click", closeSearchBox);
+}
+
+initSearchBox();
