@@ -17,25 +17,28 @@ class RoleMiddleware
 
      public function handle(Request $request, Closure $next, $role)
      {
-        $user = auth()->user();
-        // Auth::logout();
-
-        // Jika tidak login, tolak akses
-        if (!$user) {
-            return abort(403, 'Unauthorized');
+        // Kalau belum login diarahin ke halaman login
+        if(!Auth::user()){
+            return redirect()->route('login');
         }
 
-        // Jika user adalah superadmin, beri akses ke semua halaman
-        // if ($user->role->name === 'superadmin') {
-        //     return $next($request);
-        // }
-
-        // Jika role user tidak sesuai dengan middleware, tolak akses
-        if ($user->role->name !== $role) {
-            return abort(403, 'Unauthorized');
+        // Kalau Tidak Sesuai Role di balikin ke halaman sebelumnya
+        if(Auth::user()->role->name !== $role){
+            return redirect()->back();
         }
 
         return $next($request);
      }
 
 }
+
+
+//     // Jika user adalah admin, beri akses ke semua halaman
+    //     if ($user->role->name === 'admin') {
+    //         return $next($request);
+    //     }
+
+    //     // Jika role user tidak sesuai dengan middleware, tolak akses dengan redirect
+    //     if ($user->role->name !== $role) {
+    //         return redirect()->back();
+    //     }
