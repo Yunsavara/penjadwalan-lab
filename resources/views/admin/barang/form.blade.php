@@ -12,21 +12,10 @@
             @csrf
 
             <div class="col-12 mb-3">
-                <label for="lokasiKampus">Lokasi Kampus</label>
-                <select name="lokasi_kampus" id="lokasiKampus" class="form-select">
-                    <option value="" selected>Pilih Lokasi Kampus</option>
-                    <option value="Viktor">Viktor</option>
-                    <option value="Witana">Witana</option>
-                    <option value="Pusat">Pusat</option>
-                    <option value="Serang">Serang</option>
-                </select>
-            </div>
-
-            <div class="col-12 mb-3">
-                <label for="lokasiRuangan">Lokasi Ruangan</label>
-                <select name="lokasi_ruangan" id="lokasiRuangan" class="form-select">
+                <label for="lokasiBarang">Lokasi Ruangan</label>
+                <select name="lokasi_ruangan" id="lokasiBarang" class="form-select">
                     <option value="" selected>Pilih Lokasi Ruangan</option>
-                    <option value="CBT-01">CBT-01</option>
+                    <option value="CBT-01">CBT-01 / Viktor</option>
                 </select>
             </div>
 
@@ -37,10 +26,11 @@
 
             <div class="col-12 mb-3">
                 <label for="barangMeja">Meja</label>
-                <i data-feather="info" data-bs-toggle="tooltip" data-bs-placement="top" title="Jika Bukan Barang yang Berada di Meja Pilih Tidak" style="width:1rem; margin-left:0.2rem"></i>
+                <i data-feather="info" data-bs-toggle="tooltip" data-bs-placement="top" title="Jika Bukan Barang yang Berada di Meja, Pilih Tidak" style="width:1rem; margin-left:0.2rem"></i>
                 <select name="meja" id="barangMeja" class="form-select">
                     <option value="tidak" selected>Tidak</option>
                     <option value="meja-01">Meja 01</option>
+                    {{-- Ini Nanti Event Listener Ke Lokasi Ruangan --}}
                 </select>
             </div>
 
@@ -63,7 +53,7 @@
 
     <script>
         $(document).ready(function() {
-            $("#lokasiKampus,#lokasiRuangan, #barangMeja").select2({
+            $("#lokasiBarang, #barangMeja").select2({
                 theme: "bootstrap-5",
                 placeholder: "Pilih Opsi",
                 allowClear: true,
@@ -72,7 +62,7 @@
             // Menutup Select2 pas klik di luar elemen
             $(document).on("click", function(e) {
                 if (!$(e.target).closest(".select2-container").length && !$(e.target).is("#lokasiBarang")) {
-                    $("#lokasiKampus,#lokasiRuangan,#barangMeja").select2("close");
+                    $("#lokasiBarang,#barangMeja").select2("close");
                 }
             });
         });
