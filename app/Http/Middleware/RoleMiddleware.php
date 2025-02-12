@@ -22,6 +22,11 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
+        // Jika user adalah admin, beri akses ke semua halaman
+        if (Auth::user()->role->name === 'admin') {
+            return $next($request);
+        }
+
         // Kalau Tidak Sesuai Role di balikin ke halaman sebelumnya
         if(Auth::user()->role->name !== $role){
             return redirect()->back();

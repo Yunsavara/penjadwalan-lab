@@ -3,6 +3,6 @@
 @section('title', 'Dashboard Admin')
 
 @section('content')
-    <h1>{{ $page_meta['page'] }}</h1>
+    <h1 class="fw-bold">{{ $page_meta['page'] }}</h1>
     <hr>
 @endsection

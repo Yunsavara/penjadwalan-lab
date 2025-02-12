@@ -9,6 +9,10 @@ class UsersController extends Controller
 {
     public function index()
     {
-        return view("admin.users");
+        return view("admin.users", [
+            'page_meta' => [
+                'page'=> 'Pengguna'
+            ]
+        ]);
     }
 }
