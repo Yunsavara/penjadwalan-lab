@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,11 @@ Route::group(['middleware' => ['role:admin']], function() {
 
     // Manajemen - Roles
     Route::get('/admin/roles', [RolesController::class, 'index'])->name('admin.roles');
+
+    // Barang
+    Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');
+    Route::get('/admin/tambah-barang', [BarangController::class, 'create'])->name('admin.barang.create');
+
 });
 
 Route::group(['middleware' => ['role:laboran']], function() {
