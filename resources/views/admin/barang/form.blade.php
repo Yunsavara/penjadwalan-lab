@@ -33,6 +33,13 @@
                 placeholder: "Pilih Lokasi",
                 allowClear: true,
             });
+
+            // Menutup Select2 saat klik di luar elemen
+            $(document).on("click", function(e) {
+                if (!$(e.target).closest(".select2-container").length && !$(e.target).is("#lokasiBarang")) {
+                    $("#lokasiBarang").select2("close");
+                }
+            });
         });
     </script>
 
