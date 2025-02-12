@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initProfile();
     initSearch();
     initNotif();
+    initTooltips();
 });
 
 function initSidebar() {
@@ -116,4 +117,10 @@ function initNotif(){
     }
 
     document.addEventListener("click", closeNotifMessage);
+}
+
+function initTooltips() {
+    // Trigger Tooltips Bootstrap
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 }

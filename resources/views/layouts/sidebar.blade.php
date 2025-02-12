@@ -36,7 +36,7 @@
         @endif
 
         <span class="divider" style="font-size:0.75rem;">TOOLS</span>
-        <li class="sidebar-item {{ Route::is('admin.barang') ? 'active' : '' }}">
+        <li class="sidebar-item {{ Route::is('admin.barang*') ? 'active' : '' }}">
             <a href="{{ Route('admin.barang') }}" class="sidebar-link"><i data-feather="box" class="sidebar-icon-link"></i>Barang</a>
         </li>
 
