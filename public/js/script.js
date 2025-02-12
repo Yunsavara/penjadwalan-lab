@@ -1,10 +1,17 @@
-// Toggle Sidebar
-function initSidebar(){
-    const menuBar = document.getElementById("menuBar");
-    const sideBar = document.querySelector(".sidebar");
+// isi Function Langsung load DOM tanpa nunggu element HTML ke Load
+document.addEventListener("DOMContentLoaded", () => {
+    initSidebar();
+    initProfile();
+    initSearch();
+    initNotif();
+});
 
-    menuBar.addEventListener("click", (e) => {
-        e.stopPropagation();
+function initSidebar() {
+    // Sidebar Toggle (Mobile & Desktop)
+    const menuBar = document.getElementById("toggleSidebar");
+    const sideBar = document.getElementById("sidebar");
+
+    menuBar?.addEventListener("click", e => {
         if (window.innerWidth <= 768) {
             sideBar.classList.toggle("active");
             sideBar.classList.remove("hidden");
@@ -20,134 +27,93 @@ function initSidebar(){
             sideBar.classList.add("hidden");
         }
     });
-}
 
-initSidebar();
+    // Buka Dropdown Sidebar Jika Ada Item Aktif
+    document.querySelectorAll(".sidebar-item").forEach(item => {
+        let activeItem = item.querySelector(".sidebar-item.active");
+        let dropdownMenu = item.querySelector(".collapse");
+        let dropdownToggle = item.querySelector(".sidebar-link");
 
-// Sidebar Dropdown Menu
-function initDropdown(){
-    const dropdownToggles = document.querySelectorAll(".sidebar-toggle");
+        if (activeItem && dropdownMenu && dropdownToggle) {
+            new bootstrap.Collapse(dropdownMenu, { toggle: true });
+        }
+    });
 
-    dropdownToggles.forEach((dropdownToggle) => {
-        dropdownToggle.addEventListener("click", (e) => {
-            e.preventDefault();
+    // Tutup Dropdown Lain Saat Klik yang Baru (sidebar)
+    document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(dropdown => {
+        dropdown.addEventListener("click", function () {
+            let target = document.querySelector(this.getAttribute("data-bs-target"));
 
-            // Tutup semua dropdown yang sedang terbuka
-            dropdownToggles.forEach((otherToggle) => {
-                if (otherToggle !== dropdownToggle) {
-                    const otherMenu = otherToggle.nextElementSibling;
-                    const otherIcon = otherToggle.querySelector(".dropdown-icon");
-
-                    if (otherMenu && otherMenu.classList.contains("dropdown-menu")) {
-                        otherMenu.classList.remove("active");
-                        otherMenu.style.maxHeight = "0";
-                        otherIcon.classList.remove("active");
-                    }
+            document.querySelectorAll('.collapse.show').forEach(menu => {
+                if (menu !== target) {
+                    bootstrap.Collapse.getInstance(menu)?.hide();
                 }
             });
-
-            // Buka atau tutup dropdown yang diklik
-            const dropdownMenu = dropdownToggle.nextElementSibling;
-            const dropdownIcon = dropdownToggle.querySelector(".dropdown-icon");
-
-            if (dropdownMenu && dropdownMenu.classList.contains("dropdown-menu")) {
-                dropdownMenu.classList.toggle("active");
-                dropdownIcon.classList.toggle("active");
-
-                // Animasi Dropdown
-                if (dropdownMenu.classList.contains("active")) {
-                    dropdownMenu.style.maxHeight = dropdownMenu.scrollHeight + "px";
-                } else {
-                    dropdownMenu.style.maxHeight = "0";
-                }
-            }
         });
     });
-
-    // Pastikan dropdown menu terbuka jika ada item aktif di dalamnya
-    document.querySelectorAll(".dropdown-menu").forEach((menu) => {
-        const activeItem = menu.querySelector(".sidebar-item.active");
-        if (activeItem) {
-            console.log("Dropdown menu ditemukan dan harus terbuka!"); // Tes log
-            menu.classList.add("active");
-            menu.style.maxHeight = menu.scrollHeight + "px";
-
-            // Tambahkan class active ke parent dropdown-container
-            const parentContainer = menu.closest(".dropdown-container");
-            if (parentContainer) {
-                parentContainer.classList.add("active");
-            }
-
-            // Ubah icon dropdown jadi active juga
-            const parentToggle = menu.previousElementSibling;
-            if (parentToggle && parentToggle.classList.contains("sidebar-toggle")) {
-                const dropdownIcon = parentToggle.querySelector(".dropdown-icon");
-                dropdownIcon.classList.add("active");
-            }
-        }
-    });
-
-
 }
 
-initDropdown();
-
-// Tampilin menu pas klik profil di navbar
-function initProfilMenu() {
-    const profil = document.querySelector(".foto-profil-login");
-    const profilMenu = document.querySelector(".profil-menu");
-
-    profil.addEventListener("click", () => {
-        profilMenu.classList.toggle("active");
-    })
-
-    // Diluar profil ketutup
-    function closeProfilMenu(e){
-        if(!profil.contains(e.target) && !profilMenu.contains(e.target)){
-            profilMenu.classList.remove("active");
-        }
-    }
-
-    document.addEventListener("click", closeProfilMenu);
-}
-
-initProfilMenu();
-
-function initNotification() {
-    const notificationIcon = document.getElementById("notificationIcon");
-    const notifList = document.querySelector(".notif-list");
-
-    notificationIcon.addEventListener("click", () => {
-        notifList.classList.toggle("active");
-    })
-
-    function closeNotifList(e) {
-        if(!notificationIcon.contains(e.target) && !notifList.contains(e.target)){
-            notifList.classList.remove("active");
-        }
-    }
-
-    document.addEventListener("click", closeNotifList);
-}
-
-initNotification();
-
-// Fungsi Munculin Search Box
-function initSearchBox() {
-    const searchIcon = document.getElementById("searchIcon");
+function initSearch() {
+    const searchToggle = document.getElementById("searchIcon");
     const searchBox = document.querySelector(".search-container");
 
-    searchIcon.addEventListener("click", () => {
-        searchBox.classList.toggle("active");
-    })
+    if (searchToggle && searchBox) {
+        searchToggle.addEventListener("click", e => {
+            searchBox.classList.toggle("show");
+        });
 
-    function closeSearchBox(e) {
-        if(!searchIcon.contains(e.target) && !searchBox.contains(e.target)){
-            searchBox.classList.remove("active");
+        document.addEventListener("click", e => {
+            if (!searchBox.contains(e.target) && !searchToggle.contains(e.target)) {
+                searchBox.classList.remove("show");
+            }
+        });
+    }
+}
+
+function initProfile(){
+    const dropdownToggle = document.getElementById("profileDropdown");
+    const dropdownMenuProfile = document.getElementById("dropdownMenuProfile");
+
+    dropdownToggle.addEventListener("click", e => {
+        dropdownMenuProfile.classList.toggle("show");
+    });
+
+    function closeProfileMenu(e) {
+        if (!dropdownToggle.contains(e.target) && !dropdownMenuProfile.contains(e.target)) {
+            dropdownMenuProfile.classList.remove("show");
         }
     }
 
-    document.addEventListener("click", closeSearchBox);
+    document.addEventListener("click", closeProfileMenu);
 }
 
-initSearchBox();
+function notifCounter(){
+    const notifActive = document.querySelectorAll(".notif-item.active").length;
+    const notifCounter = document.getElementById("notifCounter");
+
+    if (notifActive > 0) {
+        notifCounter.textContent = notifActive;
+        notifCounter.style.display = "inline-block";
+    } else {
+        notifCounter.style.display = "none";
+    }
+}
+
+notifCounter();
+
+function initNotif(){
+    const notif = document.querySelector(".notification-icon-container");
+    const notifMessage = document.querySelector(".notif-container");
+
+    notif.addEventListener("click", () => {
+        notifMessage.classList.toggle("show");
+    })
+
+    function closeNotifMessage(e) {
+        if(!notif.contains(e.target) && !notifMessage.contains(e.target)){
+            notifMessage.classList.remove("show");
+        }
+    }
+
+    document.addEventListener("click", closeNotifMessage);
+}
