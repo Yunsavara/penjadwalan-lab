@@ -1,4 +1,3 @@
-<!-- Notif Container -->
 <div class="notif-container">
     <ul class="notif-list-container">
         <li class="notif-item active">
@@ -30,4 +29,3 @@
         </li>
     </ul>
  </div>
- <!-- /Notif Container -->
