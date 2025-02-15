@@ -14,7 +14,6 @@
             <div class="col-12 mb-3">
                 <label for="lokasiBarang">Lokasi Ruangan</label>
                 <select name="lokasi_ruangan" id="lokasiBarang" class="form-select">
-                    <option value="" selected>Pilih Lokasi Ruangan</option>
                     <option value="CBT-01">CBT-01 / Viktor</option>
                 </select>
             </div>
@@ -30,7 +29,6 @@
                 <select name="meja" id="barangMeja" class="form-select">
                     <option value="tidak" selected>Tidak</option>
                     <option value="meja-01">Meja 01</option>
-                    {{-- Ini Nanti Event Listener Ke Lokasi Ruangan --}}
                 </select>
             </div>
 
@@ -50,22 +48,5 @@
             </div>
         </form>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            $("#lokasiBarang, #barangMeja").select2({
-                theme: "bootstrap-5",
-                placeholder: "Pilih Opsi",
-                allowClear: true,
-            });
-
-            // Menutup Select2 pas klik di luar elemen
-            $(document).on("click", function(e) {
-                if (!$(e.target).closest(".select2-container").length && !$(e.target).is("#lokasiBarang")) {
-                    $("#lokasiBarang,#barangMeja").select2("close");
-                }
-            });
-        });
-    </script>
 
 @endsection

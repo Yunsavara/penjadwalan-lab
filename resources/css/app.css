@@ -1,3 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url(../css/style.css);
+
+@import url(../css/datatables.css);
+@import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css';

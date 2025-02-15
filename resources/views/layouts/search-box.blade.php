@@ -1,4 +1,3 @@
-<!-- Search Container -->
 <div class="search-container">
     <div class="search-box">
         <input type="search" class="search-input" placeholder="Pencarian...">
@@ -11,4 +10,3 @@
         </ul>
     </div>
 </div>
-<!-- /Search Container -->
