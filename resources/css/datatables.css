@@ -1,4 +1,8 @@
 /* Karena Pakai Custom atau buat sendiri jadi disembunyiin bawaannya */
-.dt-search, .dt-length {
+.dt-search label {
+    display: none !important;
+}
+
+.dt-length label {
     display: none !important;
 }

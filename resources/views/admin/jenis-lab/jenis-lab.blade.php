@@ -23,17 +23,9 @@
 
    {{-- Table Content --}}
     <div class="container-fluid py-3 px-2 d-flex flex-wrap justify-content-between bg-white shadow-sm rounded border">
-        {{-- Tambah Button --}}
-        <div class="col-12 col-md-auto mb-3">
-            <a href="#"><button class="btn btn-primary col-12 col-md-auto">Tambah</button></a>
-        </div>
-        {{-- /Tambah Button --}}
 
-        {{-- Searchbox --}}
-        <div class="col-12 col-md-auto mb-3">
-            <input type="search" id="jenisLabSearch" class="form-control col-12 col-md-auto" placeholder="Pencarian...">
-        </div>
-        {{-- /Searchbox --}}
+        <div id="searchJenisLab" class="col-12 col-md-auto mb-2"></div>
+        <div id="sortingJenisLab" class="col-12 col-md-auto mb-2"></div>
 
 
         <div class="table-responsive position-relative col-12" style="padding-bottom:27rem">
@@ -42,9 +34,8 @@
             </table>
        </div>
 
-        <div id="infoJenisLab">
-        </div>
-        <div id="paginationJenisLab"></div>
+        <div id="infoJenisLab" class="col-12 col-md-auto mb-3 text-center text-md-auto"></div>
+        <div id="paginationJenisLab" class="col-12 col-md-auto mb-3 d-flex justify-content-center"></div>
     </div>
     {{-- /Table Content --}}
     @push('scripts')
