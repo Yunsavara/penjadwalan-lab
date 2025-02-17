@@ -1,3 +1,6 @@
+import * as bootstrap from 'bootstrap';
+
+
 // isi Function Langsung load DOM tanpa nunggu element HTML ke Load
 document.addEventListener("DOMContentLoaded", () => {
     initSidebar();

@@ -1,4 +1,3 @@
-<!-- Sidebar -->
 <div class="sidebar shadow py-3 px-4" id="sidebar">
     <div class="brand-logo gap-2 d-flex justify-content-center py-1">
         <i data-feather="activity" id="brandIcon"></i>
@@ -12,6 +11,9 @@
             <a href="{{ route(auth()->user()->role->name . '.dashboard') }}" class="sidebar-link"><i data-feather="layers" class="sidebar-icon-link"></i>Beranda</a>
         </li>
 
+
+        <span class="divider" style="font-size:0.75rem;">TOOLS</span>
+
         @php
             // List route buat ke dropdown menu manajemen
             $manajemenRoutes = ['admin.pengguna', 'admin.roles'];
@@ -19,7 +21,7 @@
 
         @if(auth()->user()->role->name == "admin")
             <li class="sidebar-item @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif">
-                <a href="#" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#manajemenDropdown">
+                <a href="" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#manajemenDropdown">
                     <i data-feather="database" class="sidebar-icon-link"></i>Manajemen
                     <i data-feather="chevron-right" class="dropdown-icon @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif"></i>
                 </a>
@@ -33,29 +35,32 @@
                     </li>
                 </ul>
             </li>
+
+            @php
+                $laboratoriumRoutes = ['admin.jenis-lab*'];
+            @endphp
+
+            <li class="sidebar-item @if (Str::is($laboratoriumRoutes, Route::currentRouteName())) active @endif">
+                <a href="" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#laboratoriumContainer">
+                    <i data-feather="folder" class="sidebar-icon-link"></i>Laboratorium
+                    <i data-feather="chevron-right" class="dropdown-icon @if (Str::is($laboratoriumRoutes, Route::currentRouteName())) active @endif"></i>
+                </a>
+
+                <ul class="collapse list-unstyled dropdown-menu-vanilla @if (Str::is($laboratoriumRoutes, Route::currentRouteName())) active @endif" id="laboratoriumContainer">
+                    <li class="sidebar-item @if (Str::is('admin.jenis-lab*', Route::currentRouteName())) active @endif">
+                        <a href="{{ route('admin.jenis-lab') }}" class="sidebar-link">Jenis Lab</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="" class="sidebar-link">Roles</a>
+                    </li>
+                </ul>
+            </li>
+
+
+            <li class="sidebar-item {{ Route::is('admin.barang*') ? 'active' : '' }}">
+                <a href="{{ Route('admin.barang') }}" class="sidebar-link"><i data-feather="box" class="sidebar-icon-link"></i>Barang</a>
+            </li>
         @endif
-
-        <span class="divider" style="font-size:0.75rem;">TOOLS</span>
-        <li class="sidebar-item {{ Route::is('admin.barang*') ? 'active' : '' }}">
-            <a href="{{ Route('admin.barang') }}" class="sidebar-link"><i data-feather="box" class="sidebar-icon-link"></i>Barang</a>
-        </li>
-
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#pengajuanJadwal">
-                <i data-feather="folder" class="sidebar-icon-link"></i>Pengajuan
-                <i data-feather="chevron-right" class="dropdown-icon"></i>
-            </a>
-
-            <ul class="collapse list-unstyled dropdown-menu-vanilla" id="pengajuanJadwal">
-                <li class="sidebar-item">
-                    <a href="" class="sidebar-link">Pengguna</a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="" class="sidebar-link">Roles</a>
-                </li>
-            </ul>
-        </li>
     </ul>
 
 </div>
-<!-- /Sidebar -->

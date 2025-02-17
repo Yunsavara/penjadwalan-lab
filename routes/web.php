@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BarangController;
+use App\Http\Controllers\Admin\JenislabController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +41,12 @@ Route::group(['middleware' => ['role:admin']], function() {
     // Barang
     Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');
     Route::get('/admin/tambah-barang', [BarangController::class, 'create'])->name('admin.barang.create');
+
+    // Jenis Lab
+    Route::get('/admin/jenis-lab', [JenislabController::class, 'index'])->name('admin.jenis-lab');
+    Route::get('/admin/jenis-lab/data', [JenislabController::class, 'getData'])->name('jenislab.getData');
+    Route::get('/admin/tambah-jenis-lab', [JenislabController::class, 'create'])->name('admin.jenis-lab.create');
+    Route::post('/admin/tambah-jenis-lab', [JenislabController::class, 'store']);
 
 });
 
