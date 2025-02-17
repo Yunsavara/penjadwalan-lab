@@ -21,7 +21,7 @@
 
             <div class="col-12 mb-3">
                 <label for="namaJenisLab">Nama Jenis Lab</label>
-                <input type="text" name="name" id="namaJenisLab" class="form-control @error('name') is-invalid @enderror" autocomplete="off" value="{{ old('name', $jenisLab->name) }}">
+                <input type="text" name="name" id="namaJenisLab" class="form-control @error('name') is-invalid @enderror" autocomplete="off" value="{{ old('name', $Jenislab->name) }}">
                 @error('name')
                     <div class="invalid-feedback d-block">
                         {{ $message }}
@@ -31,7 +31,7 @@
 
             <div class="col-12 mb-3">
                 <label for="descriptionJenisLab">Deskripsi</label>
-                <textarea name="description" id="descriptionJenisLab" class="form-control @error('description') is-invalid @enderror" autocomplete="off" style="min-height:100px; max-height:100px;">{{ old('description', $jenisLab->description) }}</textarea>
+                <textarea name="description" id="descriptionJenisLab" class="form-control @error('description') is-invalid @enderror" autocomplete="off" style="min-height:100px; max-height:100px;">{{ old('description', $Jenislab->description) }}</textarea>
                 @error('description')
                     <div class="invalid-feedback d-block">
                         {{ $message }}

@@ -30,6 +30,17 @@ function initJenisLabDataTable(){
                 },
                 { data: 'name', name: 'name', },
                 { data: 'description', name: 'description'},
+                {
+                    data: null,
+                    name: 'action',
+                    render: function(data, type, row) {
+                        return `
+                            <a href="/admin/ubah-jenis-lab/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="/admin/delete-jenis-lab/${row.slug}" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</a>
+                        `;
+                    }
+                },
             ],
             initComplete: function() {
                 moveTools();
@@ -39,6 +50,7 @@ function initJenisLabDataTable(){
 }
 
 function moveTools(){
+    // Mengambil Tools Datatables buat dipindahin nanti
     const search = document.querySelector(".dt-search");
     const sorting = document.querySelector(".dt-length");
     const info = document.querySelector(".dt-info");
@@ -48,6 +60,7 @@ function moveTools(){
     search.querySelector("input").placeholder = "Pencarian..."
 
     if(search && sorting && info && paging){
+        // Dipindah ke sini
         document.getElementById("searchJenisLab").appendChild(search);
         document.getElementById("sortingJenisLab").appendChild(sorting);
         document.getElementById("infoJenisLab").appendChild(info);
