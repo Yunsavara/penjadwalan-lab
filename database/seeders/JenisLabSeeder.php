@@ -15,17 +15,5 @@ class JenisLabSeeder extends Seeder
     {
         // Kosongkan tabel dulu
         DB::table('jenislabs')->truncate();
-
-        $data = [];
-        for ($i = 1; $i <= 10000; $i++) {
-            $data[] = [
-                'name' => 'Lab ' . $i,
-                'description' => 'Deskripsi untuk Lab Panjang Nih Buat Liat Text Truncate ' . $i,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
-
-        DB::table('jenislabs')->insert($data);
     }
 }

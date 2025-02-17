@@ -47,7 +47,8 @@ Route::group(['middleware' => ['role:admin']], function() {
     Route::get('/admin/jenis-lab/data', [JenislabController::class, 'getData'])->name('jenislab.getData');
     Route::get('/admin/tambah-jenis-lab', [JenislabController::class, 'create'])->name('admin.jenis-lab.create');
     Route::post('/admin/tambah-jenis-lab', [JenislabController::class, 'store']);
-
+    Route::get('/admin/ubah-jenis-lab/{jenislab:slug}', [JenislabController::class, 'edit'])->name('admin.jenis-lab.edit');
+    Route::put('/admin/ubah-jenis-lab/{jenislab:slug}', [JenislabController::class, 'update']);
 });
 
 Route::group(['middleware' => ['role:laboran']], function() {
