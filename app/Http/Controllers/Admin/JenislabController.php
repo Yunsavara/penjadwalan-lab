@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\DataTables\Admin\JenislabDataTable;
 use App\Models\Jenislab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,34 +10,38 @@ use App\Http\Requests\Admin\JenisLab\JenisLabStoreRequest;
 
 class JenislabController extends Controller
 {
-    public function index(JenislabDataTable $datatable){
-        return $datatable->render("admin.jenis-lab.jenis-lab", [
+    public function index(){
+        return view("admin.jenis-lab.jenis-lab", [
             'page_meta' => [
                 'page' => 'Jenis Lab'
             ]
         ]);
     }
 
-//     // Ambil Data Lewat AJAX ke DataTables
-// public function getDataJenisLab(Request $request)
-// {
-//     $query = JenisLab::select('id', 'name', 'description');
+    public function getData(Request $request)
+    {
+        // Menyaring data berdasarkan pencarian jika ada
+        $query = Jenislab::query();
 
-//     // Filtering manual untuk kolom name (jika diperlukan)
-//     if ($request->has('search') && $request->search['value']) {
-//         $keyword = $request->search['value'];
-//         $query->where('name', 'like', "%$keyword%");
-//     }
+        if ($search = $request->input('search.value')) {
+            $query->where('name', 'like', "%$search%")
+                  ->orWhere('description', 'like', "%$search%");
+        }
 
-//     // Pagination: Ambil jumlah data sesuai request dari DataTables
-//     $totalData = $query->count(); // Hitung total sebelum paginasi
-//     $data = $query->offset($request->start)->limit($request->length)->get();
+        // Pagination
+        $data = $query->paginate($request->input('length'));
 
-//     return DataTables::of($data)
-//         ->setTotalRecords($totalData) // Pastikan jumlah total data dikirim
-//         ->addIndexColumn()
-//         ->make(true);
-// }
+        // Total record untuk pagination
+        $recordsTotal = Jenislab::count();
+        $recordsFiltered = $query->count();
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data->items(),
+        ]);
+    }
 
     public function create(){
         return view("admin.jenis-lab.form-jenis-lab", [
