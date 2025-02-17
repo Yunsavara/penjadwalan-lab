@@ -28,17 +28,18 @@
         <div id="sortingJenisLab" class="col-12 col-md-auto mb-2"></div>
 
 
-        <div class="table-responsive position-relative col-12" style="padding-bottom:27rem">
-            <table id="jenislab-table" class="table table-striped display text-truncate position-absolute top-0 rounded" style="width:100%">
-                <thead class="table-dark"></thead>
+        <div class="col-12 table-responsive position-relative" style="padding-bottom: 19rem">
+            <table id="jenisLabTable" class="table table-striped display rounded position-absolute top-0">
+                <thead class="table-dark">
+                    <th>No</th>
+                    <th>Jenis Lab</th>
+                    <th>Deskripsi</th>
+                </thead>
             </table>
-       </div>
+        </div>
 
         <div id="infoJenisLab" class="col-12 col-md-auto mb-3 text-center text-md-auto"></div>
-        <div id="paginationJenisLab" class="col-12 col-md-auto mb-3 d-flex justify-content-center"></div>
+        <div id="pagingJenisLab" class="col-12 col-md-auto mb-3 d-flex justify-content-center"></div>
     </div>
-    {{-- /Table Content --}}
-    @push('scripts')
-    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
-@endpush
+
 @endsection

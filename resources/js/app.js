@@ -8,9 +8,13 @@ import './script';
 import './form-barang';
 import './jenis-lab'
 
-// Yajra Datatables
-import 'laravel-datatables-vite';
-
 // Datatables
-import 'datatables.net-responsive'; // Responsive Extension
-import 'datatables.net-responsive-bs5'; // Styling Bootstrap 5 untuk Responsive
+import 'datatables.net';
+import 'datatables.net-responsive';
+import 'datatables.net-responsive-bs5';
+import "datatables.net-fixedheader";
+import "datatables.net-select-dt";
+
+import $ from 'jquery';
+
+window.$ = window.jQuery = $;

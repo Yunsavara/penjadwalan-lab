@@ -44,6 +44,7 @@ Route::group(['middleware' => ['role:admin']], function() {
 
     // Jenis Lab
     Route::get('/admin/jenis-lab', [JenislabController::class, 'index'])->name('admin.jenis-lab');
+    Route::get('/admin/jenis-lab/data', [JenislabController::class, 'getData'])->name('jenislab.getData');
     Route::get('/admin/tambah-jenis-lab', [JenislabController::class, 'create'])->name('admin.jenis-lab.create');
     Route::post('/admin/tambah-jenis-lab', [JenislabController::class, 'store']);
 
