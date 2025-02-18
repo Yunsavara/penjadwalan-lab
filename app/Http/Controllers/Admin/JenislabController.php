@@ -61,7 +61,8 @@ class JenislabController extends Controller
 
         DB::beginTransaction();
         try {
-            $jenisLab = Jenislab::create($Request->all());
+
+            Jenislab::create($Request->all());
 
             DB::commit();
 

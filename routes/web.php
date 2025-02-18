@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Admin\JenislabController;
+use App\Http\Controllers\Admin\LaboratoriumUnpamController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,12 @@ Route::group(['middleware' => ['role:admin']], function() {
     Route::post('/admin/tambah-jenis-lab', [JenislabController::class, 'store']);
     Route::get('/admin/ubah-jenis-lab/{jenislab:slug}', [JenislabController::class, 'edit'])->name('admin.jenis-lab.edit');
     Route::put('/admin/ubah-jenis-lab/{jenislab:slug}', [JenislabController::class, 'update']);
+
+    // Laboratorium
+    Route::get('/admin/laboratorium', [LaboratoriumUnpamController::class, 'index'])->name('admin.laboratorium');
+
+    Route::get('/admin/tambah-laboratorium', [LaboratoriumUnpamController::class, 'create'])->name('admin.laboratorium.create');
+    Route::post('/admin/tambah-laboratorium', [LaboratoriumUnpamController::class, 'store']);
 });
 
 Route::group(['middleware' => ['role:laboran']], function() {

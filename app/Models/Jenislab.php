@@ -22,4 +22,9 @@ class Jenislab extends Model
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
+
+    public function LaboratoriumUnpams()
+    {
+        return $this->hasMany(LaboratoriumUnpam::class, 'jenislab_id');
+    }
 }
