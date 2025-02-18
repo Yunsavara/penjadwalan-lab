@@ -46,6 +46,7 @@ Route::group(['middleware' => ['role:admin']], function() {
     // Jenis Lab
     Route::get('/admin/jenis-lab', [JenislabController::class, 'index'])->name('admin.jenis-lab');
     Route::get('/admin/jenis-lab/data', [JenislabController::class, 'getData'])->name('jenislab.getData');
+
     Route::get('/admin/tambah-jenis-lab', [JenislabController::class, 'create'])->name('admin.jenis-lab.create');
     Route::post('/admin/tambah-jenis-lab', [JenislabController::class, 'store']);
     Route::get('/admin/ubah-jenis-lab/{jenislab:slug}', [JenislabController::class, 'edit'])->name('admin.jenis-lab.edit');
@@ -53,6 +54,7 @@ Route::group(['middleware' => ['role:admin']], function() {
 
     // Laboratorium
     Route::get('/admin/laboratorium', [LaboratoriumUnpamController::class, 'index'])->name('admin.laboratorium');
+    Route::get('/admin/laboratorium/laboratorium-data', [LaboratoriumUnpamController::class, 'getData']);
 
     Route::get('/admin/tambah-laboratorium', [LaboratoriumUnpamController::class, 'create'])->name('admin.laboratorium.create');
     Route::post('/admin/tambah-laboratorium', [LaboratoriumUnpamController::class, 'store']);

@@ -52,4 +52,40 @@ class LaboratoriumUnpamController extends Controller
         }
     }
 
+    // Untuk Datatables
+    public function getData(Request $request)
+    {
+        // Query dengan join ke tabel jenislabs
+        $query = LaboratoriumUnpam::query()
+            ->select([
+                'laboratorium_unpams.id',
+                'laboratorium_unpams.name',
+                'laboratorium_unpams.slug',
+                'jenislabs.name as jenislab_name', // Ambil nama dari jenislabs
+                'laboratorium_unpams.lokasi',
+                'laboratorium_unpams.kapasitas',
+                'laboratorium_unpams.status'
+            ])
+            ->leftJoin('jenislabs', 'laboratorium_unpams.jenislab_id', '=', 'jenislabs.id');
+
+        // Filter berdasarkan pencarian
+        if ($search = $request->input('search.value')) {
+            $query->where('laboratorium_unpams.name', 'like', "%$search%")
+                ->orWhere('laboratorium_unpams.lokasi', 'like', "%$search%")
+                ->orWhere('jenislabs.name', 'like', "%$search%"); // Tambahkan filter nama jenislab
+        }
+
+        // Pagination
+        $data = $query->paginate($request->input('length'));
+        $recordsTotal = LaboratoriumUnpam::count();
+        $recordsFiltered = $query->count();
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data->items(),
+        ]);
+    }
+
 }
