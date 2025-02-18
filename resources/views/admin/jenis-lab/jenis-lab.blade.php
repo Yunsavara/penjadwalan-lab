@@ -34,7 +34,7 @@
         </div>
 
         <div class="col-12 table-responsive position-relative" style="padding-bottom: 19rem">
-            <table id="jenisLabTable" class="table table-striped display text-truncate rounded position-absolute top-0">
+            <table id="jenisLabTable" class="table table-striped display text-truncate position-absolute top-0">
                 <thead class="table-dark">
                     <th>No</th>
                     <th>Jenis Lab</th>

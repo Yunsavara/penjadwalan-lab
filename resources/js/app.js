@@ -8,6 +8,7 @@ import './script';
 import './form-barang';
 import './jenis-lab'
 import './form-laboratorium'
+import './laboratorium'
 
 // Datatables
 import 'datatables.net';
