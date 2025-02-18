@@ -37,7 +37,7 @@
             </li>
 
             @php
-                $laboratoriumRoutes = ['admin.jenis-lab*'];
+                $laboratoriumRoutes = ['admin.jenis-lab*','admin.laboratorium*'];
             @endphp
 
             <li class="sidebar-item @if (Str::is($laboratoriumRoutes, Route::currentRouteName())) active @endif">
@@ -50,8 +50,8 @@
                     <li class="sidebar-item @if (Str::is('admin.jenis-lab*', Route::currentRouteName())) active @endif">
                         <a href="{{ route('admin.jenis-lab') }}" class="sidebar-link">Jenis Lab</a>
                     </li>
-                    <li class="sidebar-item">
-                        <a href="" class="sidebar-link">Roles</a>
+                    <li class="sidebar-item @if (Str::is('admin.laboratorium*', Route::currentRouteName())) active @endif">
+                        <a href="{{ route('admin.laboratorium') }}" class="sidebar-link">Laboratorium</a>
                     </li>
                 </ul>
             </li>

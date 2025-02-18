@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('laboratorium_unpams', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('slug')->unique();
             $table->string('lokasi');
             $table->integer('kapasitas');
