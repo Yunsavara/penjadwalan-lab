@@ -40,6 +40,10 @@
                 <a href="{{ Route('admin.semester') }}" class="sidebar-link"><i data-feather="framer" class="sidebar-icon-link"></i>Semester</a>
             </li>
 
+            <li class="sidebar-item {{ Route::is('admin.matakuliah*') ? 'active' : '' }}">
+                <a href="{{ Route('admin.matakuliah') }}" class="sidebar-link"><i data-feather="book-open" class="sidebar-icon-link"></i>Mata Kuliah</a>
+            </li>
+
             @php
                 $laboratoriumRoutes = ['admin.jenis-lab*','admin.laboratorium*'];
             @endphp

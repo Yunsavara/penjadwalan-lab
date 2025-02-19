@@ -14,7 +14,11 @@ class RolesSeeder extends Seeder
     public function run(): void
     {
         roles::create([
-            'name' => 'user',
+            'name' => 'admin',
+        ]);
+
+        roles::create([
+            'name' => 'laboran',
         ]);
 
         roles::create([
@@ -22,11 +26,11 @@ class RolesSeeder extends Seeder
         ]);
 
         roles::create([
-            'name' => 'admin',
+            'name' => 'prodi',
         ]);
 
         roles::create([
-            'name' => 'laboran',
+            'name' => 'user',
         ]);
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Admin\JenislabController;
 use App\Http\Controllers\Admin\LaboratoriumUnpamController;
+use App\Http\Controllers\Admin\MataKuliahController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\SemesterController;
 use App\Http\Controllers\Admin\UsersController;
@@ -48,6 +49,15 @@ Route::group(['middleware' => ['role:admin']], function() {
     Route::post('/admin/tambah-semester', [SemesterController::class, 'store']);
     Route::get('/admin/ubah-semester/{semester:slug}', [SemesterController::class, 'edit'])->name('admin.semester.edit');
     Route::put('/admin/ubah-semester/{semester:slug}', [SemesterController::class, 'update']);
+
+    // Mata Kuliah
+    Route::get('/admin/mata-kuliah', [MataKuliahController::class, 'index'])->name('admin.matakuliah');
+    Route::get('/admin/mata-kuliah/mata-kuliah-data', [MataKuliahController::class, 'getData']);
+
+    Route::get('/admin/tambah-mata-kuliah', [MataKuliahController::class, 'create'])->name('admin.matakuliah.create');
+    Route::post('/admin/tambah-mata-kuliah', [MataKuliahController::class, 'store']);
+    Route::get('/admin/ubah-mata-kuliah/{MataKuliah:slug}', [MataKuliahController::class, 'edit'])->name('admin.matakuliah.edit');
+    Route::put('/admin/ubah-mata-kuliah/{MataKuliah:slug}', [MataKuliahController::class, 'update']);
 
     // Barang
     Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');
