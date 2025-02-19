@@ -18,7 +18,9 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('slug');
             $table->string('password');
-            $table->foreignId('role_id')->default(1)->constrained('roles');
+            $table->string('lokasi')->default('flesksible');
+            // Default Role level adalah User
+            $table->foreignId('role_id')->default(5)->constrained('roles');
             $table->rememberToken();
             $table->timestamps();
         });

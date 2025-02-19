@@ -21,6 +21,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@example.com',
             'slug' => Str::slug('Admin'),
             'password' => Hash::make('password'),
+            'lokasi' => 'fleksible',
             'role_id' => 1,
         ]);
 
@@ -30,6 +31,7 @@ class UserSeeder extends Seeder
             'email' => 'dosen1@example.com',
             'slug' => Str::slug('Dosen Prodi 1'),
             'password' => Hash::make('password'),
+            'lokasi' => 'fleksible',
             'role_id' => 4,
         ]);
 
@@ -38,6 +40,7 @@ class UserSeeder extends Seeder
             'email' => 'dosen2@example.com',
             'slug' => Str::slug('Dosen Prodi 2'),
             'password' => Hash::make('password'),
+            'lokasi' => 'fleksible',
             'role_id' => 4,
         ]);
 
@@ -46,6 +49,7 @@ class UserSeeder extends Seeder
             'email' => 'dose3@example.com',
             'slug' => Str::slug('Dosen Prodi 3'),
             'password' => Hash::make('password'),
+            'lokasi' => 'fleksible',
             'role_id' => 4,
         ]);
 
@@ -55,7 +59,17 @@ class UserSeeder extends Seeder
             'email' => 'mahasiswa@example.com',
             'slug' => Str::slug('Mahasiswa'),
             'password' => Hash::make('password'),
+            'lokasi' => 'fleksible',
             'role_id' => 5,
+        ]);
+
+        User::create([
+            'name' => 'Laboran',
+            'email' => 'laboran@example.com',
+            'slug' => Str::slug('Laboran'),
+            'password' => Hash::make('password'),
+            'lokasi' => 'fleksible',
+            'role_id' => 2,
         ]);
     }
 }
