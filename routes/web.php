@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\DashboardController;
+use App\Http\Controllers\Laboran\PenjadwalanController;
 
 Route::group(['middleware' => 'guest'], function() {
     // Home
@@ -84,6 +85,9 @@ Route::group(['middleware' => ['role:admin']], function() {
 
 Route::group(['middleware' => ['role:laboran']], function() {
     Route::get('/laboran/dashboard', [DashboardController::class,'laboran'])->name('laboran.dashboard');
+
+    // Penjadwalan
+    Route::get('/laboran/penjadwalan-prodi', [PenjadwalanController::class, 'index'])->name('laboran.penjadwalan');
 });
 
 Route::group(['middleware' => ['role:user']], function() {
