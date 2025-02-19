@@ -8,6 +8,7 @@ use Spatie\Sluggable\SlugOptions;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -43,6 +44,13 @@ class User extends Authenticatable
     {
         return $this->role && $this->role->name === $roleName;
     }
+
+    // Many To Many ke Matakuliah
+    public function mataKuliahs(): BelongsToMany
+    {
+        return $this->belongsToMany(MataKuliah::class, 'user_mata_kuliah');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
