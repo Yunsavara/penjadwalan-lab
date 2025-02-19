@@ -42,6 +42,12 @@ Route::group(['middleware' => ['role:admin']], function() {
 
     // Semester
     Route::get('/admin/semester', [SemesterController::class, 'index'])->name('admin.semester');
+    Route::get('/admin/semester/semester-data', [SemesterController::class, 'getData']);
+
+    Route::get('/admin/tambah-semester', [SemesterController::class, 'create'])->name('admin.semester.create');
+    Route::post('/admin/tambah-semester', [SemesterController::class, 'store']);
+    Route::get('/admin/ubah-semester/{semester:slug}', [SemesterController::class, 'edit'])->name('admin.semester.edit');
+    Route::put('/admin/ubah-semester/{semester:slug}', [SemesterController::class, 'update']);
 
     // Barang
     Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');

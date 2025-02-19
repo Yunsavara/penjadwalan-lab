@@ -9,6 +9,7 @@ import './form-barang';
 import './jenis-lab'
 import './form-laboratorium'
 import './laboratorium'
+import './semester'
 
 // Datatables
 import 'datatables.net';
