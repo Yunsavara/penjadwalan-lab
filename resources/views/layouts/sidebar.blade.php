@@ -36,6 +36,10 @@
                 </ul>
             </li>
 
+            <li class="sidebar-item {{ Route::is('admin.semester*') ? 'active' : '' }}">
+                <a href="{{ Route('admin.semester') }}" class="sidebar-link"><i data-feather="framer" class="sidebar-icon-link"></i>Semester</a>
+            </li>
+
             @php
                 $laboratoriumRoutes = ['admin.jenis-lab*','admin.laboratorium*'];
             @endphp
@@ -55,7 +59,6 @@
                     </li>
                 </ul>
             </li>
-
 
             <li class="sidebar-item {{ Route::is('admin.barang*') ? 'active' : '' }}">
                 <a href="{{ Route('admin.barang') }}" class="sidebar-link"><i data-feather="box" class="sidebar-icon-link"></i>Barang</a>

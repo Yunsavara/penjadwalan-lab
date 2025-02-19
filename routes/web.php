@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Admin\JenislabController;
 use App\Http\Controllers\Admin\LaboratoriumUnpamController;
 use App\Http\Controllers\Admin\RolesController;
+use App\Http\Controllers\Admin\SemesterController;
 use App\Http\Controllers\Admin\UsersController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
@@ -38,6 +39,9 @@ Route::group(['middleware' => ['role:admin']], function() {
 
     // Manajemen - Roles
     Route::get('/admin/roles', [RolesController::class, 'index'])->name('admin.roles');
+
+    // Semester
+    Route::get('/admin/semester', [SemesterController::class, 'index'])->name('admin.semester');
 
     // Barang
     Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');
