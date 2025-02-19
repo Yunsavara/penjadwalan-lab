@@ -25,9 +25,4 @@ class Semester extends Model
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
-
-    public function mataKuliahs(): HasMany
-    {
-        return $this->hasMany(MataKuliah::class);
-    }
 }
