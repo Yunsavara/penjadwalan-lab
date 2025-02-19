@@ -9,7 +9,7 @@ function initJenisLabDataTable(){
         let table = $('#jenisLabTable').DataTable({
             processing: true,
             serverSide: true,
-            pageLength: 50,
+            pageLength: 10,
             paging: true,
             fixedHeader:true,
             responsive: true,

@@ -17,8 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->date('tanggal_mulai');
             $table->date('tanggal_akhir');
-            $table->boolean('status')->default(false);
-            $table->timestamps();
+            $table->enum('status', ['aktif', 'tidak aktif', 'selesai'])->default('tidak aktif');            $table->timestamps();
         });
     }
 

@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
-    initLaboratoriumDataTable();
+    initSemesterDataTable();
 });
 
-function initLaboratoriumDataTable() {
+function initSemesterDataTable(){
     $(document).ready(function() {
         $.fn.DataTable.ext.pager.numbers_length = 3;
         // Inisialisasi DataTable
-        let table = $('#laboratoriumTable').DataTable({
+        let table = $('#semesterTable').DataTable({
             processing: true,
             serverSide: true,
             pageLength: 10,
@@ -14,7 +14,7 @@ function initLaboratoriumDataTable() {
             fixedHeader:true,
             responsive: true,
             ajax: {
-                url: '/admin/laboratorium/laboratorium-data',
+                url: '/admin/semester/semester-data',
                 type: 'GET',
                 data: function(d) {
                     // Parameter Lain kalau ada
@@ -29,17 +29,16 @@ function initLaboratoriumDataTable() {
                     }
                 },
                 { data: 'name', name: 'name', },
-                { data: 'jenislab_name', name: 'jenislab_name'},
-                { data: 'lokasi', lokasi: 'lokasi'},
-                { data: 'kapasitas', kapasitas: 'kapasitas'},
-                { data: 'status', status: 'status'},
+                { data: 'tanggal_mulai', name: 'tanggal_mulai'},
+                { data: 'tanggal_akhir', name: 'tanggal_akhir'},
+                { data: 'status', name: 'status'},
                 {
                     data: null,
                     name: 'action',
                     render: function(data, type, row) {
                         return `
-                            <a href="/admin/ubah-laboratorium/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="/admin/delete-laboratorium/${row.slug}" class="btn btn-danger btn-sm"
+                            <a href="/admin/ubah-semester/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="/admin/delete-semester/${row.slug}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</a>
                         `;
                     }
@@ -64,10 +63,10 @@ function moveTools(){
 
     if(search && sorting && info && paging){
         // Dipindah ke sini
-        document.getElementById("searchLaboratorium").appendChild(search);
-        document.getElementById("sortingLaboratorium").appendChild(sorting);
-        document.getElementById("infoLaboratorium").appendChild(info);
-        document.getElementById("pagingLaboratorium").appendChild(paging);
+        document.getElementById("searchSemester").appendChild(search);
+        document.getElementById("sortingSemester").appendChild(sorting);
+        document.getElementById("infoSemester").appendChild(info);
+        document.getElementById("pagingSemester").appendChild(paging);
     }else{
         console.log("Tools Error");
     }

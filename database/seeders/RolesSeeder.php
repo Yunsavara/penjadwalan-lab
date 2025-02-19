@@ -18,11 +18,7 @@ class RolesSeeder extends Seeder
         ]);
 
         roles::create([
-            'name' => 'lembaga bahasa',
-        ]);
-
-        roles::create([
-            'name' => 'lembaga lsp',
+            'name' => 'lembaga',
         ]);
 
         roles::create([
