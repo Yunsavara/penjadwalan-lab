@@ -26,10 +26,6 @@ class MataKuliah extends Model
     }
 
 
-    public function semester(): BelongsTo
-    {
-        return $this->belongsTo(Semester::class);
-    }
 
     // Many to Many ke User
     public function users(): BelongsToMany

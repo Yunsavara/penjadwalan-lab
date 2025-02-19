@@ -69,7 +69,7 @@ class MataKuliahController extends Controller
     {
         // Menyaring data berdasarkan pencarian
         $query = MataKuliah::with('users:id,name') // Load relasi users hanya dengan id dan name
-            ->select(['id', 'name', 'slug','semester_id']);
+            ->select(['id', 'name', 'slug']);
 
         if ($search = $request->input('search.value')) {
             $query->where('name', 'like', "%$search%");
