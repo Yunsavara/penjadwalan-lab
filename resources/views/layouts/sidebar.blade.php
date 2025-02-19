@@ -68,6 +68,26 @@
                 <a href="{{ Route('admin.barang') }}" class="sidebar-link"><i data-feather="box" class="sidebar-icon-link"></i>Barang</a>
             </li>
         @endif
+
+        @php
+            // List route buat ke dropdown menu manajemen
+            $penjadwalanRoutes = ['laboran.penjadwalan'];
+        @endphp
+
+        @if(auth()->user()->role->name == "admin" || auth()->user()->role->name == "laboran")
+            <li class="sidebar-item @if (in_array(Route::currentRouteName(), $penjadwalanRoutes)) active @endif">
+                <a href="" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#penjadwalanDropdown">
+                    <i data-feather="calendar" class="sidebar-icon-link"></i>Penjadwalan
+                    <i data-feather="chevron-right" class="dropdown-icon @if (in_array(Route::currentRouteName(), $penjadwalanRoutes)) active @endif"></i>
+                </a>
+
+                <ul class="collapse list-unstyled dropdown-menu-vanilla @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif" id="penjadwalanDropdown">
+                    <li class="sidebar-item @if (Route::currentRouteName() == 'laboran.penjadwalan') active @endif">
+                        <a href="{{ route('laboran.penjadwalan') }}" class="sidebar-link">Generate Jadwal Prodi</a>
+                    </li>
+                </ul>
+            </li>
+        @endif
     </ul>
 
 </div>

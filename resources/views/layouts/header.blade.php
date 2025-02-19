@@ -42,7 +42,10 @@
                         </a>
                     </li>
                     <li class="profile-item">
-                        <a class="profile-link" href="#">
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                        <a class="profile-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i data-feather="log-out" class="profile-icon"></i>
                             Keluar
                         </a>
