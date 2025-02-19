@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\JenisLab\JenisLabStoreRequest;
+use App\Http\Requests\Admin\JenisLab\JenisLabUpdateRequest;
 
 class JenislabController extends Controller
 {
@@ -21,7 +22,7 @@ class JenislabController extends Controller
     public function getData(Request $request)
     {
         // Menyaring data berdasarkan pencarian jika ada
-        $query = Jenislab::query();
+        $query = Jenislab::query()->select(['id','name','slug','description']);
 
         if ($search = $request->input('search.value')) {
             $query->where('name', 'like', "%$search%")
@@ -45,7 +46,7 @@ class JenislabController extends Controller
 
     public function create(){
         return view("admin.jenis-lab.form-jenis-lab", [
-            'jenisLab' => new Jenislab(),
+            'Jenislab' => new Jenislab(),
             'page_meta' => [
                 'page' => "Tambah Jenis Lab",
                 'method' => 'POST',
@@ -60,7 +61,8 @@ class JenislabController extends Controller
 
         DB::beginTransaction();
         try {
-            $jenisLab = Jenislab::create($Request->all());
+
+            Jenislab::create($Request->all());
 
             DB::commit();
 
@@ -71,5 +73,31 @@ class JenislabController extends Controller
         }
     }
 
+    public function edit(Jenislab $Jenislab){
+        return view("admin.jenis-lab.form-jenis-lab", [
+            'Jenislab' => $Jenislab,
+            'page_meta' => [
+                'page' => "Ubah Jenis Lab",
+                'method' => 'PUT',
+                'url' => route('admin.jenis-lab.edit', $Jenislab),
+                'button_text' => 'Ubah Jenis Lab'
+            ]
+        ]);
+    }
 
+    public function update(JenisLabUpdateRequest $Request, Jenislab $Jenislab){
+        // dd($Request->all());
+
+        DB::beginTransaction();
+        try {
+            $Jenislab->update($Request->all());
+
+            DB::commit();
+
+            return redirect()->route('admin.jenis-lab')->with('success', 'Jenis Lab Berhasil di-ubah');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('admin.jenis-lab.edit')->with('error', 'Jenis Lab Gagal di-ubah');
+        }
+    }
 }

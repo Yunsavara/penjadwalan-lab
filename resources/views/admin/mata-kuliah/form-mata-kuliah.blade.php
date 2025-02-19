@@ -20,8 +20,8 @@
             @csrf
 
             <div class="col-12 mb-3">
-                <label for="namaJenisLab">Nama Jenis Lab</label>
-                <input type="text" name="name" id="namaJenisLab" class="form-control @error('name') is-invalid @enderror" autocomplete="off" value="{{ old('name', $Jenislab->name) }}">
+                <label for="namaMataKuliah">Nama Matakuliah</label>
+                <input type="text" name="name" id="namaMataKuliah" class="form-control @error('name') is-invalid @enderror" autocomplete="off" value="{{ old('name', $MataKuliah->name) }}">
                 @error('name')
                     <div class="invalid-feedback d-block">
                         {{ $message }}
@@ -30,20 +30,26 @@
             </div>
 
             <div class="col-12 mb-3">
-                <label for="descriptionJenisLab">Deskripsi</label>
-                <textarea name="description" id="descriptionJenisLab" class="form-control @error('description') is-invalid @enderror" autocomplete="off" style="min-height:100px; max-height:100px;">{{ old('description', $Jenislab->description) }}</textarea>
-                @error('description')
-                    <div class="invalid-feedback d-block">
-                        {{ $message }}
-                    </div>
+                <label for="namaDosen">Nama Dosen</label>
+                <select name="dosen[]" id="namaDosen" class="form-select @error('dosen') is-invalid @enderror" multiple>
+                    @foreach($Dosen as $user)
+                        <option value="{{ $user->id }}"
+                            {{ in_array($user->id, old('dosen', $MataKuliah->users->pluck('id')->toArray())) ? 'selected' : '' }}>
+                            {{ $user->name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('dosen')
+                    <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
+
 
             <div class="col-12 d-flex justify-content-end">
                 <button type="reset" class="btn btn-danger me-2">Reset</button>
                 <button type="submit" class="btn btn-primary">{{ $page_meta['button_text'] }}</button>
             </div>
-
         </form>
     </div>
+
 @endsection

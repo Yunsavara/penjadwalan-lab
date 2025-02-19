@@ -5,15 +5,18 @@ namespace App\Models;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Jenislab extends Model
+class Semester extends Model
 {
     use HasSlug;
 
     protected $fillable = [
         'name',
         'slug',
-        'description'
+        'tanggal_mulai',
+        'tanggal_akhir',
+        'status'
     ];
 
     public function getSlugOptions(): SlugOptions
@@ -23,8 +26,8 @@ class Jenislab extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function LaboratoriumUnpams()
+    public function mataKuliahs(): HasMany
     {
-        return $this->hasMany(LaboratoriumUnpam::class, 'jenislab_id');
+        return $this->hasMany(MataKuliah::class);
     }
 }

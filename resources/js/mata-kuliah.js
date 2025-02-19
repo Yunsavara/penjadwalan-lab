@@ -1,42 +1,40 @@
 document.addEventListener("DOMContentLoaded", function () {
-    initJenisLabDataTable();
+    initMataKuliahDataTable();
 });
 
-function initJenisLabDataTable(){
+function initMataKuliahDataTable(){
     $(document).ready(function() {
         $.fn.DataTable.ext.pager.numbers_length = 3;
-        // Inisialisasi DataTable
-        let table = $('#jenisLabTable').DataTable({
+
+        let table = $('#mataKuliahTable').DataTable({
             processing: true,
             serverSide: true,
             pageLength: 10,
             paging: true,
-            fixedHeader:true,
+            fixedHeader: true,
             responsive: true,
             ajax: {
-                url: '/admin/jenis-lab/data',
+                url: '/admin/mata-kuliah/mata-kuliah-data',
                 type: 'GET',
-                data: function(d) {
-                    // Parameter Lain kalau ada
-                }
             },
             columns: [
                 {
                     data: null,
                     name: 'index',
                     render: function(data, type, row, meta) {
-                        return meta.row + 1; // Indexing Table
+                        return meta.row + 1;
                     }
                 },
-                { data: 'name', name: 'name', },
-                { data: 'description', name: 'description'},
+                { data: 'name', name: 'name' },
+                { data: 'dosen', name: 'dosen' },
+                // { data: 'semester_id', name: 'semester_id' },
                 {
                     data: null,
                     name: 'action',
                     render: function(data, type, row) {
                         return `
-                            <a href="/admin/ubah-jenis-lab/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="/admin/delete-jenis-lab/${row.slug}" class="btn btn-danger btn-sm"
+                            <a href="/admin/ubah-mata-kuliah/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="/admin/delete-mata-kuliah/${row.slug}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</a>
                         `;
                     }
@@ -48,6 +46,7 @@ function initJenisLabDataTable(){
         });
     });
 }
+
 
 function moveTools(){
     // Mengambil Tools Datatables buat dipindahin nanti
@@ -61,10 +60,10 @@ function moveTools(){
 
     if(search && sorting && info && paging){
         // Dipindah ke sini
-        document.getElementById("searchJenisLab").appendChild(search);
-        document.getElementById("sortingJenisLab").appendChild(sorting);
-        document.getElementById("infoJenisLab").appendChild(info);
-        document.getElementById("pagingJenisLab").appendChild(paging);
+        document.getElementById("searchMataKuliah").appendChild(search);
+        document.getElementById("sortingMataKuliah").appendChild(sorting);
+        document.getElementById("infoMataKuliah").appendChild(info);
+        document.getElementById("pagingMataKuliah").appendChild(paging);
     }else{
         console.log("Tools Error");
     }

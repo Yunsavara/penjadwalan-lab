@@ -36,8 +36,16 @@
                 </ul>
             </li>
 
+            <li class="sidebar-item {{ Route::is('admin.semester*') ? 'active' : '' }}">
+                <a href="{{ Route('admin.semester') }}" class="sidebar-link"><i data-feather="framer" class="sidebar-icon-link"></i>Semester</a>
+            </li>
+
+            <li class="sidebar-item {{ Route::is('admin.matakuliah*') ? 'active' : '' }}">
+                <a href="{{ Route('admin.matakuliah') }}" class="sidebar-link"><i data-feather="book-open" class="sidebar-icon-link"></i>Mata Kuliah</a>
+            </li>
+
             @php
-                $laboratoriumRoutes = ['admin.jenis-lab*'];
+                $laboratoriumRoutes = ['admin.jenis-lab*','admin.laboratorium*'];
             @endphp
 
             <li class="sidebar-item @if (Str::is($laboratoriumRoutes, Route::currentRouteName())) active @endif">
@@ -50,12 +58,11 @@
                     <li class="sidebar-item @if (Str::is('admin.jenis-lab*', Route::currentRouteName())) active @endif">
                         <a href="{{ route('admin.jenis-lab') }}" class="sidebar-link">Jenis Lab</a>
                     </li>
-                    <li class="sidebar-item">
-                        <a href="" class="sidebar-link">Roles</a>
+                    <li class="sidebar-item @if (Str::is('admin.laboratorium*', Route::currentRouteName())) active @endif">
+                        <a href="{{ route('admin.laboratorium') }}" class="sidebar-link">Laboratorium</a>
                     </li>
                 </ul>
             </li>
-
 
             <li class="sidebar-item {{ Route::is('admin.barang*') ? 'active' : '' }}">
                 <a href="{{ Route('admin.barang') }}" class="sidebar-link"><i data-feather="box" class="sidebar-icon-link"></i>Barang</a>
