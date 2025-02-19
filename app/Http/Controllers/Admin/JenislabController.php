@@ -97,7 +97,7 @@ class JenislabController extends Controller
             return redirect()->route('admin.jenis-lab')->with('success', 'Jenis Lab Berhasil di-ubah');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('admin.jenis-lab.create')->with('error', 'Jenis Lab Gagal di-ubah');
+            return redirect()->route('admin.jenis-lab.edit')->with('error', 'Jenis Lab Gagal di-ubah');
         }
     }
 }

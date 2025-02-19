@@ -58,6 +58,8 @@ Route::group(['middleware' => ['role:admin']], function() {
 
     Route::get('/admin/tambah-laboratorium', [LaboratoriumUnpamController::class, 'create'])->name('admin.laboratorium.create');
     Route::post('/admin/tambah-laboratorium', [LaboratoriumUnpamController::class, 'store']);
+    Route::get('/admin/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'edit'])->name('admin.laboratorium.edit');
+    Route::put('/admin/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'update']);
 });
 
 Route::group(['middleware' => ['role:laboran']], function() {

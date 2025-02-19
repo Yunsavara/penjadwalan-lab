@@ -5,7 +5,7 @@ namespace App\Http\Requests\Admin\LaboratoriumUnpam;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LaboratoriumUnpamStoreRequest extends FormRequest
+class LaboratoriumUnpamUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,7 +29,7 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
                 'max:15',
                 Rule::unique('laboratorium_unpams')->where(function ($query) {
                     return $query->where('lokasi', request()->lokasi);
-                })
+                })->ignore($this->laboratorium)
             ],
             'jenislab_id' => 'required|string|exists:jenislabs,id',
             'lokasi' => 'required|string|in:pusat,viktor,serang',
@@ -63,16 +63,3 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
         ];
     }
 }
-
-// Soft Delete
-// 'name' => [
-//     'required',
-//     'string',
-//     'max:15',
-//     Rule::unique('laboratoria')
-//         ->where(function ($query) {
-//             return $query->where('lokasi', request()->lokasi)
-//                          ->whereNull('deleted_at'); // Abaikan data yang soft deleted
-//         })
-//         ->ignore($this->laboratorium)
-// ],

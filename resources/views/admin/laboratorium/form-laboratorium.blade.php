@@ -34,7 +34,8 @@
                 <select name="jenislab_id" id="jenisLab" class="form-select @error('jenislab_id') is-invalid @enderror">
                     <option value="" selected></option>
                     @foreach ($Jenislab as $lab)
-                        <option value="{{ $lab->id }}" {{ old('jenislab_id') == $lab->id ? 'selected' : '' }}>
+                        <option value="{{ $lab->id }}"
+                            {{ old('jenislab_id', $Laboratorium->jenislab_id) == $lab->id ? 'selected' : '' }}>
                             {{ $lab->name }}
                         </option>
                     @endforeach
