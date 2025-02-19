@@ -27,7 +27,6 @@ function initMataKuliahDataTable(){
                 },
                 { data: 'name', name: 'name' },
                 { data: 'dosen', name: 'dosen' },
-                // { data: 'semester_id', name: 'semester_id' },
                 {
                     data: null,
                     name: 'action',

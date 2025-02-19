@@ -15,12 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug');
-            $table->unsignedBigInteger('semester_id')->nullable();
             $table->timestamps();
-
-            $table->foreign('semester_id')
-              ->references('id')
-              ->on('semesters');
         });
     }
 
