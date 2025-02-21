@@ -88,6 +88,8 @@ Route::group(['middleware' => ['role:laboran']], function() {
 
     // Penjadwalan
     Route::get('/laboran/penjadwalan-prodi', [PenjadwalanController::class, 'index'])->name('laboran.penjadwalan');
+
+    Route::get('/laboran/tambah-penjadwalan-prodi', [PenjadwalanController::class, 'index'])->name('laboran.penjadwalan.create');
 });
 
 Route::group(['middleware' => ['role:user']], function() {
