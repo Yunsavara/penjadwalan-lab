@@ -14,7 +14,7 @@ function initJenisLabDataTable(){
             fixedHeader:true,
             responsive: true,
             ajax: {
-                url: '/admin/jenis-lab/data',
+                url: '/laboran/jenis-lab/data',
                 type: 'GET',
                 data: function(d) {
                     // Parameter Lain kalau ada
@@ -35,8 +35,8 @@ function initJenisLabDataTable(){
                     name: 'action',
                     render: function(data, type, row) {
                         return `
-                            <a href="/admin/ubah-jenis-lab/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="/admin/delete-jenis-lab/${row.slug}" class="btn btn-danger btn-sm"
+                            <a href="/laboran/ubah-jenis-lab/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="/laboran/delete-jenis-lab/${row.slug}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</a>
                         `;
                     }

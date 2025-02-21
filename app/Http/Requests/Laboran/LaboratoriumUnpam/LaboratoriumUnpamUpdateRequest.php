@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin\LaboratoriumUnpam;
+namespace App\Http\Requests\Laboran\LaboratoriumUnpam;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;

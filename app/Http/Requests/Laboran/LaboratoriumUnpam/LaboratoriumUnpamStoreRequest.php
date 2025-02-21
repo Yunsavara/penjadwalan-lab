@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin\LaboratoriumUnpam;
+namespace App\Http\Requests\Laboran\LaboratoriumUnpam;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -63,16 +63,3 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
         ];
     }
 }
-
-// Soft Delete
-// 'name' => [
-//     'required',
-//     'string',
-//     'max:15',
-//     Rule::unique('laboratoria')
-//         ->where(function ($query) {
-//             return $query->where('lokasi', request()->lokasi)
-//                          ->whereNull('deleted_at'); // Abaikan data yang soft deleted
-//         })
-//         ->ignore($this->laboratorium)
-// ],

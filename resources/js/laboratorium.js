@@ -14,7 +14,7 @@ function initLaboratoriumDataTable() {
             fixedHeader:true,
             responsive: true,
             ajax: {
-                url: '/admin/laboratorium/laboratorium-data',
+                url: '/laboran/laboratorium/laboratorium-data',
                 type: 'GET',
                 data: function(d) {
                     // Parameter Lain kalau ada
@@ -38,8 +38,8 @@ function initLaboratoriumDataTable() {
                     name: 'action',
                     render: function(data, type, row) {
                         return `
-                            <a href="/admin/ubah-laboratorium/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="/admin/delete-laboratorium/${row.slug}" class="btn btn-danger btn-sm"
+                            <a href="/laboran/ubah-laboratorium/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="/laboran/delete-laboratorium/${row.slug}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</a>
                         `;
                     }

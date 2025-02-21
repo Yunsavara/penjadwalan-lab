@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Laboran;
 
 use App\Models\User;
 use App\Models\MataKuliah;
@@ -8,13 +8,13 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\MataKuliah\MataKuliahStoreRequest;
-use App\Http\Requests\Admin\MataKuliah\MataKuliahUpdateRequest;
+use App\Http\Requests\Laboran\MataKuliah\MataKuliahStoreRequest;
+use App\Http\Requests\Laboran\MataKuliah\MataKuliahUpdateRequest;
 
 class MataKuliahController extends Controller
 {
     public function index(){
-        return view('admin.mata-kuliah.mata-kuliah', [
+        return view('laboran.mata-kuliah.mata-kuliah', [
             'page_meta' => [
                 'page' => 'Mata Kuliah'
             ]
@@ -29,13 +29,13 @@ class MataKuliahController extends Controller
                 })->get();
 
 
-        return view("admin.mata-kuliah.form-mata-kuliah", [
+        return view("laboran.mata-kuliah.form-mata-kuliah", [
             'Dosen' => $Dosen,
             'MataKuliah' => new MataKuliah(),
             'page_meta' => [
                 'page' => "Tambah Mata Kuliah",
                 'method' => 'POST',
-                'url' => route('admin.matakuliah.create'),
+                'url' => route('laboran.matakuliah.create'),
                 'button_text' => 'Tambah Mata Kuliah'
             ]
         ]);
@@ -57,10 +57,10 @@ class MataKuliahController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.matakuliah')->with('success', 'Mata Kuliah Berhasil ditambahkan');
+            return redirect()->route('laboran.matakuliah')->with('success', 'Mata Kuliah Berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('admin.matakuliah.create')->with('error', 'Mata Kuliah Gagal ditambahkan');
+            return redirect()->route('laboran.matakuliah.create')->with('error', 'Mata Kuliah Gagal ditambahkan');
         }
 
     }
@@ -105,19 +105,19 @@ class MataKuliahController extends Controller
             $query->where('name', 'prodi');
         })->get();
 
-        return view("admin.mata-kuliah.form-mata-kuliah", [
+        return view("laboran.mata-kuliah.form-mata-kuliah", [
             'Dosen' => $Dosen,
             'MataKuliah' => $MataKuliah,
             'page_meta' => [
                 'page' => "Ubah Mata Kuliah",
                 'method' => 'PUT',
-                'url' => route('admin.matakuliah.edit', $MataKuliah),
+                'url' => route('laboran.matakuliah.edit', $MataKuliah),
                 'button_text' => 'Ubah Mata Kuliah'
             ]
         ]);
     }
 
-    public function update(MataKuliahStoreRequest $request, MataKuliah $MataKuliah)
+    public function update(MataKuliahUpdateRequest $request, MataKuliah $MataKuliah)
     {
         DB::beginTransaction();
 
@@ -132,11 +132,10 @@ class MataKuliahController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.matakuliah')->with('success', 'Mata Kuliah Berhasil diperbarui');
+            return redirect()->route('laboran.matakuliah')->with('success', 'Mata Kuliah Berhasil diperbarui');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('admin.matakuliah.edit')->with('error', 'Mata Kuliah Gagal diperbarui');
+            return redirect()->route('laboran.matakuliah.edit')->with('error', 'Mata Kuliah Gagal diperbarui');
         }
     }
-
 }

@@ -22,7 +22,7 @@
     <div class="container-fluid py-3 px-2 d-flex flex-wrap justify-content-between bg-white shadow-sm rounded border">
 
         <div class="col-12 py-2 d-flex flex-wrap align-items-center justify-content-between">
-            <a href="{{ route('admin.semester.create') }}" class="col-12 col-md-auto"><button class="btn btn-primary col-12">Tambah Generate</button></a>
+            <a href="{{ route('laboran.penjadwalan-prodi.create') }}" class="col-12 col-md-auto"><button class="btn btn-primary col-12">Tambah Generate</button></a>
         </div>
 
         <div class="col-12 py-2 d-flex flex-wrap align-items-center justify-content-between">

@@ -23,6 +23,14 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function prodi(){
+        return view("prodi.index", [
+            'page_meta' => [
+                'page' => 'Dashboard'
+            ]
+        ]);
+    }
+
     public function user(){
         return view("user.index", [
             'page_meta' => [

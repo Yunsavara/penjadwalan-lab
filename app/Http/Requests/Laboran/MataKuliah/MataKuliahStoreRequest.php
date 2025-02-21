@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Admin\MataKuliah;
+namespace App\Http\Requests\Laboran\MataKuliah;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MataKuliahUpdateRequest extends FormRequest
+class MataKuliahStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
