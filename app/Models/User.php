@@ -40,15 +40,14 @@ class User extends Authenticatable
         return $this->belongsTo(roles::class, 'role_id');
     }
 
+
     public function hasRole($roleName)
     {
         return $this->role && $this->role->name === $roleName;
     }
 
-    // Many To Many ke Matakuliah
-    public function mataKuliahs(): BelongsToMany
-    {
-        return $this->belongsToMany(MataKuliah::class, 'user_mata_kuliah');
+    public function jadwals(){
+        return $this->hasMany(User::class, 'user_id');
     }
 
     /**

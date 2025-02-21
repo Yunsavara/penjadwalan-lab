@@ -11,6 +11,7 @@ import './form-laboratorium'
 import './laboratorium'
 import './form-mata-kuliah'
 import './mata-kuliah'
+import './form-booking'
 
 // Datatables
 import 'datatables.net';
@@ -21,3 +22,7 @@ import "datatables.net-select-dt";
 import $ from 'jquery';
 window.$ = window.jQuery = $;
 import "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js";
+
+// Flatpickr
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
