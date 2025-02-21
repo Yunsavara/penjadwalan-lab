@@ -7,9 +7,8 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\DashboardController;
-use App\Http\Controllers\Laboran\BookingController;
+use App\Http\Controllers\AllRole\BookingController;
 use App\Http\Controllers\Laboran\JenisLabController;
-use App\Http\Controllers\Laboran\MataKuliahController;
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
 
 Route::group(['middleware' => 'guest'], function() {
@@ -29,6 +28,11 @@ Route::group(['middleware' => 'guest'], function() {
 
 Route::group(['middleware'=> 'auth'], function() {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // Booking atau pengajuan jadwal
+    Route::get('/pengajuan-jadwal', [BookingController::class, 'index'])->name('pengajuan');
+    Route::get('/tambah-pengajuan', [BookingController::class, 'create'])->name('pengajuan.create');
+
 });
 
 Route::group(['middleware' => ['role:admin']], function() {
@@ -66,10 +70,6 @@ Route::group(['middleware' => ['role:laboran']], function() {
     Route::post('/laboran/tambah-laboratorium', [LaboratoriumUnpamController::class, 'store']);
     Route::get('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'edit'])->name('laboran.laboratorium.edit');
     Route::put('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'update']);
-
-    // Booking
-    Route::get('/laboran/booking', [BookingController::class, 'index'])->name('laboran.booking');
-    Route::get('/laboran/buat-booking', [BookingController::class, 'create'])->name('laboran.booking.create');
 });
 
 Route::group(['middleware' => ['role:prodi']], function() {

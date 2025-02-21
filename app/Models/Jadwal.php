@@ -8,7 +8,7 @@ class Jadwal extends Model
 {
     protected $fillable = [
         'name',
-        'kode_booking',
+        'kode_pengajuan',
         'keperluan',
         'tanggal_mulai',
         'tanggal_selesai',
@@ -22,9 +22,15 @@ class Jadwal extends Model
         return $this->belongsTo(LaboratoriumUnpam::class, 'lab_id');
     }
 
-    public function users()
+    public function user()
     {
         return $this->belongsTo(LaboratoriumUnpam::class, 'user_id');
     }
+
+    public function pengajuan()
+    {
+        return $this->belongsTo(Pengajuan::class, 'kode_pengajuan', 'kode_pengajuan');
+    }
+
 
 }

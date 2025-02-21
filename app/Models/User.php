@@ -8,7 +8,6 @@ use Spatie\Sluggable\SlugOptions;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -46,7 +45,7 @@ class User extends Authenticatable
         return $this->role && $this->role->name === $roleName;
     }
 
-    public function jadwals(){
+    public function jadwal(){
         return $this->hasMany(User::class, 'user_id');
     }
 

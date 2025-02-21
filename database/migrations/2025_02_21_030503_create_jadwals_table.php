@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('jadwals', function (Blueprint $table) {
             $table->id();
+            $table->string('kode_pengajuan');
+            $table->foreign('kode_pengajuan')->references('kode_pengajuan')->on('pengajuans');
+
             $table->string('keperluan');
             $table->date('tanggal');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
-            $table->enum('status', ['Pending','Ditolak','Dibatalkan','Dipakai']);
+            $table->enum('status', ['belum dipakai','dipakai','dibatalkan']);
 
             $table->unsignedBigInteger('lab_id');
             $table->foreign('lab_id')

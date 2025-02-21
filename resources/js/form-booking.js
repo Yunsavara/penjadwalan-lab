@@ -1,18 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    flatpickr("#tanggalBooking", {
-        mode: "multiple",
-        dateFormat: "Y-m-d",
-        locale: "id",
-        onChange: function (selectedDates, dateStr, instance) {
-            daftarTanggal = selectedDates.map(date => {
-                let formattedDate = formatTanggal(date);
-                let dateValue = date.toISOString().split("T")[0];
-                return { formattedDate, dateValue };
-            });
-            jamData = {}; // Reset data jam
-            showPage(1);
-        }
-    });
+
 
     const jamContainer = document.getElementById("jamContainer");
     const paginationContainer = document.getElementById("paginationControls");

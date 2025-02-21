@@ -11,7 +11,7 @@ import './form-laboratorium'
 import './laboratorium'
 import './form-mata-kuliah'
 import './mata-kuliah'
-import './form-booking'
+import './form-pengajuan'
 
 // Datatables
 import 'datatables.net';

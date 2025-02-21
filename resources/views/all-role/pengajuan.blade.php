@@ -16,7 +16,10 @@
     @endif
 
     <div class="col-12 py-2 d-flex flex-wrap justify-content-end">
-        <a href="{{ route('laboran.booking.create') }}"><button class="btn btn-primary col-12 col-md-auto">Buat Jadwal</button></a>
+        <button class="btn btn-primary col-12 col-md-auto" id="btnPengajuan">Buat Pengajuan</button>
     </div>
 
+    <div id="formPengajuanContainer">
+        @include('all-role.form-pengajuan')
+    </div>
 @endsection
