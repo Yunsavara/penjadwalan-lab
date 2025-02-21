@@ -1,17 +1,15 @@
 <?php
 
-use App\Http\Controllers\Admin\BarangController;
-use App\Http\Controllers\Admin\JenislabController;
-use App\Http\Controllers\Admin\LaboratoriumUnpamController;
-use App\Http\Controllers\Admin\MataKuliahController;
-use App\Http\Controllers\Admin\RolesController;
-use App\Http\Controllers\Admin\SemesterController;
-use App\Http\Controllers\Admin\UsersController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\RolesController;
+use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\DashboardController;
-use App\Http\Controllers\Laboran\PenjadwalanController;
+use App\Http\Controllers\Laboran\JenisLabController;
+use App\Http\Controllers\Laboran\MataKuliahController;
+use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
 
 Route::group(['middleware' => 'guest'], function() {
     // Home
@@ -42,54 +40,44 @@ Route::group(['middleware' => ['role:admin']], function() {
     // Manajemen - Roles
     Route::get('/admin/roles', [RolesController::class, 'index'])->name('admin.roles');
 
-    // Semester
-    Route::get('/admin/semester', [SemesterController::class, 'index'])->name('admin.semester');
-    Route::get('/admin/semester/semester-data', [SemesterController::class, 'getData']);
-
-    Route::get('/admin/tambah-semester', [SemesterController::class, 'create'])->name('admin.semester.create');
-    Route::post('/admin/tambah-semester', [SemesterController::class, 'store']);
-    Route::get('/admin/ubah-semester/{semester:slug}', [SemesterController::class, 'edit'])->name('admin.semester.edit');
-    Route::put('/admin/ubah-semester/{semester:slug}', [SemesterController::class, 'update']);
-
-    // Mata Kuliah
-    Route::get('/admin/mata-kuliah', [MataKuliahController::class, 'index'])->name('admin.matakuliah');
-    Route::get('/admin/mata-kuliah/mata-kuliah-data', [MataKuliahController::class, 'getData']);
-
-    Route::get('/admin/tambah-mata-kuliah', [MataKuliahController::class, 'create'])->name('admin.matakuliah.create');
-    Route::post('/admin/tambah-mata-kuliah', [MataKuliahController::class, 'store']);
-    Route::get('/admin/ubah-mata-kuliah/{MataKuliah:slug}', [MataKuliahController::class, 'edit'])->name('admin.matakuliah.edit');
-    Route::put('/admin/ubah-mata-kuliah/{MataKuliah:slug}', [MataKuliahController::class, 'update']);
-
     // Barang
     Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');
     Route::get('/admin/tambah-barang', [BarangController::class, 'create'])->name('admin.barang.create');
-
-    // Jenis Lab
-    Route::get('/admin/jenis-lab', [JenislabController::class, 'index'])->name('admin.jenis-lab');
-    Route::get('/admin/jenis-lab/data', [JenislabController::class, 'getData'])->name('jenislab.getData');
-
-    Route::get('/admin/tambah-jenis-lab', [JenislabController::class, 'create'])->name('admin.jenis-lab.create');
-    Route::post('/admin/tambah-jenis-lab', [JenislabController::class, 'store']);
-    Route::get('/admin/ubah-jenis-lab/{jenislab:slug}', [JenislabController::class, 'edit'])->name('admin.jenis-lab.edit');
-    Route::put('/admin/ubah-jenis-lab/{jenislab:slug}', [JenislabController::class, 'update']);
-
-    // Laboratorium
-    Route::get('/admin/laboratorium', [LaboratoriumUnpamController::class, 'index'])->name('admin.laboratorium');
-    Route::get('/admin/laboratorium/laboratorium-data', [LaboratoriumUnpamController::class, 'getData']);
-
-    Route::get('/admin/tambah-laboratorium', [LaboratoriumUnpamController::class, 'create'])->name('admin.laboratorium.create');
-    Route::post('/admin/tambah-laboratorium', [LaboratoriumUnpamController::class, 'store']);
-    Route::get('/admin/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'edit'])->name('admin.laboratorium.edit');
-    Route::put('/admin/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'update']);
 });
 
 Route::group(['middleware' => ['role:laboran']], function() {
     Route::get('/laboran/dashboard', [DashboardController::class,'laboran'])->name('laboran.dashboard');
 
-    // Penjadwalan
-    Route::get('/laboran/penjadwalan-prodi', [PenjadwalanController::class, 'index'])->name('laboran.penjadwalan');
+    // Jenis Lab
+    Route::get('/laboran/jenis-lab', [JenisLabController::class, 'index'])->name('laboran.jenis-lab');
+    Route::get('/laboran/jenis-lab/data', [JenisLabController::class, 'getData'])->name('jenislab.getData');
 
-    Route::get('/laboran/tambah-penjadwalan-prodi', [PenjadwalanController::class, 'index'])->name('laboran.penjadwalan.create');
+    Route::get('/laboran/tambah-jenis-lab', [JenisLabController::class, 'create'])->name('laboran.jenis-lab.create');
+    Route::post('/laboran/tambah-jenis-lab', [JenisLabController::class, 'store']);
+    Route::get('/laboran/ubah-jenis-lab/{jenislab:slug}', [JenisLabController::class, 'edit'])->name('laboran.jenis-lab.edit');
+    Route::put('/laboran/ubah-jenis-lab/{jenislab:slug}', [JenisLabController::class, 'update']);
+
+    // Laboratorium
+    Route::get('/laboran/laboratorium', [LaboratoriumUnpamController::class, 'index'])->name('laboran.laboratorium');
+    Route::get('/laboran/laboratorium/laboratorium-data', [LaboratoriumUnpamController::class, 'getData']);
+
+    Route::get('/laboran/tambah-laboratorium', [LaboratoriumUnpamController::class, 'create'])->name('laboran.laboratorium.create');
+    Route::post('/laboran/tambah-laboratorium', [LaboratoriumUnpamController::class, 'store']);
+    Route::get('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'edit'])->name('laboran.laboratorium.edit');
+    Route::put('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'update']);
+
+    // Mata Kuliah
+    Route::get('/laboran/mata-kuliah', [MataKuliahController::class, 'index'])->name('laboran.matakuliah');
+    Route::get('/laboran/mata-kuliah/mata-kuliah-data', [MataKuliahController::class, 'getData']);
+
+    Route::get('/laboran/tambah-mata-kuliah', [MataKuliahController::class, 'create'])->name('laboran.matakuliah.create');
+    Route::post('/laboran/tambah-mata-kuliah', [MataKuliahController::class, 'store']);
+    Route::get('/laboran/ubah-mata-kuliah/{MataKuliah:slug}', [MataKuliahController::class, 'edit'])->name('laboran.matakuliah.edit');
+    Route::put('/laboran/ubah-mata-kuliah/{MataKuliah:slug}', [MataKuliahController::class, 'update']);
+});
+
+Route::group(['middleware' => ['role:prodi']], function() {
+    Route::get('/prodi/dashboard', [DashboardController::class,'prodi'])->name('prodi.dashboard');
 });
 
 Route::group(['middleware' => ['role:user']], function() {

@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Laboran;
 
 use App\Models\Jenislab;
 use Illuminate\Http\Request;
 use App\Models\LaboratoriumUnpam;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\LaboratoriumUnpam\LaboratoriumUnpamStoreRequest;
-use App\Http\Requests\Admin\LaboratoriumUnpam\LaboratoriumUnpamUpdateRequest;
+use App\Http\Requests\Laboran\LaboratoriumUnpam\LaboratoriumUnpamStoreRequest;
+use App\Http\Requests\Laboran\LaboratoriumUnpam\LaboratoriumUnpamUpdateRequest;
 
 class LaboratoriumUnpamController extends Controller
 {
     public function index(){
-        return view("admin.laboratorium.laboratorium", [
+        return view("laboran.laboratorium.laboratorium", [
             'page_meta' => [
                 'page' => 'Laboratorium'
             ]
@@ -24,13 +24,13 @@ class LaboratoriumUnpamController extends Controller
 
         $Jenislab = Jenislab::select(['id', 'name'])->get();
 
-        return view("admin.laboratorium.form-laboratorium", [
+        return view("laboran.laboratorium.form-laboratorium", [
             'Laboratorium' => new LaboratoriumUnpam(),
             'Jenislab' => $Jenislab,
             'page_meta' => [
                 'page' => "Tambah Laboratorium",
                 'method' => 'POST',
-                'url' => route('admin.laboratorium.create'),
+                'url' => route('laboran.laboratorium.create'),
                 'button_text' => 'Tambah Laboratorium'
             ]
         ]);
@@ -46,10 +46,10 @@ class LaboratoriumUnpamController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.laboratorium')->with('success', 'Laboratorium Berhasil ditambahkan');
+            return redirect()->route('laboran.laboratorium')->with('success', 'Laboratorium Berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('admin.laboratorium.create')->with('error', 'Laboratorium Gagal ditambahkan');
+            return redirect()->route('laboran.laboratorium.create')->with('error', 'Laboratorium Gagal ditambahkan');
         }
     }
 
@@ -91,13 +91,13 @@ class LaboratoriumUnpamController extends Controller
 
     public function edit(LaboratoriumUnpam $Laboratorium){
         $Jenislab = Jenislab::select(['id', 'name'])->get();
-        return view("admin.laboratorium.form-laboratorium", [
+        return view("laboran.laboratorium.form-laboratorium", [
             'Laboratorium' => $Laboratorium,
             'Jenislab' => $Jenislab,
             'page_meta' => [
                 'page' => "Ubah Laboratorium",
                 'method' => 'PUT',
-                'url' => route('admin.laboratorium.edit', $Laboratorium),
+                'url' => route('laboran.laboratorium.edit', $Laboratorium),
                 'button_text' => 'Ubah Laboratorium'
             ]
         ]);
@@ -112,10 +112,10 @@ class LaboratoriumUnpamController extends Controller
 
             DB::commit();
 
-            return redirect()->route('admin.laboratorium')->with('success', 'Laboratorium Berhasil di-ubah');
+            return redirect()->route('laboran.laboratorium')->with('success', 'Laboratorium Berhasil di-ubah');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('admin.laboratorium.edit')->with('error', 'Laboratorium Gagal di-ubah');
+            return redirect()->route('laboran.laboratorium.edit')->with('error', 'Laboratorium Gagal di-ubah');
         }
     }
 }

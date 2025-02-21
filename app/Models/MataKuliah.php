@@ -18,13 +18,13 @@ class MataKuliah extends Model
         'semester_id'
     ];
 
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
-
 
 
     // Many to Many ke User

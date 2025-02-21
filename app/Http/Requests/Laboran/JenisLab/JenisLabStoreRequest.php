@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin\JenisLab;
+namespace App\Http\Requests\Laboran\JenisLab;
 
 use Illuminate\Foundation\Http\FormRequest;
 
