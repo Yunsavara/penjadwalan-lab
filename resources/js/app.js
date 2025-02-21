@@ -9,7 +9,6 @@ import './form-barang';
 import './jenis-lab'
 import './form-laboratorium'
 import './laboratorium'
-import './semester'
 import './form-mata-kuliah'
 import './mata-kuliah'
 
