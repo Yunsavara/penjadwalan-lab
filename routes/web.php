@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\DashboardController;
+use App\Http\Controllers\Laboran\BookingController;
 use App\Http\Controllers\Laboran\JenisLabController;
 use App\Http\Controllers\Laboran\MataKuliahController;
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
@@ -66,14 +67,9 @@ Route::group(['middleware' => ['role:laboran']], function() {
     Route::get('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'edit'])->name('laboran.laboratorium.edit');
     Route::put('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'update']);
 
-    // Mata Kuliah
-    Route::get('/laboran/mata-kuliah', [MataKuliahController::class, 'index'])->name('laboran.matakuliah');
-    Route::get('/laboran/mata-kuliah/mata-kuliah-data', [MataKuliahController::class, 'getData']);
-
-    Route::get('/laboran/tambah-mata-kuliah', [MataKuliahController::class, 'create'])->name('laboran.matakuliah.create');
-    Route::post('/laboran/tambah-mata-kuliah', [MataKuliahController::class, 'store']);
-    Route::get('/laboran/ubah-mata-kuliah/{MataKuliah:slug}', [MataKuliahController::class, 'edit'])->name('laboran.matakuliah.edit');
-    Route::put('/laboran/ubah-mata-kuliah/{MataKuliah:slug}', [MataKuliahController::class, 'update']);
+    // Booking
+    Route::get('/laboran/booking', [BookingController::class, 'index'])->name('laboran.booking');
+    Route::get('/laboran/buat-booking', [BookingController::class, 'create'])->name('laboran.booking.create');
 });
 
 Route::group(['middleware' => ['role:prodi']], function() {

@@ -25,6 +25,12 @@ class LaboratoriumUnpam extends Model
         return $this->belongsTo(Jenislab::class, 'jenislab_id');
     }
 
+    public function jadwals()
+    {
+        return $this->hasMany(Jadwal::class, 'lab_id');
+    }
+
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
