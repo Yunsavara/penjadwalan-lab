@@ -1,5 +1,20 @@
 import { Indonesian } from "flatpickr/dist/l10n/id.js";
 
+import $ from 'jquery';
+window.$ = window.jQuery = $;
+
+$(document).ready(function() {
+    initSelect();
+});
+
+function initSelect(){
+    $('#pilihRuangan').select2({
+        theme: 'bootstrap-5',
+        placeholder: "Pilih Ruang Lab",
+        allowClear: true,
+    });
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     initFormPengajuan();
@@ -23,6 +38,15 @@ function initFormPengajuan() {
             buttonPengajuan.classList.remove("btn-danger");
             buttonPengajuan.textContent = "Buat Pengajuan";
             formPengajuan.reset(); // Reset form saat dibatalkan
+            // Reset Select2
+            $('#pilihRuangan').val(null).trigger('change');
+
+            // Reset Flatpickr
+            const flatpickrInstance = document.querySelector("#tanggalPengajuan")._flatpickr;
+            if (flatpickrInstance) {
+                flatpickrInstance.clear();
+            }
+
         }
     });
 }
@@ -30,61 +54,108 @@ function initFormPengajuan() {
 let selectedDates = [];
 let currentPage = 0;
 const itemsPerPage = 1; // Menampilkan 1 tanggal per halaman
+let selectedTimes = {}; // Untuk menyimpan data jam mulai dan selesai
 
 function initFlatpickr() {
     flatpickr("#tanggalPengajuan", {
         mode: "multiple",
-        dateFormat: "d F Y",
+        dateFormat: "d F Y", // Tampilan tetap "31 Januari 2025"
         locale: Indonesian,
         onChange: function (dates, dateStr, instance) {
-            selectedDates = dates.map(date => instance.formatDate(date, "Y-m-d")); // Format tanggal untuk menghindari perbedaan waktu
-            currentPage = 0; // Reset halaman setiap kali tanggal berubah
+            const newSelectedDates = dates.map(date => instance.formatDate(date, "Y-m-d"));
+
+            // Bersihkan input hidden sebelum diupdate
+            document.getElementById("hiddenTanggalInputs").innerHTML = "";
+
+            // Buat input hidden untuk setiap tanggal yang dipilih
+            newSelectedDates.forEach(date => {
+                const hiddenInput = document.createElement("input");
+                hiddenInput.type = "hidden";
+                hiddenInput.name = "tanggal_pengajuan[]";
+                hiddenInput.value = date;
+                document.getElementById("hiddenTanggalInputs").appendChild(hiddenInput);
+            });
+
+            // Hapus data jam yang tidak ada dalam tanggal yang dipilih
+            Object.keys(selectedTimes).forEach((key) => {
+                const dateKey = key.split("_").pop();
+                if (!newSelectedDates.includes(dateKey)) {
+                    delete selectedTimes[key];
+                }
+            });
+
+            selectedDates = newSelectedDates;
+            currentPage = 0;
             updateJamContainer();
             updatePagination();
         }
     });
 }
 
+
 function updateJamContainer() {
     const jamContainer = document.getElementById("jamContainer");
-    jamContainer.innerHTML = "";
 
-    const start = currentPage * itemsPerPage;
-    const end = start + itemsPerPage;
-    const displayedDates = selectedDates.slice(start, end);
+    // Simpan data sebelum dihapus
+    document.querySelectorAll(".timepicker").forEach((input) => {
+        selectedTimes[input.id] = input.value;
+    });
 
-    displayedDates.forEach((date) => {
+    jamContainer.innerHTML = ""; // Bersihkan tampilan input jam
+    document.getElementById("hiddenJamInputs").innerHTML = ""; // Bersihkan hidden input
+
+    selectedDates.forEach((date) => {
         const formattedDate = new Date(date).toLocaleDateString("id-ID", {
             day: "2-digit",
             month: "long",
             year: "numeric"
         });
 
+        // Ambil nilai lama, jika ada
+        const jamMulai = selectedTimes[`jam_mulai_${date}`] || "";
+        const jamSelesai = selectedTimes[`jam_selesai_${date}`] || "";
 
-        jamContainer.innerHTML += `
-            <div class="col-12 border p-3 rounded">
-                <h6 class="fw-bold">Tanggal : ${formattedDate}</h6>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="jam_mulai_${date}">Jam Mulai</label>
-                        <input type="text" name="jam_mulai[${date}]" id="jam_mulai_${date}" class="form-control timepicker">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="jam_selesai_${date}">Jam Selesai</label>
-                        <input type="text" name="jam_selesai[${date}]" id="jam_selesai_${date}" class="form-control timepicker">
+        if (selectedDates.indexOf(date) >= currentPage * itemsPerPage && selectedDates.indexOf(date) < (currentPage + 1) * itemsPerPage) {
+            jamContainer.innerHTML += `
+                <div class="col-12 border p-3 rounded">
+                    <h6 class="fw-bold">Tanggal : ${formattedDate}</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="jam_mulai_${date}">Jam Mulai</label>
+                            <input type="text" id="jam_mulai_${date}" class="form-control timepicker" value="${jamMulai}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="jam_selesai_${date}">Jam Selesai</label>
+                            <input type="text" id="jam_selesai_${date}" class="form-control timepicker" value="${jamSelesai}">
+                        </div>
                     </div>
                 </div>
-            </div>
+            `;
+        }
+
+        // Tambahkan hidden input yang selalu dikirim ke backend
+        document.getElementById("hiddenJamInputs").innerHTML += `
+            <input type="hidden" name="jam_mulai[${date}]" id="hidden_jam_mulai_${date}" value="${jamMulai}">
+            <input type="hidden" name="jam_selesai[${date}]" id="hidden_jam_selesai_${date}" value="${jamSelesai}">
         `;
     });
 
-    // Inisialisasi Flatpickr setelah input dibuat
+    // Inisialisasi Flatpickr dan update hidden input saat jam berubah
     document.querySelectorAll(".timepicker").forEach((input) => {
         flatpickr(input, {
             enableTime: true,
             noCalendar: true,
-            dateFormat: "H:i", // Format 24 jam
-            time_24hr: true
+            dateFormat: "H:i",
+            time_24hr: true,
+            onChange: function (selectedDates, dateStr, instance) {
+                selectedTimes[instance.element.id] = dateStr;
+
+                // Perbarui hidden input yang sesuai
+                const hiddenInput = document.getElementById(`hidden_${instance.element.id}`);
+                if (hiddenInput) {
+                    hiddenInput.value = dateStr;
+                }
+            }
         });
     });
 

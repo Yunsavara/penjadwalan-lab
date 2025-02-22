@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('pengajuans', function (Blueprint $table) {
             $table->id();
-            $table->date('tanggal_pengajuan');
             $table->string('kode_pengajuan')->unique();
-            $table->string('keperluan');
+            $table->text('keperluan');
             $table->enum('status',['pending','diterima','ditolak','dibatalkan'])->default('pending');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')

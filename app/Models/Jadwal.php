@@ -10,8 +10,9 @@ class Jadwal extends Model
         'name',
         'kode_pengajuan',
         'keperluan',
-        'tanggal_mulai',
-        'tanggal_selesai',
+        'tanggal',
+        'jam_mulai',
+        'jam_selesai',
         'status',
         'lab_id',
         'user_id'
@@ -24,7 +25,7 @@ class Jadwal extends Model
 
     public function user()
     {
-        return $this->belongsTo(LaboratoriumUnpam::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function pengajuan()

@@ -7,8 +7,8 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\DashboardController;
-use App\Http\Controllers\AllRole\BookingController;
 use App\Http\Controllers\Laboran\JenisLabController;
+use App\Http\Controllers\AllRole\PengajuanController;
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
 
 Route::group(['middleware' => 'guest'], function() {
@@ -29,9 +29,9 @@ Route::group(['middleware' => 'guest'], function() {
 Route::group(['middleware'=> 'auth'], function() {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Booking atau pengajuan jadwal
-    Route::get('/pengajuan-jadwal', [BookingController::class, 'index'])->name('pengajuan');
-    Route::get('/tambah-pengajuan', [BookingController::class, 'create'])->name('pengajuan.create');
+    // Pengajuan jadwal
+    Route::get('/pengajuan-jadwal', [PengajuanController::class, 'index'])->name('pengajuan');
+    Route::post('/pengajuan-jadwal/tambah-pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
 });
 

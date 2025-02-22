@@ -15,11 +15,24 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="col-12 py-2 d-flex flex-wrap justify-content-end">
         <button class="btn btn-primary col-12 col-md-auto" id="btnPengajuan">Buat Pengajuan</button>
     </div>
 
     <div id="formPengajuanContainer">
-        @include('all-role.form-pengajuan')
+        @include('all-role.form-store')
+    </div>
+
+    <div id="formPengajuanUpdateContainer">
     </div>
 @endsection

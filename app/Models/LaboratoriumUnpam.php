@@ -30,7 +30,6 @@ class LaboratoriumUnpam extends Model
         return $this->hasMany(Jadwal::class, 'lab_id');
     }
 
-
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
