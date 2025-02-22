@@ -12,7 +12,8 @@ class Pengajuan extends Model
         'kode_pengajuan',
         'keperluan',
         'status',
-        'user_id'
+        'user_id',
+        'lab_id'
     ];
 
     public function user()
@@ -24,5 +25,16 @@ class Pengajuan extends Model
     {
         return $this->hasMany(Jadwal::class, 'kode_pengajuan', 'kode_pengajuan');
     }
+
+    public function laboratorium()
+    {
+        return $this->belongsTo(LaboratoriumUnpam::class, 'lab_id');
+    }
+
+    public function detailPengajuans()
+    {
+        return $this->hasMany(DetailPengajuan::class, 'pengajuan_id');
+    }
+
 
 }

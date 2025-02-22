@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\AllRole;
 
-use App\Models\Jadwal;
 use App\Models\Pengajuan;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -10,6 +9,7 @@ use App\Models\LaboratoriumUnpam;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AllRole\PengajuanStoreRequest;
+use App\Models\DetailPengajuan;
 
 class PengajuanController extends Controller
 {
@@ -39,6 +39,7 @@ class PengajuanController extends Controller
                 'kode_pengajuan' => $kodePengajuan,
                 'keperluan' => $request->keperluan,
                 'user_id' => $request->user_id,
+                'lab_id' => $request->lab_id,
                 'status' => 'pending',
             ]);
 
@@ -48,15 +49,11 @@ class PengajuanController extends Controller
                     continue; // Lewati jika jam mulai/selesai tidak ada untuk tanggal ini
                 }
 
-                Jadwal::create([
-                    'kode_pengajuan' => $kodePengajuan,
-                    'keperluan' => $request->keperluan,
+                DetailPengajuan::create([
+                    'pengajuan_id' => $pengajuan->id,
                     'tanggal' => $tanggal,
                     'jam_mulai' => $request->jam_mulai[$tanggal],
                     'jam_selesai' => $request->jam_selesai[$tanggal],
-                    'status' => 'belum dipakai',
-                    'lab_id' => $request->lab_id,
-                    'user_id' => $request->user_id,
                 ]);
             }
 
@@ -65,21 +62,33 @@ class PengajuanController extends Controller
             return redirect()->back()->with('success', 'Pengajuan berhasil diajukan!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Pengajuan gagal diajukan!'. $e->getMessage());
         }
     }
 
-    // public function edit(LaboratoriumUnpam $Laboratorium){
-    //     $Jenislab = Jenislab::select(['id', 'name'])->get();
-    //     return view("laboran.laboratorium.form-laboratorium", [
-    //         'Laboratorium' => $Laboratorium,
-    //         'Jenislab' => $Jenislab,
-    //         'page_meta' => [
-    //             'page' => "Ubah Laboratorium",
-    //             'method' => 'PUT',
-    //             'url' => route('laboran.laboratorium.edit', $Laboratorium),
-    //             'button_text' => 'Ubah Laboratorium'
-    //         ]
+    // Untuk Datatables
+    // public function getData(Request $request)
+    // {
+    //     // Menyaring data berdasarkan pencarian jika ada
+    //     $query = Pengajuan::query()->select(['id','name','slug','description']);
+
+    //     if ($search = $request->input('search.value')) {
+    //         $query->where('name', 'like', "%$search%")
+    //               ->orWhere('description', 'like', "%$search%");
+    //     }
+
+    //     // Pagination
+    //     $data = $query->paginate($request->input('length'));
+
+    //     // Total record untuk pagination
+    //     $recordsTotal = Jenislab::count();
+    //     $recordsFiltered = $query->count();
+
+    //     return response()->json([
+    //         'draw' => intval($request->input('draw')),
+    //         'recordsTotal' => $recordsTotal,
+    //         'recordsFiltered' => $recordsFiltered,
+    //         'data' => $data->items(),
     //     ]);
     // }
 }

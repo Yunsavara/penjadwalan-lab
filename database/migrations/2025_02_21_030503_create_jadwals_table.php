@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('kode_pengajuan');
             $table->foreign('kode_pengajuan')->references('kode_pengajuan')->on('pengajuans');
 
-            $table->string('keperluan');
+            $table->text('keperluan');
             $table->date('tanggal');
             $table->time('jam_mulai');
             $table->time('jam_selesai');

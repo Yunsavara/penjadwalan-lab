@@ -30,6 +30,12 @@ class LaboratoriumUnpam extends Model
         return $this->hasMany(Jadwal::class, 'lab_id');
     }
 
+    public function pengajuan()
+    {
+        return $this->hasOne(Pengajuan::class, 'kode_pengajuan', 'kode_pengajuan');
+    }
+
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()

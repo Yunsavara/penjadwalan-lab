@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('kode_pengajuan')->unique();
             $table->text('keperluan');
             $table->enum('status',['pending','diterima','ditolak','dibatalkan'])->default('pending');
+            $table->unsignedBigInteger('lab_id');
+            $table->foreign('lab_id')
+            ->references('id')
+            ->on('users');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')
               ->references('id')
