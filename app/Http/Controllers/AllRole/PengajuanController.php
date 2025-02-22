@@ -67,28 +67,55 @@ class PengajuanController extends Controller
     }
 
     // Untuk Datatables
-    // public function getData(Request $request)
-    // {
-    //     // Menyaring data berdasarkan pencarian jika ada
-    //     $query = Pengajuan::query()->select(['id','name','slug','description']);
+    public function getData(Request $request)
+    {
+        // Menyaring data berdasarkan pencarian jika ada
+        $query = Pengajuan::query()->select([
+                    'id',
+                    'kode_pengajuan',
+                    'keperluan',
+                    'status',
+                    'lab_id',
+                    'user_id'
+                ]);
 
-    //     if ($search = $request->input('search.value')) {
-    //         $query->where('name', 'like', "%$search%")
-    //               ->orWhere('description', 'like', "%$search%");
-    //     }
 
-    //     // Pagination
-    //     $data = $query->paginate($request->input('length'));
+        if ($search = $request->input('search.value')) {
+            $query->where('kode_pengajuan', 'like', "%$search%")
+                  ->orWhere('keperluan', 'like', "%$search%");
+        }
 
-    //     // Total record untuk pagination
-    //     $recordsTotal = Jenislab::count();
-    //     $recordsFiltered = $query->count();
+        // Pagination
+        $data = $query->paginate($request->input('length'));
 
-    //     return response()->json([
-    //         'draw' => intval($request->input('draw')),
-    //         'recordsTotal' => $recordsTotal,
-    //         'recordsFiltered' => $recordsFiltered,
-    //         'data' => $data->items(),
-    //     ]);
-    // }
+        // Total record untuk pagination
+        $recordsTotal = Pengajuan::count();
+        $recordsFiltered = $query->count();
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data->items(),
+        ]);
+    }
+
+    // Detail Modal
+    public function getDetailPengajuan($kodePengajuan)
+    {
+        $pengajuan = Pengajuan::where('kode_pengajuan', $kodePengajuan)
+            ->with('detailPengajuans')
+            ->first();
+
+        if (!$pengajuan) {
+            return response()->json([
+                'error' => 'Pengajuan tidak ditemukan!'
+            ], 404);
+        }
+
+        return response()->json([
+            'details' => $pengajuan->detailPengajuans
+        ]);
+    }
+
 }

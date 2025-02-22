@@ -31,6 +31,8 @@ Route::group(['middleware'=> 'auth'], function() {
 
     // Pengajuan jadwal
     Route::get('/pengajuan-jadwal', [PengajuanController::class, 'index'])->name('pengajuan');
+    Route::get('/pengajuan-jadwal/pengajuan-jadwal-data', [PengajuanController::class, 'getData']);
+    Route::get('/pengajuan-jadwal/detail/{pengajuan:kode_pengajuan}', [PengajuanController::class, 'getDetailPengajuan']);
     Route::post('/pengajuan-jadwal/tambah-pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
 
 });

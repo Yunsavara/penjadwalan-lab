@@ -33,8 +33,9 @@ class Pengajuan extends Model
 
     public function detailPengajuans()
     {
-        return $this->hasMany(DetailPengajuan::class, 'pengajuan_id');
+        return $this->hasMany(DetailPengajuan::class, 'pengajuan_id', 'id');
     }
+
 
 
 }

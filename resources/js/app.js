@@ -12,6 +12,7 @@ import './laboratorium'
 import './form-mata-kuliah'
 import './mata-kuliah'
 import './form-pengajuan'
+import './pengajuan'
 
 // Datatables
 import 'datatables.net';
