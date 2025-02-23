@@ -30,6 +30,8 @@ class PengajuanController extends Controller
 
     public function store(PengajuanStoreRequest $request)
     {
+
+        // dd($request->all());
         DB::beginTransaction();
 
         try {
@@ -180,6 +182,30 @@ class PengajuanController extends Controller
                 ],
                 'histories' => $histories,
             ]
+        ]);
+    }
+
+    public function edit($kode_pengajuan)
+    {
+        $pengajuan = Pengajuan::where('kode_pengajuan', $kode_pengajuan)->get(); // Ambil semua baris dengan kode_pengajuan yang sama
+
+        if ($pengajuan->isEmpty()) {
+            return response()->json(['error' => 'Pengajuan tidak ditemukan'], 404);
+        }
+
+        // Ambil lab_id dari pengajuan pertama (asumsi lab_id sama untuk setiap baris dengan kode yang sama)
+        $lab_id = $pengajuan->first()->lab_id;
+
+        // Ambil semua tanggal pengajuan
+        $tanggal = $pengajuan->pluck('tanggal')->toArray();
+
+        // Ambil keperluan dari pengajuan pertama
+        $keperluan = $pengajuan->first()->keperluan;
+
+        return response()->json([
+            'lab_id' => $lab_id,
+            'tanggal' => $tanggal,
+            'keperluan' => $keperluan,
         ]);
     }
 

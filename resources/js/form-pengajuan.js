@@ -56,31 +56,44 @@ let currentPage = 0;
 const itemsPerPage = 1; // Menampilkan 1 tanggal per halaman
 let selectedTimes = {}; // Untuk menyimpan data jam mulai dan selesai
 
+
 function initFlatpickr() {
     flatpickr("#tanggalPengajuan", {
         mode: "multiple",
-        altInput: true,
-        altFormat: "d F Y", // Format yang dikirim ke server
         dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d F Y",
         locale: Indonesian,
         onChange: function (dates, dateStr, instance) {
-            selectedDates = dates.map(date => instance.formatDate(date, "Y-m-d"));
+            const newSelectedDates = dates.map(date => instance.formatDate(date, "Y-m-d"));
+
+            // Bersihkan input hidden sebelum diupdate
+            document.getElementById("hiddenTanggalInputs").innerHTML = "";
+
+            // Buat input hidden untuk setiap tanggal yang dipilih
+            newSelectedDates.forEach(date => {
+                const hiddenInput = document.createElement("input");
+                hiddenInput.type = "hidden";
+                hiddenInput.name = "tanggal_pengajuan[]";
+                hiddenInput.value = date;
+                document.getElementById("hiddenTanggalInputs").appendChild(hiddenInput);
+            });
 
             // Hapus data jam yang tidak ada dalam tanggal yang dipilih
             Object.keys(selectedTimes).forEach((key) => {
                 const dateKey = key.split("_").pop();
-                if (!selectedDates.includes(dateKey)) {
+                if (!newSelectedDates.includes(dateKey)) {
                     delete selectedTimes[key];
                 }
             });
 
+            selectedDates = newSelectedDates;
             currentPage = 0;
             updateJamContainer();
             updatePagination();
         }
     });
 }
-
 
 function updateJamContainer() {
     const jamContainer = document.getElementById("jamContainer");

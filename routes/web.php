@@ -31,10 +31,10 @@ Route::group(['middleware'=> 'auth'], function() {
 
     // Pengajuan jadwal
     Route::get('/pengajuan-jadwal', [PengajuanController::class, 'index'])->name('pengajuan');
-    Route::get('/pengajuan-jadwal/pengajuan-jadwal-data', [PengajuanController::class, 'getData']);
-    Route::get('/pengajuan-jadwal/detail/{kode_pengajuan}', [PengajuanController::class, 'getDetail']);
+    Route::get('/pengajuan-jadwal/pengajuan-jadwal-data', [PengajuanController::class, 'getData']); //datatables
+    Route::get('/pengajuan-jadwal/detail/{kode_pengajuan}', [PengajuanController::class, 'getDetail']); //detail baris
     Route::post('/pengajuan-jadwal/tambah-pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
-
+    Route::get('/pengajuan-jadwal/{kode_pengajuan}', [PengajuanController::class, 'edit'])->name('pengajuan.update');
 });
 
 Route::group(['middleware' => ['role:admin']], function() {
