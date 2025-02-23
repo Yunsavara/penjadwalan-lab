@@ -59,32 +59,21 @@ let selectedTimes = {}; // Untuk menyimpan data jam mulai dan selesai
 function initFlatpickr() {
     flatpickr("#tanggalPengajuan", {
         mode: "multiple",
-        dateFormat: "d F Y",
+        altInput: true,
+        altFormat: "d F Y", // Format yang dikirim ke server
+        dateFormat: "Y-m-d",
         locale: Indonesian,
         onChange: function (dates, dateStr, instance) {
-            const newSelectedDates = dates.map(date => instance.formatDate(date, "Y-m-d"));
-
-            // Bersihkan input hidden sebelum diupdate
-            document.getElementById("hiddenTanggalInputs").innerHTML = "";
-
-            // Buat input hidden untuk setiap tanggal yang dipilih
-            newSelectedDates.forEach(date => {
-                const hiddenInput = document.createElement("input");
-                hiddenInput.type = "hidden";
-                hiddenInput.name = "tanggal_pengajuan[]";
-                hiddenInput.value = date;
-                document.getElementById("hiddenTanggalInputs").appendChild(hiddenInput);
-            });
+            selectedDates = dates.map(date => instance.formatDate(date, "Y-m-d"));
 
             // Hapus data jam yang tidak ada dalam tanggal yang dipilih
             Object.keys(selectedTimes).forEach((key) => {
                 const dateKey = key.split("_").pop();
-                if (!newSelectedDates.includes(dateKey)) {
+                if (!selectedDates.includes(dateKey)) {
                     delete selectedTimes[key];
                 }
             });
 
-            selectedDates = newSelectedDates;
             currentPage = 0;
             updateJamContainer();
             updatePagination();

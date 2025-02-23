@@ -65,7 +65,7 @@ class PengajuanController extends Controller
                     })->implode(', ');
 
                     DB::rollBack();
-                    return redirect()->route('pengajuan')->with(
+                    return redirect()->route('pengajuan')->withInput()->with(
                         'error',
                         "Pengajuan pada tanggal {$tanggal} <br> bentrok dengan pengajuan anda yang sudah ada:<br> {$bentrokJadwal}."
                     );
