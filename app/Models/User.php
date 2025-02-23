@@ -39,19 +39,29 @@ class User extends Authenticatable
         return $this->belongsTo(roles::class, 'role_id');
     }
 
-
     public function hasRole($roleName)
     {
         return $this->role && $this->role->name === $roleName;
     }
 
-    public function jadwal(){
-        return $this->hasMany(User::class, 'user_id');
+    // Relasi ke Pengajuan (User yang mengajukan jadwal)
+    public function pengajuan()
+    {
+        return $this->hasMany(Pengajuan::class, 'user_id', 'id');
     }
 
-    public function pengajuan(){
-        return $this->hasMany(User::class, 'user_id');
+    // Relasi ke Jadwal (Jadwal yang sudah diterima)
+    public function jadwal()
+    {
+        return $this->hasMany(Jadwal::class, 'user_id', 'id');
     }
+
+    // Relasi ke Pengajuan Status Histories (Tracking perubahan status pengajuan oleh user )
+    public function pengajuanStatusHistories()
+    {
+        return $this->hasMany(StatusPengajuanHistories::class, 'changed_by', 'id');
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

@@ -59,7 +59,7 @@ let selectedTimes = {}; // Untuk menyimpan data jam mulai dan selesai
 function initFlatpickr() {
     flatpickr("#tanggalPengajuan", {
         mode: "multiple",
-        dateFormat: "d F Y", // Tampilan tetap "31 Januari 2025"
+        dateFormat: "d F Y",
         locale: Indonesian,
         onChange: function (dates, dateStr, instance) {
             const newSelectedDates = dates.map(date => instance.formatDate(date, "Y-m-d"));
