@@ -61,38 +61,80 @@ function initLaboratoriumDataTable() {
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    // console.log("Response dari API:", response); // Debugging
-
                     if (response.success) {
-                        let data = response.data;
-                        let jadwal = data.jadwal;
-                        let statusHistori = data.status_histori;
+                        let pengajuan = response.data.pengajuan;
+                        let histories = response.data.histories;
 
                         let detailHtml = `
-                            <p><strong>Keperluan:</strong> ${data.keperluan}</p>
-                            <p><strong>Lab ID:</strong> ${data.lab_id}</p>
-                            <h6><strong>Jadwal:</strong></h6>`;
+                            <p><strong>Kode Pengajuan:</strong> ${pengajuan.kode_pengajuan}</p>
+                            <p><strong>Lab:</strong> ${pengajuan.laboratorium.name}</p>
+                            <p><strong>Keperluan:</strong> ${pengajuan.keperluan}</p>
 
-                        if (jadwal.length > 0) {
-                            jadwal.forEach(item => {
-                                detailHtml += `<p>- <strong>${item.tanggal}</strong> (${item.jam_mulai} - ${item.jam_selesai})</p>`;
+                            <h6><strong>Jadwal:</strong></h6>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Jam Mulai</th>
+                                        <th>Jam Selesai</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+                        // Tambahkan daftar jadwal ke dalam tabel
+                        if (pengajuan.jadwal.length > 0) {
+                            pengajuan.jadwal.forEach(j => {
+                                detailHtml += `
+                                    <tr>
+                                        <td>${j.tanggal}</td>
+                                        <td>${j.jam_mulai}</td>
+                                        <td>${j.jam_selesai}</td>
+                                    </tr>`;
                             });
                         } else {
-                            detailHtml += `<p class="text-muted">Tidak ada jadwal.</p>`;
+                            detailHtml += `<tr><td colspan="3" class="text-center text-muted">Tidak ada jadwal.</td></tr>`;
                         }
 
-                        detailHtml += `<h6><strong>Riwayat Status:</strong></h6>`;
-                        if (statusHistori.length > 0) {
-                            statusHistori.forEach(status => {
-                                detailHtml += `<p>- ${status.status} (${status.created_at})</p>`;
+                        detailHtml += `</tbody></table>`;
+
+                        detailHtml += `<h6><strong>Riwayat Status:</strong></h6>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Waktu</th>
+                                        <th>Status</th>
+                                        <th>Diubah Oleh</th>
+                                        <th>Waktu Perubahan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+                        // Tambahkan riwayat status ke dalam tabel
+                        if (histories.length > 0) {
+                            histories.forEach(h => {
+                                detailHtml += `
+                                    <tr>
+                                        <td>${h.tanggal}</td>
+                                        <td>${h.jam_mulai} - ${h.jam_selesai}</td>
+                                        <td>${h.status}</td>
+                                        <td>${h.changed_by_name}</td>
+                                        <td>${h.created_at}</td>
+                                    </tr>`;
                             });
                         } else {
-                            detailHtml += `<p class="text-muted">Tidak ada riwayat status.</p>`;
+                            detailHtml += `<tr><td colspan="5" class="text-center text-muted">Tidak ada riwayat status.</td></tr>`;
                         }
 
+                        detailHtml += `</tbody></table>`;
+
+                        // Masukkan seluruh HTML ke dalam modal
                         $('.modal-body').html(detailHtml);
+
+
                     } else {
                         $('.modal-body').html('<p class="text-danger">Data tidak ditemukan!</p>');
+                        $('#detailPengajuanModal').modal('show');
                     }
                 },
                 error: function(xhr) {

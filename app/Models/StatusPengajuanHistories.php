@@ -7,9 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class StatusPengajuanHistories extends Model
 {
     protected $fillable = [
-        'pengajuan_id',
+        'kode_pengajuan',
+        'tanggal',
+        'jam_mulai',
+        'jam_selesai',
+        'status',
+        'lab_id',
         'user_id',
-        'status'
+        'changed_by'
     ];
 
     // Relasi ke User (pemilik pengajuan/jadwal)

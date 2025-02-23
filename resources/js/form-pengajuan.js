@@ -162,7 +162,6 @@ function updateJamContainer() {
     feather.replace(); // Render ulang ikon Feather
 }
 
-
 function updatePagination() {
     const paginationControls = document.getElementById("paginationControls");
     const totalPages = Math.ceil(selectedDates.length / itemsPerPage);
