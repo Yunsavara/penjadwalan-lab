@@ -25,7 +25,7 @@ class PengajuanController extends Controller
         return view('all-role.pengajuan', [
             'Ruangan' => $laboratorium,
             'page_meta' => [
-                'page' => 'Pengajuan',
+                'page' => 'Jadwal dan Pengajuan',
             ]
         ]);
     }
@@ -234,6 +234,32 @@ class PengajuanController extends Controller
 
                 // Cek apakah tanggal ini sudah ada di database
                 $pengajuan = $existingPengajuan->where('tanggal', $tanggal)->first();
+
+                // Cek Bentrok
+                $bentrok = StatusPengajuanHistories::where('user_id', $user->id)
+                    ->where('lab_id', $request->lab_id)
+                    ->where('tanggal', $tanggal)
+                    ->whereIn('status', ['pending', 'diterima', 'sedang dipakai'])
+                    ->where(function ($query) use ($jamMulaiBaru, $jamSelesaiBaru) {
+                        $query->where(function ($q) use ($jamMulaiBaru, $jamSelesaiBaru) {
+                            $q->where('jam_mulai', '<', $jamSelesaiBaru)
+                            ->where('jam_selesai', '>', $jamMulaiBaru);
+                        });
+                    })
+                    ->where('kode_pengajuan', '!=', $kode_pengajuan) // Jangan cek bentrok dengan dirinya sendiri
+                    ->get(['kode_pengajuan', 'status']);
+
+                if ($bentrok->isNotEmpty()) {
+                    $bentrokInfo = $bentrok->map(function ($item) {
+                        return "{$item->kode_pengajuan} (Status: {$item->status})";
+                    })->implode(', ');
+
+                    DB::rollBack();
+                    return redirect()->route('pengajuan')->withInput()->with(
+                        'error',
+                        "Pengajuan pada tanggal {$tanggal} bentrok dengan:<br> {$bentrokInfo}."
+                    );
+                }
 
                 if ($pengajuan) {
                     // Jika jam mulai atau jam selesai berubah

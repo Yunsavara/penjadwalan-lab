@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\DashboardController;
 use App\Http\Controllers\Laboran\JenisLabController;
 use App\Http\Controllers\AllRole\PengajuanController;
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
+use App\Http\Controllers\Laboran\PengajuanController as LaboranPengajuanController;
 
 Route::group(['middleware' => 'guest'], function() {
     // Home
@@ -74,6 +75,10 @@ Route::group(['middleware' => ['role:laboran']], function() {
     Route::post('/laboran/tambah-laboratorium', [LaboratoriumUnpamController::class, 'store']);
     Route::get('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'edit'])->name('laboran.laboratorium.edit');
     Route::put('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'update']);
+
+    // Pengajuan
+    Route::get('/laboran/pengajuan-jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.pengajuan');
+    Route::get('/laboran/pengajuan-jadwal/pengajuan-jadwal-data', [LaboranPengajuanController::class, 'getData']);
 });
 
 Route::group(['middleware' => ['role:prodi']], function() {

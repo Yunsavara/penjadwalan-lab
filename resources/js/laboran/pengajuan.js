@@ -1,14 +1,12 @@
-import './form-pengajuan-update'
-
 document.addEventListener("DOMContentLoaded", function () {
-    initLaboratoriumDataTable();
+    initLaboranPengajuanDataTable();
 });
 
-function initLaboratoriumDataTable() {
+function initLaboranPengajuanDataTable() {
     $(document).ready(function() {
         $.fn.DataTable.ext.pager.numbers_length = 3;
 
-        let table = $('#pengajuanTable').DataTable({
+        let table = $('#pengajuanLaboranTable').DataTable({
             processing: true,
             serverSide: true,
             pageLength: 10,
@@ -16,7 +14,7 @@ function initLaboratoriumDataTable() {
             fixedHeader: true,
             responsive: true,
             ajax: {
-                url: '/pengajuan-jadwal/pengajuan-jadwal-data',
+                url: '/laboran/pengajuan-jadwal/pengajuan-jadwal-data',
                 type: 'GET',
             },
             columns: [
@@ -35,13 +33,22 @@ function initLaboratoriumDataTable() {
                     name: 'action',
                     render: function(data, type, row) {
                         return `
-                            <button type="button" class="btn btn-primary btn-sm btn-detail" data-bs-toggle="modal" data-bs-target="#detailPengajuanModal"
+                            <div class="d-flex flex-wrap align-items-center gap-1">
+                                <button type="button" class="btn btn-primary btn-sm btn-detail" data-bs-toggle="modal" data-bs-target="#detailPengajuanModal"
                                 data-kode="${row.kode_pengajuan}">
                                 Detail
-                            </button>
-                            <button type="button" class="btn btn-warning btn-sm btn-edit" data-kode="${row.kode_pengajuan}">Edit</button>
-                            <a href="/pengajuan-jadwal/${row.kode_pengajuan}" class="btn btn-danger btn-sm"
-                               onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Batalkan</a>
+                                </button>
+
+                                <div class="dropdown dropstart">
+                                    <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Status
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Terima</a></li>
+                                        <li><a class="dropdown-item" href="#">Tolak</a></li>
+                                    </ul>
+                                </div>
+                            </div>
                         `;
                     }
                 },

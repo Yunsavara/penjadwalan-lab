@@ -11,9 +11,10 @@ import './form-laboratorium'
 import './laboratorium'
 import './form-mata-kuliah'
 import './mata-kuliah'
-import './form-pengajuan-store'
-import './pengajuan'
-import './form-pengajuan-update'
+import './allrole/form-pengajuan-store'
+import './allrole/pengajuan'
+import './allrole/form-pengajuan-update'
+import './laboran/pengajuan'
 
 // Datatables
 import 'datatables.net';
