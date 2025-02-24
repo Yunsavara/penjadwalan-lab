@@ -55,7 +55,7 @@
     </div>
 
     <div id="formPengajuanContainer">
-        @include('all-role.form-store')
+        @include('all-role.form-pengajuan-store')
     </div>
 
     <div id="formPengajuanUpdateContainer">

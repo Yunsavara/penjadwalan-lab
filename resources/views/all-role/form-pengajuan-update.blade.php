@@ -1,45 +1,42 @@
-<div id="formPengajuanUpdateContainer" style="display: none;">
-    <form action="{{ route('pengajuan.update', 'kode_pengajuan') }}" method="POST" id="formUpdatePengajuan">
+<div id="editPengajuanContainer" class="mt-4 d-none">
+    <h4>Edit Pengajuan</h4>
+    <form id="updatePengajuanForm" action="{{ route('pengajuan.update', ':kode_pengajuan') }}" method="POST">
+        {{-- Form nya di Inject di Javascript --}}
         @csrf
         @method('PUT')
 
+        <!-- Hidden input untuk kode_pengajuan -->
+        <input type="hidden" class="form-control" name="kode_pengajuan" id="editKodePengajuan">
+
         <div class="col-12 mb-3">
-            <label for="lab_id">Ruangan</label>
-            <select name="lab_id" id="lab_id" class="form-select">
+            <label for="editPilihRuangan">Ruangan</label>
+            <select name="lab_id" id="editPilihRuangan" class="form-select">
                 <option value=""></option>
                 @foreach ($Ruangan as $item)
-                    @php
-                        $label = array_filter([
-                            $item->Jenislab?->name && $item->name ? "{$item->Jenislab->name} {$item->name}" : $item->name,
-                            $item->kapasitas ? "Kapasitas: {$item->kapasitas}" : null,
-                            $item->lokasi ? "Lokasi: {$item->lokasi}" : null
-                        ]);
-                    @endphp
-                    <option value="{{ $item->id }}" {{ old('lab_id') == $item->id ? 'selected' : '' }}>
-                        {{ implode(' ', $label) }}
-                    </option>
+                    <option value="{{ $item->id }}">{{ $item->name }}</option>
                 @endforeach
             </select>
         </div>
 
-        <div class="col-12 mb-3">
-            <label for="tanggalPengajuan">Tanggal Pengajuan</label>
-            <input type="text" id="tanggalPengajuan" class="form-control" name="tanggal_pengajuan[]" placeholder="Pilih Tanggal">
+        <div id="editTanggalContainer">
+            <div id="editTanggalInputs"></div>
+
+            <div class="d-flex justify-content-between mt-2">
+                <button type="button" id="editPrevTanggal" class="btn btn-secondary" disabled>Sebelumnya</button>
+                <button type="button" id="editRemoveTanggal" class="btn btn-danger" disabled>Hapus Tanggal</button>
+                <button type="button" id="editAddTanggal" class="btn btn-secondary">Tambah Tanggal</button>
+                <button type="button" id="editNextTanggal" class="btn btn-secondary" disabled>Berikutnya</button>
+            </div>
         </div>
 
-        <div id="jamContainer" class="col-12 mb-3 d-flex flex-wrap justify-content-md-between align-items-center"></div>
-
-        <div id="hiddenJamInputs"></div>
-
-        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
         <div class="col-12 mb-3">
-            <label for="keperluanPengajuan">Keperluan</label>
-            <textarea name="keperluan" id="keperluanPengajuan" class="form-control" style="min-height:80px; max-height:80px;"></textarea>
+            <label for="editKeperluanPengajuan">Keperluan</label>
+            <textarea name="keperluan" id="editKeperluanPengajuan" class="form-control"></textarea>
         </div>
 
         <div class="col-12 d-flex justify-content-end">
-            <button type="reset" class="btn btn-danger me-2">Reset</button>
-            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="button" id="cancelEdit" class="btn btn-secondary me-2">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </div>
     </form>
 </div>

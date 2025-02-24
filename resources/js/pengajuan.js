@@ -39,7 +39,7 @@ function initLaboratoriumDataTable() {
                                 data-kode="${row.kode_pengajuan}">
                                 Detail
                             </button>
-                           <button class="btn btn-warning btn-sm" data-kode-pengajuan="${row.kode_pengajuan}">Edit</button>
+                            <button type="button" class="btn btn-warning btn-sm btn-edit" data-kode="${row.kode_pengajuan}">Edit</button>
                             <a href="/pengajuan-jadwal/${row.kode_pengajuan}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Batalkan</a>
                         `;

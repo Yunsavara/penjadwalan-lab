@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\AllRole;
 
+use Log;
 use App\Models\User;
 use App\Models\Pengajuan;
 use Illuminate\Support\Str;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\StatusPengajuanHistories;
 use App\Http\Requests\AllRole\PengajuanStoreRequest;
+use App\Http\Requests\AllRole\PengajuanUpdateRequest;
 
 class PengajuanController extends Controller
 {
@@ -30,51 +32,51 @@ class PengajuanController extends Controller
 
     public function store(PengajuanStoreRequest $request)
     {
-
-        // dd($request->all());
         DB::beginTransaction();
 
         try {
             $user = auth()->user();
             $kodePengajuan = 'PJ-' . strtoupper(Str::random(6));
 
-            foreach ($request->tanggal_pengajuan as $tanggal) {
-                // Pastikan jam_mulai dan jam_selesai ada dan sesuai index tanggal
-                if (!isset($request->jam_mulai[$tanggal]) || !isset($request->jam_selesai[$tanggal])) {
+            $pengajuanData = [];
+            $historyData = [];
+
+            foreach ($request->tanggal_pengajuan as $index => $tanggal) {
+                // Ambil jam mulai & jam selesai sesuai indeks
+                $jamMulaiBaru = $request->jam_mulai[$index] ?? null;
+                $jamSelesaiBaru = $request->jam_selesai[$index] ?? null;
+
+                if (!$jamMulaiBaru || !$jamSelesaiBaru) {
                     throw new \Exception("Jam mulai atau jam selesai tidak ditemukan untuk tanggal {$tanggal}.");
                 }
 
-                $jamMulaiBaru = $request->jam_mulai[$tanggal];
-                $jamSelesaiBaru = $request->jam_selesai[$tanggal];
-
-                // **Cek bentrok dengan status "pending", "diterima", atau "sedang dipakai"**
+                // Cek bentrok dan ambil kode_pengajuan serta status yang menyebabkan bentrok
                 $bentrok = StatusPengajuanHistories::where('user_id', $user->id)
                     ->where('lab_id', $request->lab_id)
                     ->where('tanggal', $tanggal)
-                    ->whereIn('status', ['pending', 'diterima', 'sedang dipakai']) // Hanya cek yang aktif
+                    ->whereIn('status', ['pending', 'diterima', 'sedang dipakai'])
                     ->where(function ($query) use ($jamMulaiBaru, $jamSelesaiBaru) {
                         $query->where(function ($q) use ($jamMulaiBaru, $jamSelesaiBaru) {
                             $q->where('jam_mulai', '<', $jamSelesaiBaru)
                             ->where('jam_selesai', '>', $jamMulaiBaru);
                         });
                     })
-                    ->get();
+                    ->get(['kode_pengajuan', 'status']); // Ambil kode_pengajuan dan status yang bentrok
 
                 if ($bentrok->isNotEmpty()) {
-                    // Ambil daftar jam yang menyebabkan bentrok dan statusnya
-                    $bentrokJadwal = $bentrok->map(function ($item) {
-                        return $item->jam_mulai . ' - ' . $item->jam_selesai . " (Status: {$item->status})";
+                    $bentrokInfo = $bentrok->map(function ($item) {
+                        return "{$item->kode_pengajuan} (Status: {$item->status})";
                     })->implode(', ');
 
                     DB::rollBack();
                     return redirect()->route('pengajuan')->withInput()->with(
                         'error',
-                        "Pengajuan pada tanggal {$tanggal} <br> bentrok dengan pengajuan anda yang sudah ada:<br> {$bentrokJadwal}."
+                        "Pengajuan pada tanggal {$tanggal} bentrok dengan:<br> {$bentrokInfo}."
                     );
                 }
 
-                // Simpan ke tabel pengajuans
-                $pengajuan = Pengajuan::create([
+                // Data untuk batch insert ke tabel pengajuan
+                $pengajuanData[] = [
                     'kode_pengajuan' => $kodePengajuan,
                     'user_id' => $user->id,
                     'lab_id' => $request->lab_id,
@@ -82,21 +84,29 @@ class PengajuanController extends Controller
                     'jam_mulai' => $jamMulaiBaru,
                     'jam_selesai' => $jamSelesaiBaru,
                     'keperluan' => $request->keperluan,
-                    'status' => 'pending', // Default status saat diajukan
-                ]);
+                    'status' => 'pending',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
 
-                // Simpan ke tabel pengajuan_status_histories
-                StatusPengajuanHistories::create([
-                    'kode_pengajuan' => $pengajuan->kode_pengajuan,
+                // Data untuk batch insert ke tabel pengajuan_status_histories
+                $historyData[] = [
+                    'kode_pengajuan' => $kodePengajuan,
                     'tanggal' => $tanggal,
                     'jam_mulai' => $jamMulaiBaru,
                     'jam_selesai' => $jamSelesaiBaru,
                     'status' => 'pending',
                     'user_id' => $user->id,
                     'lab_id' => $request->lab_id,
-                    'changed_by' => $user->id, // User sendiri yang mengajukan
-                ]);
+                    'changed_by' => $user->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
             }
+
+            // Simpan ke database dengan batch insert
+            Pengajuan::insert($pengajuanData);
+            StatusPengajuanHistories::insert($historyData);
 
             DB::commit();
             return redirect()->route('pengajuan')->with('success', 'Pengajuan berhasil dikirim!');
@@ -187,26 +197,80 @@ class PengajuanController extends Controller
 
     public function edit($kode_pengajuan)
     {
-        $pengajuan = Pengajuan::where('kode_pengajuan', $kode_pengajuan)->get(); // Ambil semua baris dengan kode_pengajuan yang sama
+        $pengajuan = Pengajuan::where('kode_pengajuan', $kode_pengajuan)->get()->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'kode_pengajuan' => $item->kode_pengajuan,
+                'keperluan' => $item->keperluan,
+                'lab_id' => $item->lab_id,
+                'tanggal' => $item->tanggal,
+                'jam_mulai' => date('H:i', strtotime($item->jam_mulai)), // Ubah format jam
+                'jam_selesai' => date('H:i', strtotime($item->jam_selesai)), // Ubah format jam
+            ];
+        });
 
         if ($pengajuan->isEmpty()) {
-            return response()->json(['error' => 'Pengajuan tidak ditemukan'], 404);
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan!']);
         }
 
-        // Ambil lab_id dari pengajuan pertama (asumsi lab_id sama untuk setiap baris dengan kode yang sama)
-        $lab_id = $pengajuan->first()->lab_id;
-
-        // Ambil semua tanggal pengajuan
-        $tanggal = $pengajuan->pluck('tanggal')->toArray();
-
-        // Ambil keperluan dari pengajuan pertama
-        $keperluan = $pengajuan->first()->keperluan;
-
         return response()->json([
-            'lab_id' => $lab_id,
-            'tanggal' => $tanggal,
-            'keperluan' => $keperluan,
+            'success' => true,
+            'data' => $pengajuan
         ]);
+    }
+
+    public function update(PengajuanUpdateRequest $request, $kode_pengajuan)
+    {
+        // dd($request->all());
+        DB::beginTransaction(); // Mulai transaksi
+
+        try {
+            $existingPengajuan = Pengajuan::where('kode_pengajuan', $kode_pengajuan)->get();
+            $existingDates = $existingPengajuan->pluck('tanggal')->toArray();
+
+            foreach ($request->tanggal_pengajuan as $index => $tanggal) {
+                $jamMulai = $request->jam_mulai[$index];
+                $jamSelesai = $request->jam_selesai[$index];
+
+                // Cek apakah tanggal ini sudah ada di database
+                $pengajuan = $existingPengajuan->where('tanggal', $tanggal)->first();
+
+                if ($pengajuan) {
+                    // Jika tanggal sudah ada, lakukan update
+                    $pengajuan->update([
+                        'keperluan' => $request->keperluan,
+                        'lab_id' => $request->lab_id,
+                        'jam_mulai' => $jamMulai,
+                        'jam_selesai' => $jamSelesai,
+                    ]);
+                } else {
+                    // Jika tanggal belum ada, tambahkan sebagai data baru
+                    Pengajuan::create([
+                        'kode_pengajuan' => $kode_pengajuan,
+                        'keperluan' => $request->keperluan,
+                        'lab_id' => $request->lab_id,
+                        'tanggal' => $tanggal,
+                        'jam_mulai' => $jamMulai,
+                        'jam_selesai' => $jamSelesai,
+                        'status' => 'pending',
+                        'user_id' => auth()->id(),
+                    ]);
+                }
+            }
+
+            // Hapus tanggal lama yang tidak ada di input baru
+            $submittedDates = $request->tanggal_pengajuan;
+            Pengajuan::where('kode_pengajuan', $kode_pengajuan)
+                ->whereNotIn('tanggal', $submittedDates)
+                ->delete();
+
+            DB::commit();
+
+            return redirect()->route('pengajuan')->with('success', 'Pengajuan berhasil diubah!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('pengajuan')->with('error', 'Pengajuan gagal diubah: ' . $e->getMessage());
+        }
     }
 
 }
