@@ -20,14 +20,22 @@ class LaboratoriumUnpam extends Model
         'jenislab_id'
     ];
 
+    // Relasi buat ke jenis lab
     public function Jenislab()
     {
         return $this->belongsTo(Jenislab::class, 'jenislab_id');
     }
 
-    public function jadwals()
+    // Relasi ke Pengajuan (Pengajuan yang terkait dengan lab ini)
+    public function pengajuan()
     {
-        return $this->hasMany(Jadwal::class, 'lab_id');
+        return $this->hasMany(Pengajuan::class, 'lab_id', 'id');
+    }
+
+    // Relasi ke Jadwal (Jadwal yang terkait dengan lab ini)
+    public function jadwal()
+    {
+        return $this->hasMany(Jadwal::class, 'lab_id', 'id');
     }
 
 

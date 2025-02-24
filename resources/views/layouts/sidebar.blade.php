@@ -61,24 +61,8 @@
                 </ul>
             </li>
 
-            @php
-                $jadwalRoutes = ['laboran.booking*','laboran.laboratorium*'];
-            @endphp
-
-            <li class="sidebar-item @if (Str::is($jadwalRoutes, Route::currentRouteName())) active @endif">
-                <a href="" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#bookingContainer">
-                    <i data-feather="calendar" class="sidebar-icon-link"></i>Jadwal
-                    <i data-feather="chevron-right" class="dropdown-icon @if (Str::is($jadwalRoutes, Route::currentRouteName())) active @endif"></i>
-                </a>
-
-                <ul class="collapse list-unstyled dropdown-menu-vanilla @if (Str::is($jadwalRoutes, Route::currentRouteName())) active @endif" id="bookingContainer">
-                    <li class="sidebar-item @if (Str::is('laboran.booking*', Route::currentRouteName())) active @endif">
-                        <a href="{{ route('laboran.booking') }}" class="sidebar-link">Booking</a>
-                    </li>
-                    <li class="sidebar-item @if (Str::is('laboran.laboratorium*', Route::currentRouteName())) active @endif">
-                        <a href="{{ route('laboran.laboratorium') }}" class="sidebar-link">Pengajuan</a>
-                    </li>
-                </ul>
+            <li class="sidebar-item {{ Route::is('laboran.pengajuan*') ? 'active' : '' }}">
+                <a href="{{ Route('laboran.pengajuan') }}" class="sidebar-link"><i data-feather="bar-chart-2" class="sidebar-icon-link"></i>Pengajuan</a>
             </li>
 
             <li class="sidebar-item {{ Route::is('admin.barang*') ? 'active' : '' }}">
@@ -88,10 +72,10 @@
         @endif
 
 
-        {{-- Admin, Laboran, Prodi --}}
-        @if (auth()->user()->role->name === "admin" || auth()->user()->role->name === "laboran" || auth()->user()->role->name === "prodi")
-
-        @endif
+        {{-- All Role --}}
+        <li class="sidebar-item {{ Route::is('pengajuan*') ? 'active' : '' }}">
+            <a href="{{ Route('pengajuan') }}" class="sidebar-link"><i data-feather="calendar" class="sidebar-icon-link"></i>Jadwal</a>
+        </li>
     </ul>
 
 </div>

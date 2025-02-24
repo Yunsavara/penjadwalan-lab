@@ -7,10 +7,10 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\DashboardController;
-use App\Http\Controllers\Laboran\BookingController;
 use App\Http\Controllers\Laboran\JenisLabController;
-use App\Http\Controllers\Laboran\MataKuliahController;
+use App\Http\Controllers\AllRole\PengajuanController;
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
+use App\Http\Controllers\Laboran\PengajuanController as LaboranPengajuanController;
 
 Route::group(['middleware' => 'guest'], function() {
     // Home
@@ -29,6 +29,15 @@ Route::group(['middleware' => 'guest'], function() {
 
 Route::group(['middleware'=> 'auth'], function() {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // Pengajuan jadwal
+    Route::get('/pengajuan-jadwal', [PengajuanController::class, 'index'])->name('pengajuan');
+    Route::get('/pengajuan-jadwal/pengajuan-jadwal-data', [PengajuanController::class, 'getData']); //datatables
+    Route::get('/pengajuan-jadwal/detail/{kode_pengajuan}', [PengajuanController::class, 'getDetail']); //detail baris
+    Route::post('/pengajuan-jadwal/tambah-pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
+    Route::get('/pengajuan-jadwal/edit/{kode_pengajuan}', [PengajuanController::class, 'edit'])->name('pengajuan.update');
+    Route::put('/pengajuan-jadwal/edit/{kode_pengajuan}', [PengajuanController::class, 'update']);
+
 });
 
 Route::group(['middleware' => ['role:admin']], function() {
@@ -67,9 +76,9 @@ Route::group(['middleware' => ['role:laboran']], function() {
     Route::get('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'edit'])->name('laboran.laboratorium.edit');
     Route::put('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'update']);
 
-    // Booking
-    Route::get('/laboran/booking', [BookingController::class, 'index'])->name('laboran.booking');
-    Route::get('/laboran/buat-booking', [BookingController::class, 'create'])->name('laboran.booking.create');
+    // Pengajuan
+    Route::get('/laboran/pengajuan-jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.pengajuan');
+    Route::get('/laboran/pengajuan-jadwal/pengajuan-jadwal-data', [LaboranPengajuanController::class, 'getData']);
 });
 
 Route::group(['middleware' => ['role:prodi']], function() {

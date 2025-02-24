@@ -39,7 +39,7 @@
                     <th>Nama</th>
                     <th>Jenis</th>
                     <th>Lokasi</th>
-                    <th>Kapasistas</th>
+                    <th>Kapasitas</th>
                     <th>Status</th>
                     <th>Aksi</th>
                 </thead>
