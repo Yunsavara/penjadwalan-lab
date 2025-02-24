@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     initLaboranPengajuanDataTable();
+    modalStatusDiterima();
 });
 
 function initLaboranPengajuanDataTable() {
@@ -43,9 +44,19 @@ function initLaboranPengajuanDataTable() {
                                     <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Status
                                     </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Terima</a></li>
-                                        <li><a class="dropdown-item" href="#">Tolak</a></li>
+                                    <ul class="dropdown-menu p-0">
+                                        <li>
+                                            <button class="dropdown-item ubah-status" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi"
+                                                data-kode="${row.kode_pengajuan}" data-status="diterima">
+                                                Terima
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item ubah-status" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi"
+                                                data-kode="${row.kode_pengajuan}" data-status="ditolak">
+                                                Tolak
+                                            </button>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -171,4 +182,22 @@ function moveTools() {
     } else {
         console.log("Tools Error");
     }
+}
+
+function modalStatusDiterima(){
+    let modalKonfirmasi = document.getElementById("modalKonfirmasi");
+
+    modalKonfirmasi.addEventListener("show.bs.modal", function (event) {
+        let button = event.relatedTarget;
+        let kodePengajuan = button.getAttribute("data-kode");
+        let statusBaru = button.getAttribute("data-status");
+
+        let modalText = document.getElementById("konfirmasiText");
+        let inputKode = document.getElementById("kodePengajuanInput");
+        let inputStatus = document.getElementById("statusPengajuanInput");
+
+        modalText.innerHTML = `Apakah Anda yakin ingin mengubah status menjadi <strong>${statusBaru}</strong>?`;
+        inputKode.value = kodePengajuan;
+        inputStatus.value = statusBaru;
+    });
 }

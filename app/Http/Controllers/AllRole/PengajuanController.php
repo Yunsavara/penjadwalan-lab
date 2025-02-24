@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AllRole;
 
 use Log;
 use App\Models\User;
+use App\Models\Jadwal;
 use App\Models\Pengajuan;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -36,13 +37,13 @@ class PengajuanController extends Controller
 
         try {
             $user = auth()->user();
+            $userPriority = $user->role->priority;
             $kodePengajuan = 'PJ-' . strtoupper(Str::random(6));
 
             $pengajuanData = [];
             $historyData = [];
 
             foreach ($request->tanggal_pengajuan as $index => $tanggal) {
-                // Ambil jam mulai & jam selesai sesuai indeks
                 $jamMulaiBaru = $request->jam_mulai[$index] ?? null;
                 $jamSelesaiBaru = $request->jam_selesai[$index] ?? null;
 
@@ -50,21 +51,20 @@ class PengajuanController extends Controller
                     throw new \Exception("Jam mulai atau jam selesai tidak ditemukan untuk tanggal {$tanggal}.");
                 }
 
-                // Cek bentrok dan ambil kode_pengajuan serta status yang menyebabkan bentrok
-                $bentrok = StatusPengajuanHistories::where('user_id', $user->id)
+                $bentrokHistories = StatusPengajuanHistories::where('user_id', $user->id)
                     ->where('lab_id', $request->lab_id)
                     ->where('tanggal', $tanggal)
                     ->whereIn('status', ['pending', 'diterima', 'sedang dipakai'])
                     ->where(function ($query) use ($jamMulaiBaru, $jamSelesaiBaru) {
                         $query->where(function ($q) use ($jamMulaiBaru, $jamSelesaiBaru) {
                             $q->where('jam_mulai', '<', $jamSelesaiBaru)
-                            ->where('jam_selesai', '>', $jamMulaiBaru);
+                                ->where('jam_selesai', '>', $jamMulaiBaru);
                         });
                     })
-                    ->get(['kode_pengajuan', 'status']); // Ambil kode_pengajuan dan status yang bentrok
+                    ->get(['kode_pengajuan', 'status']);
 
-                if ($bentrok->isNotEmpty()) {
-                    $bentrokInfo = $bentrok->map(function ($item) {
+                if ($bentrokHistories->isNotEmpty()) {
+                    $bentrokInfo = $bentrokHistories->map(function ($item) {
                         return "{$item->kode_pengajuan} (Status: {$item->status})";
                     })->implode(', ');
 
@@ -75,7 +75,33 @@ class PengajuanController extends Controller
                     );
                 }
 
-                // Data untuk batch insert ke tabel pengajuan
+                $bentrokJadwal = Jadwal::where('lab_id', $request->lab_id)
+                    ->where('tanggal', $tanggal)
+                    ->whereIn('status', ['belum digunakan', 'sedang digunakan'])
+                    ->where(function ($query) use ($jamMulaiBaru, $jamSelesaiBaru) {
+                        $query->where(function ($q) use ($jamMulaiBaru, $jamSelesaiBaru) {
+                            $q->where('jam_mulai', '<', $jamSelesaiBaru)
+                                ->where('jam_selesai', '>', $jamMulaiBaru);
+                        });
+                    })
+                    ->get();
+
+                if ($bentrokJadwal->isNotEmpty()) {
+                    foreach ($bentrokJadwal as $jadwal) {
+                        $jadwalPriority = $jadwal->user->role->priority; // Ambil priority dari user yang punya jadwal
+
+                        // dd($jadwal->user->role->priority);
+
+                        if ($userPriority > $jadwalPriority) {
+                            DB::rollBack();
+                            return redirect()->route('pengajuan')->withInput()->with(
+                                'error',
+                                "Pengajuan pada tanggal {$tanggal} bentrok dengan jadwal user lain yang memiliki prioritas lebih tinggi."
+                            );
+                        }
+                    }
+                }
+
                 $pengajuanData[] = [
                     'kode_pengajuan' => $kodePengajuan,
                     'user_id' => $user->id,
@@ -89,7 +115,6 @@ class PengajuanController extends Controller
                     'updated_at' => now(),
                 ];
 
-                // Data untuk batch insert ke tabel pengajuan_status_histories
                 $historyData[] = [
                     'kode_pengajuan' => $kodePengajuan,
                     'tanggal' => $tanggal,
@@ -104,7 +129,6 @@ class PengajuanController extends Controller
                 ];
             }
 
-            // Simpan ke database dengan batch insert
             Pengajuan::insert($pengajuanData);
             StatusPengajuanHistories::insert($historyData);
 
@@ -119,7 +143,9 @@ class PengajuanController extends Controller
     // Datatables
     public function getData(Request $request)
     {
-        // Query untuk mengambil data unik berdasarkan kode_pengajuan
+        $userId = auth()->id(); // Ambil ID user yang sedang login
+
+        // Query untuk mengambil data unik berdasarkan kode_pengajuan milik user login
         $query = Pengajuan::select([
                     'kode_pengajuan',
                     DB::raw('GROUP_CONCAT(DISTINCT tanggal ORDER BY tanggal ASC SEPARATOR ", ") as tanggal_pengajuan'),
@@ -128,6 +154,7 @@ class PengajuanController extends Controller
                     'lab_id',
                     'user_id'
                 ])
+                ->where('user_id', $userId) // Filter berdasarkan user yang login
                 ->groupBy('kode_pengajuan', 'keperluan', 'status', 'lab_id', 'user_id');
 
         // Filter pencarian
@@ -140,8 +167,8 @@ class PengajuanController extends Controller
         // Pagination
         $data = $query->paginate($request->input('length'));
 
-        // Total record untuk pagination
-        $recordsTotal = Pengajuan::distinct('kode_pengajuan')->count();
+        // Total record untuk pagination berdasarkan user login
+        $recordsTotal = Pengajuan::where('user_id', $userId)->distinct('kode_pengajuan')->count();
         $recordsFiltered = $query->count();
 
         return response()->json([

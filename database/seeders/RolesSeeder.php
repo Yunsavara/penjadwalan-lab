@@ -15,22 +15,28 @@ class RolesSeeder extends Seeder
     {
         roles::create([
             'name' => 'admin',
+            'priority' => 5
         ]);
 
         roles::create([
             'name' => 'laboran',
+            'priority' => 4
+
         ]);
 
         roles::create([
             'name' => 'lembaga',
+            'priority' => 1
         ]);
 
         roles::create([
             'name' => 'prodi',
+            'priority' => 2
         ]);
 
         roles::create([
             'name' => 'user',
+            'priority' => 3
         ]);
     }
 }

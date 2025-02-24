@@ -72,10 +72,11 @@
         @endif
 
 
-        {{-- All Role --}}
-        <li class="sidebar-item {{ Route::is('pengajuan*') ? 'active' : '' }}">
-            <a href="{{ Route('pengajuan') }}" class="sidebar-link"><i data-feather="calendar" class="sidebar-icon-link"></i>Jadwal</a>
-        </li>
+        @if (auth()->user()->role->name !== "admin" && auth()->user()->role->name !== "laboran")
+            <li class="sidebar-item {{ Route::is('pengajuan*') ? 'active' : '' }}">
+                <a href="{{ Route('pengajuan') }}" class="sidebar-link"><i data-feather="calendar" class="sidebar-icon-link"></i>Jadwal</a>
+            </li>
+        @endif
     </ul>
 
 </div>
