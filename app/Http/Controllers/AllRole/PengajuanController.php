@@ -221,27 +221,58 @@ class PengajuanController extends Controller
 
     public function update(PengajuanUpdateRequest $request, $kode_pengajuan)
     {
-        // dd($request->all());
-        DB::beginTransaction(); // Mulai transaksi
+        DB::beginTransaction();
 
         try {
+            $user = auth()->user();
             $existingPengajuan = Pengajuan::where('kode_pengajuan', $kode_pengajuan)->get();
-            $existingDates = $existingPengajuan->pluck('tanggal')->toArray();
+            $historyData = [];
 
             foreach ($request->tanggal_pengajuan as $index => $tanggal) {
-                $jamMulai = $request->jam_mulai[$index];
-                $jamSelesai = $request->jam_selesai[$index];
+                $jamMulaiBaru = $request->jam_mulai[$index];
+                $jamSelesaiBaru = $request->jam_selesai[$index];
 
                 // Cek apakah tanggal ini sudah ada di database
                 $pengajuan = $existingPengajuan->where('tanggal', $tanggal)->first();
 
                 if ($pengajuan) {
-                    // Jika tanggal sudah ada, lakukan update
+                    // Jika jam mulai atau jam selesai berubah
+                    if ($pengajuan->jam_mulai !== $jamMulaiBaru || $pengajuan->jam_selesai !== $jamSelesaiBaru) {
+                        // Simpan histori perubahan dengan status "dibatalkan" untuk data lama
+                        $historyData[] = [
+                            'kode_pengajuan' => $kode_pengajuan,
+                            'tanggal' => $pengajuan->tanggal,
+                            'jam_mulai' => $pengajuan->jam_mulai,
+                            'jam_selesai' => $pengajuan->jam_selesai,
+                            'status' => 'dibatalkan',
+                            'user_id' => $pengajuan->user_id,
+                            'lab_id' => $pengajuan->lab_id,
+                            'changed_by' => $user->id,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+
+                        // Simpan histori baru dengan status "pending"
+                        $historyData[] = [
+                            'kode_pengajuan' => $kode_pengajuan,
+                            'tanggal' => $tanggal,
+                            'jam_mulai' => $jamMulaiBaru,
+                            'jam_selesai' => $jamSelesaiBaru,
+                            'status' => 'pending',
+                            'user_id' => $user->id,
+                            'lab_id' => $request->lab_id,
+                            'changed_by' => $user->id,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+
+                    // Update data utama
                     $pengajuan->update([
                         'keperluan' => $request->keperluan,
                         'lab_id' => $request->lab_id,
-                        'jam_mulai' => $jamMulai,
-                        'jam_selesai' => $jamSelesai,
+                        'jam_mulai' => $jamMulaiBaru,
+                        'jam_selesai' => $jamSelesaiBaru,
                     ]);
                 } else {
                     // Jika tanggal belum ada, tambahkan sebagai data baru
@@ -250,22 +281,59 @@ class PengajuanController extends Controller
                         'keperluan' => $request->keperluan,
                         'lab_id' => $request->lab_id,
                         'tanggal' => $tanggal,
-                        'jam_mulai' => $jamMulai,
-                        'jam_selesai' => $jamSelesai,
+                        'jam_mulai' => $jamMulaiBaru,
+                        'jam_selesai' => $jamSelesaiBaru,
                         'status' => 'pending',
-                        'user_id' => auth()->id(),
+                        'user_id' => $user->id,
                     ]);
+
+                    // Simpan histori untuk tanggal baru
+                    $historyData[] = [
+                        'kode_pengajuan' => $kode_pengajuan,
+                        'tanggal' => $tanggal,
+                        'jam_mulai' => $jamMulaiBaru,
+                        'jam_selesai' => $jamSelesaiBaru,
+                        'status' => 'pending',
+                        'user_id' => $user->id,
+                        'lab_id' => $request->lab_id,
+                        'changed_by' => $user->id,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
                 }
             }
 
-            // Hapus tanggal lama yang tidak ada di input baru
+            // Hapus tanggal lama yang tidak ada di input baru dan catat ke history
             $submittedDates = $request->tanggal_pengajuan;
+            $deletedPengajuan = Pengajuan::where('kode_pengajuan', $kode_pengajuan)
+                ->whereNotIn('tanggal', $submittedDates)
+                ->get();
+
+            foreach ($deletedPengajuan as $del) {
+                $historyData[] = [
+                    'kode_pengajuan' => $del->kode_pengajuan,
+                    'tanggal' => $del->tanggal,
+                    'jam_mulai' => $del->jam_mulai,
+                    'jam_selesai' => $del->jam_selesai,
+                    'status' => 'dibatalkan',
+                    'user_id' => $del->user_id,
+                    'lab_id' => $del->lab_id,
+                    'changed_by' => $user->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
             Pengajuan::where('kode_pengajuan', $kode_pengajuan)
                 ->whereNotIn('tanggal', $submittedDates)
                 ->delete();
 
-            DB::commit();
+            // Simpan histori perubahan
+            if (!empty($historyData)) {
+                StatusPengajuanHistories::insert($historyData);
+            }
 
+            DB::commit();
             return redirect()->route('pengajuan')->with('success', 'Pengajuan berhasil diubah!');
         } catch (\Exception $e) {
             DB::rollBack();
