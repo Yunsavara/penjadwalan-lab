@@ -62,7 +62,6 @@ class PengajuanController extends Controller
         try {
             $kodePengajuan = $request->kode_pengajuan;
             $statusBaru = $request->status;
-            $user = auth()->user();
 
             // Ambil semua pengajuan dengan kode yang sama
             $pengajuans = Pengajuan::where('kode_pengajuan', $kodePengajuan)->get();
@@ -85,7 +84,7 @@ class PengajuanController extends Controller
                     'status' => $statusBaru,
                     'user_id' => $pengajuan->user_id,
                     'lab_id' => $pengajuan->lab_id,
-                    'changed_by' => $user->id,
+                    'changed_by' => auth()->id(),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -95,7 +94,50 @@ class PengajuanController extends Controller
             // Jika status diubah menjadi "diterima", masukkan ke tabel `jadwals`
             if ($statusBaru === "diterima") {
                 $jadwalData = [];
+                $historyTergantikan = [];
+
                 foreach ($pengajuans as $pengajuan) {
+                    // Ambil priority dari user yang mengajukan
+                    $pengajuanUser = $pengajuan->user;
+                    $pengajuanPriority = $pengajuanUser->role->priority;
+
+                    // Cek apakah ada jadwal yang bentrok
+                    $jadwalBentrok = Jadwal::where('lab_id', $pengajuan->lab_id)
+                        ->where('tanggal', $pengajuan->tanggal)
+                        ->where('jam_mulai', '<', $pengajuan->jam_selesai)
+                        ->where('jam_selesai', '>', $pengajuan->jam_mulai)
+                        ->whereIn('status', ['belum digunakan'])
+                        ->first();
+
+                    if ($jadwalBentrok) {
+                        $existingUser = $jadwalBentrok->user;
+                        $existingPriority = $existingUser->role->priority;
+
+                        // Cek priority antara user pengajuan dan user jadwal yang bentrok
+                        if ($pengajuanPriority > $existingPriority) {
+                            DB::rollBack();
+                            return redirect()->back()->with('error', "Pengajuan bentrok dengan jadwal lain yang memiliki prioritas lebih tinggi.");
+                        }
+
+                        // Jika pengajuan baru lebih tinggi priority-nya, ubah jadwal lama jadi "tergantikan"
+                        $jadwalBentrok->update(['status' => 'tergantikan']);
+
+                        // Simpan perubahan status "tergantikan" ke history
+                        $historyTergantikan[] = [
+                            'kode_pengajuan' => $jadwalBentrok->kode_pengajuan,
+                            'tanggal' => $jadwalBentrok->tanggal,
+                            'jam_mulai' => $jadwalBentrok->jam_mulai,
+                            'jam_selesai' => $jadwalBentrok->jam_selesai,
+                            'status' => 'tergantikan',
+                            'user_id' => $jadwalBentrok->user_id,
+                            'lab_id' => $jadwalBentrok->lab_id,
+                            'changed_by' => auth()->id(),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+
+                    // Masukkan pengajuan baru sebagai jadwal
                     $jadwalData[] = [
                         'kode_pengajuan' => $kodePengajuan,
                         'keperluan' => $pengajuan->keperluan,
@@ -109,7 +151,13 @@ class PengajuanController extends Controller
                         'updated_at' => now(),
                     ];
                 }
+
                 Jadwal::insert($jadwalData);
+
+                // Insert history untuk jadwal yang "tergantikan"
+                if (!empty($historyTergantikan)) {
+                    StatusPengajuanHistories::insert($historyTergantikan);
+                }
             }
 
             DB::commit();
@@ -119,5 +167,6 @@ class PengajuanController extends Controller
             return redirect()->back()->with('error', "Terjadi kesalahan: " . $e->getMessage());
         }
     }
+
 
 }
