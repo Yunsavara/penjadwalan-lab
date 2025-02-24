@@ -82,6 +82,10 @@ Route::group(['middleware' => ['role:laboran']], function() {
     Route::post('/laboran/pengajuan-jadwal/update-status', [LaboranPengajuanController::class, 'updateStatus'])->name('pengajuan.update-status');
 });
 
+Route::group(['middleware' => ['role:lembaga']], function() {
+    Route::get('/lembaga/dashboard', [DashboardController::class,'lembaga'])->name('lembaga.dashboard');
+});
+
 Route::group(['middleware' => ['role:prodi']], function() {
     Route::get('/prodi/dashboard', [DashboardController::class,'prodi'])->name('prodi.dashboard');
 });
