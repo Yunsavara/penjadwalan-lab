@@ -79,6 +79,7 @@ Route::group(['middleware' => ['role:laboran']], function() {
     // Pengajuan
     Route::get('/laboran/pengajuan-jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.pengajuan');
     Route::get('/laboran/pengajuan-jadwal/pengajuan-jadwal-data', [LaboranPengajuanController::class, 'getData']);
+    Route::post('/laboran/pengajuan-jadwal/update-status', [LaboranPengajuanController::class, 'updateStatus'])->name('pengajuan.update-status');
 });
 
 Route::group(['middleware' => ['role:prodi']], function() {

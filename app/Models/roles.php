@@ -8,10 +8,11 @@ class roles extends Model
 {
     //
 
-    protected $fillable =
-    ['name'];
+    protected $fillable = [
+        'name','priority'
+    ];
 
-    public function users(){
+    public function user(){
         return $this->hasMany(User::class, 'role_id');
     }
 }

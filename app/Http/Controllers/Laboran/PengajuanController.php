@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Laboran;
 
+use App\Models\Jadwal;
 use App\Models\Pengajuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\StatusPengajuanHistories;
 
 class PengajuanController extends Controller
 {
@@ -52,4 +54,70 @@ class PengajuanController extends Controller
             'data' => $data->items(),
         ]);
     }
+
+    public function updateStatus(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $kodePengajuan = $request->kode_pengajuan;
+            $statusBaru = $request->status;
+            $user = auth()->user();
+
+            // Ambil semua pengajuan dengan kode yang sama
+            $pengajuans = Pengajuan::where('kode_pengajuan', $kodePengajuan)->get();
+
+            if ($pengajuans->isEmpty()) {
+                return redirect()->back()->with('error', 'Pengajuan tidak ditemukan.');
+            }
+
+            // Update status pengajuan
+            Pengajuan::where('kode_pengajuan', $kodePengajuan)->update(['status' => $statusBaru]);
+
+            // Simpan perubahan ke dalam `pengajuan_status_histories`
+            $historyData = [];
+            foreach ($pengajuans as $pengajuan) {
+                $historyData[] = [
+                    'kode_pengajuan' => $kodePengajuan,
+                    'tanggal' => $pengajuan->tanggal,
+                    'jam_mulai' => $pengajuan->jam_mulai,
+                    'jam_selesai' => $pengajuan->jam_selesai,
+                    'status' => $statusBaru,
+                    'user_id' => $pengajuan->user_id,
+                    'lab_id' => $pengajuan->lab_id,
+                    'changed_by' => $user->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            StatusPengajuanHistories::insert($historyData);
+
+            // Jika status diubah menjadi "diterima", masukkan ke tabel `jadwals`
+            if ($statusBaru === "diterima") {
+                $jadwalData = [];
+                foreach ($pengajuans as $pengajuan) {
+                    $jadwalData[] = [
+                        'kode_pengajuan' => $kodePengajuan,
+                        'keperluan' => $pengajuan->keperluan,
+                        'tanggal' => $pengajuan->tanggal,
+                        'jam_mulai' => $pengajuan->jam_mulai,
+                        'jam_selesai' => $pengajuan->jam_selesai,
+                        'status' => 'belum digunakan',
+                        'lab_id' => $pengajuan->lab_id,
+                        'user_id' => $pengajuan->user_id,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+                Jadwal::insert($jadwalData);
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', "Status berhasil diubah menjadi {$statusBaru}.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', "Terjadi kesalahan: " . $e->getMessage());
+        }
+    }
+
 }
