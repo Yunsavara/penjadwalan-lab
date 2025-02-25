@@ -14,7 +14,7 @@ function initMataKuliahDataTable(){
             fixedHeader: true,
             responsive: true,
             ajax: {
-                url: '/admin/mata-kuliah/mata-kuliah-data',
+                url: '/laboran/mata-kuliah/mata-kuliah-data',
                 type: 'GET',
             },
             columns: [
@@ -32,8 +32,8 @@ function initMataKuliahDataTable(){
                     name: 'action',
                     render: function(data, type, row) {
                         return `
-                            <a href="/admin/ubah-mata-kuliah/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="/admin/delete-mata-kuliah/${row.slug}" class="btn btn-danger btn-sm"
+                            <a href="/laboran/ubah-mata-kuliah/${row.slug}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="/laboran/delete-mata-kuliah/${row.slug}" class="btn btn-danger btn-sm"
                                onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</a>
                         `;
                     }

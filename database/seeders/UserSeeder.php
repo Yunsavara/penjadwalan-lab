@@ -46,7 +46,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'Dosen Prodi 3',
-            'email' => 'dose3@example.com',
+            'email' => 'dosen3@example.com',
             'slug' => Str::slug('Dosen Prodi 3'),
             'password' => Hash::make('password'),
             'lokasi' => 'fleksible',
@@ -68,8 +68,17 @@ class UserSeeder extends Seeder
             'email' => 'laboran@example.com',
             'slug' => Str::slug('Laboran'),
             'password' => Hash::make('password'),
-            'lokasi' => 'fleksible',
+            'lokasi' => 'viktor',
             'role_id' => 2,
+        ]);
+
+        User::create([
+            'name' => 'Lembaga',
+            'email' => 'lembaga@example.com',
+            'slug' => Str::slug('Lembaga'),
+            'password' => Hash::make('password'),
+            'lokasi' => 'fleksible',
+            'role_id' => 1,
         ]);
     }
 }
