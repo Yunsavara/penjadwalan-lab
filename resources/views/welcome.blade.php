@@ -4,19 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="{{ asset('images/unpam-logo.png') }}" type="image" sizes="16x16">
-    <title>Penjadwalan Lab Unpam</title>
+
+    <title>Laravel</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="{{ asset('css/welcome.css') }}">
-
-    {{-- Font --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
-
+    <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
 </head>
 
 <body>
@@ -26,7 +19,7 @@
         <div class="container-fluid px-5">
             <div class="navbar-brand">
                 <img src="{{ asset('images/unpam-logo.png') }}" width="50px" alt="" srcset="">
-                <b class="mysite-title mx-3 fs-4"><i>Penjadwalan Lab</i></b>
+                <b class="mysite-title mytext-brown mx-3 fs-4"><i>Penjadwalan Lab</i></b>
             </div>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
@@ -86,7 +79,7 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="{{ asset('images/lab-mobile.jpg') }}" class="d-block w-100 myimage-darken" alt="...">
+                <img src="{{ asset('images/lab-mobile.jpg') }}" class="d-block w-100 bg-darken" alt="...">
                 <div class="carousel-caption d-none d-md-block text-start">
                     <h5 class="fs-1 mytext-shadowed">Laboratorium Mobile Programming</h5>
                     <p class="mytext-shadowed">Laboratorium dengan spesifikasi tinggi untuk mendukung praktikum dengan
@@ -160,7 +153,7 @@
     </div>
 
     {{-- Collaborate With --}}
-    <div class="mycontainer-service text-center py-5 mb-5">
+    <div class="bg-lightBrown text-center py-5 mb-5">
         <h4 class="fs-3 pb-5">Fitur Aplikasi</h4>
         <div class="container">
             <div class="row row-cols-1 row-cols-md-3 g-4  mb-5">
@@ -169,7 +162,7 @@
                         <div class="card-body p-5">
                             <img class="myicons-feature" src="{{ asset('images/icons/time.png') }}" alt="">
                             <center>
-                                <hr class="mydivider-brown">
+                                <hr class="mydivider bolor-brown">
                             </center>
                             <h5 class="card-title nytext-brown">Penjadwalan</h5>
                         </div>
@@ -177,10 +170,10 @@
                 </div>
                 <div class="col">
                     <div class="card border-0">
-                        <div class="card-body mycard-brown p-5">
+                        <div class="card-body mycard bg-brown p-5">
                             <img class="myicons-feature" src="{{ asset('images/icons/settings.png') }}" alt="">
                             <center>
-                                <hr class="mydivider-white">
+                                <hr class="mydivider bolor-white">
                             </center>
                             <h5 class="card-title text-light">Pengelolaan</h5>
                         </div>
@@ -191,7 +184,7 @@
                         <div class="card-body p-5">
                             <img class="myicons-feature" src="{{ asset('images/icons/submission.png') }}" alt="">
                             <center>
-                                <hr class="mydivider-brown my-3">
+                                <hr class="mydivider bolor-brown my-3">
                             </center>
                             <h5 class="card-title mytext-brown">Pengajuan</h5>
                         </div>
@@ -280,20 +273,8 @@
         </div>
     </div>
 
-    {{-- Contact --}}
-    <div class="mycontainer-contact">
-        <div class="row text-center p-5">
-            <div class="col">
-                <h4 class="fw-semibold text-light">Jangan Sungkan Untuk Menghubungi Kami</h3>
-            </div>
-            <div class="col-md-4">
-                <a type="button" class="btn btn-outline-light b-3" href="#">Hubungi Kami</a>
-            </div>
-        </div>
-    </div>
-
     {{-- Footer --}}
-    <footer class="mycard-brown text-light text-center py-3">
+    <footer class="bg-brown text-light text-center py-3">
         Penjadwalan Lab &copy; 2024. Hak Cipta Sepenuhnya milik Universitas Pamulang.
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.js"></script>

@@ -1,133 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="{{ asset('images/unpam-logo.png') }}" type="image">
-    <title>Registrasi</title>
 
-    {{-- Bootstrap CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register Page</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('AdminLte/plugins/fontawesome-free/css/all.min.css') }}">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="{{ asset('AdminLte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('AdminLte/dist/css/adminlte.min.css') }}">
+    {{-- Custom CSS --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
 
 </head>
-<body>
 
-    <nav class="navbar navbar-expand-lg d-flex justify-content-between border-bottom shadow">
-        <div class="container-fluid px-5">
-            <div class="navbar-brand">
-                <img src="{{ asset('images/unpam-logo.png') }}" width="50px" alt="" srcset="">
-                <b class="mysite-title mx-3 fs-4"><i>Penjadwalan Lab</i></b>
+<body class="hold-transition login-page">
+    <div class="container-fluid bg-fullscreen">
+        <!-- Navbar -->
+        <nav class="navbar bg-body-transparent">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+                    <img src="images/unpam-logo.png" alt="Logo" width="50" height="50"
+                        class="d-inline-block align-text-top">
+                    <b class="mysite-title mytext-white mx-3 fs-4"><i>Penjadwalan Lab</i></b>
+                </a>
             </div>
+        </nav>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <div class="myspacer-10"></div>
 
-            <div class="container-fluid"></div>
+        <div class="d-flex justify-content-center">
+            <div class="mycard bg-dark30 p-4 border boder-primary">
+                <form action="{{ $page_meta['url'] }}" method="post">
+                    @method($page_meta['method'])
+                    @csrf
+                    <h3>DAFTAR</h3>
+                    <hr width="100px" align="left" color="white">
+                    <span class="mb-5">Silahkan masukkan beberapa data diri anda</span>
+                    <div class="m-5"></div>
 
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    @if (Route::has('login'))
-                        @auth
-                            @if (auth()->user()->role == 'admin')
-                                <a href="{{ url('/admin/dashboard') }}" class="nav-link">
-                                    Admin Dashboard
-                                </a>
-                            @endif
-                            @if (auth()->user()->role == 'laboran')
-                                <a href="{{ url('/laboran/dashboard') }}" class="nav-link">
-                                    Laboran Dashboard
-                                </a>
-                            @endif
-                            @if (auth()->user()->role == 'user')
-                                <a href="{{ url('/user/dashboard') }}" class="nav-link">
-                                    User Dashboard
-                                </a>
-                            @endif
-                        @else
-                            <a href="{{ route('login') }}" class="nav-link">
-                                Login
-                            </a>
-
-                            @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="nav-link">
-                                    Register
-                                </a>
-                            @endif
-                        @endauth
-                    @endif
-
-                </div>
-            </div>
-        </div>
-
-    </nav>
-
-    <div class="container-fluid d-flex align-items-center" style="min-height: 88vh">
-        <div class="container d-flex justify-content-between border mx-auto p-0 rounded-3 shadow-sm">
-            <div class="register-image col-6">
-                <img src="{{ asset('images/cbt.jpg') }}" alt="foto register page" class="rounded-start img-fluid h-100">
-            </div>
-            <div class="register-page col-6 py-3 px-5">
-                <div class="register-form px-3">
-                    <h3 class="text-center fw-bold">Daftar Akun</h3>
-                    <hr>
-                    <form action="{{ $page_meta['url'] }}" method="POST">
-                        @method($page_meta['method'])
-                        @csrf
-                        <div class="col-12 mb-3">
-                            <label for="namaLengkap">Nama Lengkap</label>
-                            <input type="text" name="nama_lengkap" id="namaLengkap" class="form-control @error('nama_lengkap') is-invalid @enderror" autocomplete="off" value="{{ old('nama_lengkap', $register->nama_lengkap) }}" required>
+                    <!-- User Name Input -->
+                    <label for="namaLengkap" class="form-label">Nama Lengkap</label>
+                    <div>
+                        <input class="myinput @error('nama_lengkap') is-invalid @enderror" type="text" name="nama_lengkap"
+                            id="namaLengkap" placeholder="Masukkan nama anda" value="{{ old('nama_lengkap', $register->nama_lengkap) }}" required>
                             @error('nama_lengkap')
                                 <div class="invalid-feedback d-block">
                                     {{ $message }}
                                 </div>
                             @enderror
-                        </div>
-                        <div class="col-12 mb-3">
-                            <label for="userEmail">Email</label>
-                            <input type="email" name="user_email" id="userEmail" class="form-control @error ('user_email') is-invalid @enderror" autocomplete="off" value="{{ old('user_email', $register->user_email) }}" required>
-                            @error('user_email')
-                                <div class="invalid-feedback d-block">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class="col-12 mb-3">
-                            <label for="userPassword">Password</label>
-                            <input type="password" name="password" id="userPassword" class="form-control @error ('password') is-invalid @enderror" autocomplete="off" required>
-                            @error('password')
-                                <div class="invalid-feedback d-block">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class="col-12 mb-3">
-                            <label for="userPasswordConfirm">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" id="userPasswordConfirm" class="form-control @error ('password_confirmation') is-invalid @enderror" autocomplete="off" required>
-                            @error('password_confirmation')
-                                <div class="invalid-feedback d-block">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class="col-12 mb-1 text-end">
-                            <a href="{{ route('login') }}" class="text-decoration-none">Sudah memiliki akun?</a>
-                        </div>
-                        <div class="col-12 mb-3">
-                            <button type="submit" class="btn btn-primary col-12">Kirim</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <!-- User Email Input -->
+                    <label for="userEmail" class="form-label mt-3">Email</label>
+                    <div>
+                        <input class="myinput @error('user_email') is-invalid @enderror" type="email" name="user_email"
+                            id="userEmail" placeholder="Masukkan email anda" value="{{ old('user_email', $register->user_email) }}" required>
+                        @error('email')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <!-- Password Input -->
+                    <label for="userPassword" class="form-label mt-3">Kata sandi</label>
+                    <div>
+                        <input class="myinput @error('password') is-invalid @enderror" type="password" name="password"
+                            id="userPassword" placeholder="Kata Sandi" required>
+                        @error('password')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <!-- Re-Password Input -->
+                    <label for="userPasswordConfirm" class="form-label mt-3">Konfrimasi Kata sandi</label>
+                    <div>
+                        <input class="myinput @error('password_confirmation') is-invalid @enderror" type="password" name="password_confirmation"
+                            id="userPasswordConfirm" placeholder="Masukkan kembali kata sandi anda" required>
+                        @error('password_confirmation')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <!-- Lupa Password -->
+                    {{-- <div class="text-right m-2"><a class="text-light" href="#"><b>Lupa Password</b></a></div> --}}
+
+                    <!-- Spacer -->
+                    <div style="height: 50px;"></div>
+
+                    <button class="mybutton text-light" type="submit" value="Login">Daftar</button>
+
+                </form>
+                <p class="text-center mt-3">Sudah punya akun? <a class="text-light text-decoration-none" href="/login"><b>Login</b></a>
+                    disini</p>
             </div>
         </div>
+
+        <div class="myspacer-10"></div>
+
     </div>
+    <!-- /.login-box -->
 
-
-    {{-- Boostrap JS --}}
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-
+    <!-- jQuery -->
+    <script src="{{ asset('AdminLte/plugins/jquery/jquery.min.js') }}"></script>
+    <!-- Bootstrap 4 -->
+    <script src="{{ asset('AdminLte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ asset('AdminLte/dist/js/adminlte.min.js') }}"></script>
 </body>
+
 </html>
