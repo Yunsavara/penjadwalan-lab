@@ -246,6 +246,7 @@ class PengajuanController extends Controller
         ]);
     }
 
+
     public function update(PengajuanUpdateRequest $request, $kode_pengajuan)
     {
         DB::beginTransaction();
@@ -394,4 +395,46 @@ class PengajuanController extends Controller
         }
     }
 
+    public function batalkanPengajuan(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $kodePengajuan = $request->kode_pengajuan;
+
+            // Ambil semua pengajuan dengan kode yang sama
+            $pengajuans = Pengajuan::where('kode_pengajuan', $kodePengajuan)->get();
+
+            if ($pengajuans->isEmpty()) {
+                return redirect()->back()->with('error', 'Pengajuan tidak ditemukan.');
+            }
+
+            // Update status pengajuan menjadi "dibatalkan"
+            Pengajuan::where('kode_pengajuan', $kodePengajuan)->update(['status' => 'dibatalkan']);
+
+            // Simpan perubahan ke dalam `pengajuan_status_histories`
+            $historyData = [];
+            foreach ($pengajuans as $pengajuan) {
+                $historyData[] = [
+                    'kode_pengajuan' => $kodePengajuan,
+                    'tanggal' => $pengajuan->tanggal,
+                    'jam_mulai' => $pengajuan->jam_mulai,
+                    'jam_selesai' => $pengajuan->jam_selesai,
+                    'status' => 'dibatalkan',
+                    'user_id' => $pengajuan->user_id,
+                    'lab_id' => $pengajuan->lab_id,
+                    'changed_by' => auth()->id(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            StatusPengajuanHistories::insert($historyData);
+
+            DB::commit();
+            return redirect()->back()->with('success', "Pengajuan berhasil dibatalkan.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', "Terjadi kesalahan: " . $e->getMessage());
+        }
+    }
 }

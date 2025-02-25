@@ -2,6 +2,7 @@ import './form-pengajuan-update'
 
 document.addEventListener("DOMContentLoaded", function () {
     initPengajuanDataTable();
+    modalStatusBatalkan();
 });
 
 function initPengajuanDataTable() {
@@ -34,15 +35,24 @@ function initPengajuanDataTable() {
                     data: null,
                     name: 'action',
                     render: function(data, type, row) {
-                        return `
+                        let buttons = `
                             <button type="button" class="btn btn-primary btn-sm btn-detail" data-bs-toggle="modal" data-bs-target="#detailPengajuanModal"
                                 data-kode="${row.kode_pengajuan}">
                                 Detail
                             </button>
-                            <button type="button" class="btn btn-warning btn-sm btn-edit" data-kode="${row.kode_pengajuan}">Edit</button>
-                            <a href="/pengajuan-jadwal/${row.kode_pengajuan}" class="btn btn-danger btn-sm"
-                               onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Batalkan</a>
                         `;
+
+                        // Jika status bukan diterima, ditolak, atau dibatalkan, tampilkan tombol Edit & Batalkan
+                        if (!['diterima', 'ditolak', 'dibatalkan'].includes(row.status)) {
+                            buttons += `
+                                <button type="button" class="btn btn-warning btn-sm btn-edit" data-kode="${row.kode_pengajuan}">Edit</button>
+                                <button type="button" class="btn btn-danger btn-sm btn-batalkan" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiBatalkan" data-kode="${row.kode_pengajuan}" data-status="diterima">
+                                    Batalkan
+                                </button>
+                            `;
+                        }
+
+                        return buttons;
                     }
                 },
             ],
@@ -145,7 +155,6 @@ function initPengajuanDataTable() {
                 }
             });
         });
-
     });
 }
 
@@ -164,4 +173,22 @@ function moveTools() {
     } else {
         console.log("Tools Error");
     }
+}
+
+function modalStatusBatalkan(){
+    let modalKonfirmasiBatalkan = document.getElementById("modalKonfirmasiBatalkan");
+
+    modalKonfirmasiBatalkan.addEventListener("show.bs.modal", function (event) {
+        let button = event.relatedTarget;
+        let kodePengajuan = button.getAttribute("data-kode");
+        let statusBaru = button.getAttribute("data-status");
+
+        let modalText = document.getElementById("konfirmasiTextBatalkan");
+        let inputKode = document.getElementById("kodePengajuanInputBatalkan");
+        let inputStatus = document.getElementById("statusPengajuanInputBatalkan");
+
+        modalText.innerHTML = `Apakah Anda yakin ingin mengubah status menjadi <strong>${statusBaru}</strong>?`;
+        inputKode.value = kodePengajuan;
+        inputStatus.value = statusBaru;
+    });
 }
