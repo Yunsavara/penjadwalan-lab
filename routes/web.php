@@ -37,6 +37,7 @@ Route::group(['middleware'=> 'auth'], function() {
     Route::post('/pengajuan-jadwal/tambah-pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
     Route::get('/pengajuan-jadwal/edit/{kode_pengajuan}', [PengajuanController::class, 'edit'])->name('pengajuan.update');
     Route::put('/pengajuan-jadwal/edit/{kode_pengajuan}', [PengajuanController::class, 'update']);
+    Route::post('/pengajuan-jadwal/batalkan', [PengajuanController::class, 'batalkanPengajuan'])->name('pengajuan.batalkan');
 
 });
 

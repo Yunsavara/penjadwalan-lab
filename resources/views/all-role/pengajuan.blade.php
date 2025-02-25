@@ -94,4 +94,28 @@
         </div>
     </div>
 
+    {{-- Modal Batalkan --}}
+    <div class="modal fade" id="modalKonfirmasiBatalkan" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Konfirmasi Batalkan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="konfirmasiTextBatalkan">Apakah Anda yakin ingin mengubah status?</p>
+                </div>
+                <div class="modal-footer">
+                    <form id="formUbahStatusBatalkan" action="{{ route('pengajuan.batalkan') }}" method="POST">
+                        @csrf
+                        <input type="text" id="kodePengajuanInputBatalkan" name="kode_pengajuan">
+                        <input type="hidden" id="statusPengajuanInputBatalkan" name="status">
+                        <button type="submit" class="btn btn-primary">Ya, Ubah</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
