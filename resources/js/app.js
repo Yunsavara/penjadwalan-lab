@@ -12,9 +12,12 @@ import './laboratorium'
 import './form-mata-kuliah'
 import './mata-kuliah'
 import './allrole/form-pengajuan-store'
-import './allrole/pengajuan'
+import './allrole/pengajuan-table'
+import './allrole/jadwal-table'
 import './allrole/form-pengajuan-update'
-import './laboran/pengajuan'
+import './laboran/pengajuan-table'
+import './laboran/jadwal-table'
+
 
 // Datatables
 import 'datatables.net';

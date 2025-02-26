@@ -140,8 +140,41 @@ class PengajuanController extends Controller
         }
     }
 
-    // Datatables
-    public function getData(Request $request)
+    // Datatables jadwal
+    public function getDataJadwal(Request $request)
+    {
+        $userId = Auth::id(); // Ambil user yang sedang login
+
+        $query = Jadwal::select('kode_pengajuan', 'keperluan', 'status', 'lab_id')
+            ->where('user_id', $userId); // Filter berdasarkan user yang login
+
+        // Filter pencarian
+        if ($search = $request->input('search.value')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_pengajuan', 'like', "%$search%")
+                ->orWhere('keperluan', 'like', "%$search%");
+            });
+        }
+
+        // Clone query untuk menghitung total record setelah filtering
+        $recordsFiltered = $query->count();
+
+        // Pagination
+        $data = $query->paginate($request->input('length'));
+
+        // Total record untuk pagination (tanpa filter), tetap hanya untuk user login
+        $recordsTotal = Jadwal::where('user_id', $userId)->count();
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data->items(),
+        ]);
+    }
+
+    // Datatables pengajuan
+    public function getDataPengajuan(Request $request)
     {
         $userId = auth()->id(); // Ambil ID user yang sedang login
 
@@ -423,6 +456,49 @@ class PengajuanController extends Controller
                     'status' => 'dibatalkan',
                     'user_id' => $pengajuan->user_id,
                     'lab_id' => $pengajuan->lab_id,
+                    'changed_by' => auth()->id(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            StatusPengajuanHistories::insert($historyData);
+
+            DB::commit();
+            return redirect()->back()->with('success', "Pengajuan berhasil dibatalkan.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', "Terjadi kesalahan: " . $e->getMessage());
+        }
+    }
+
+    public function batalkanJadwal(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $kodePengajuan = $request->kode_pengajuan;
+
+            // Ambil semua pengajuan dengan kode yang sama
+            $jadwals = Jadwal::where('kode_pengajuan', $kodePengajuan)->get();
+
+            if ($jadwals->isEmpty()) {
+                return redirect()->back()->with('error', 'Jadwal tidak ditemukan.');
+            }
+
+            // Update status pengajuan menjadi "dibatalkan"
+            Jadwal::where('kode_pengajuan', $kodePengajuan)->update(['status' => 'dibatalkan']);
+
+            // Simpan perubahan ke dalam `pengajuan_status_histories`
+            $historyData = [];
+            foreach ($jadwals as $jadwal) {
+                $historyData[] = [
+                    'kode_pengajuan' => $kodePengajuan,
+                    'tanggal' => $jadwal->tanggal,
+                    'jam_mulai' => $jadwal->jam_mulai,
+                    'jam_selesai' => $jadwal->jam_selesai,
+                    'status' => 'dibatalkan',
+                    'user_id' => $jadwal->user_id,
+                    'lab_id' => $jadwal->lab_id,
                     'changed_by' => auth()->id(),
                     'created_at' => now(),
                     'updated_at' => now(),

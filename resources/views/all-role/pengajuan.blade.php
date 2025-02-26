@@ -30,6 +30,33 @@
     </nav>
     <div class="tab-content" id="nav-tabContent">
     <div class="tab-pane fade show active py-2" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+        {{-- Table Jadwal --}}
+        <div class="container-fluid px-2 d-flex flex-wrap justify-content-between bg-white shadow-sm rounded border">
+
+            <div class="col-12 py-2 d-flex flex-wrap align-items-center justify-content-between">
+                <div id="searchJadwal" class="col-12 col-md-auto mb-2"></div>
+                <div id="sortingJadwal" class="col-12 col-md-auto mb-2"></div>
+            </div>
+
+            <div class="col-12 table-responsive position-relative" style="padding-bottom: 10rem">
+                <table id="jadwalTable" class="table table-striped display text-truncate position-absolute top-0">
+                    <thead class="table-dark">
+                        <th>No</th>
+                        <th>Kode Pengajuan</th>
+                        <th>Ruangan</th>
+                        {{-- <th>Lokasi</th> --}}
+                        {{-- <th>Kapasitas</th> --}}
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </thead>
+                </table>
+            </div>
+
+            <div class="col-12 py-2 d-flex flex-wrap align-items-center text-center justify-content-between">
+                <div id="infoJadwal" class="col-12 col-md-auto mb-3 mb-md-0"></div>
+                <div id="pagingJadwal" class="col-12 col-md-auto mb-3 mb-md-0 d-flex justify-content-center justify-content-md-auto"></div>
+            </div>
+        </div>
     </div>
     <div class="tab-pane fade py-2" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
         <div class="container-fluid px-2 d-flex flex-wrap justify-content-between bg-white shadow-sm rounded border">
@@ -94,8 +121,8 @@
         </div>
     </div>
 
-    {{-- Modal Batalkan --}}
-    <div class="modal fade" id="modalKonfirmasiBatalkan" tabindex="-1" aria-hidden="true">
+    {{-- Modal Batalkan Pengajuan --}}
+    <div class="modal fade" id="modalKonfirmasiBatalkanPengajuan" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -110,6 +137,30 @@
                         @csrf
                         <input type="text" id="kodePengajuanInputBatalkan" name="kode_pengajuan">
                         <input type="hidden" id="statusPengajuanInputBatalkan" name="status">
+                        <button type="submit" class="btn btn-primary">Ya, Ubah</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Batalkan Jadwal --}}
+    <div class="modal fade" id="modalKonfirmasiBatalkanJadwal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Konfirmasi Batalkan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="konfirmasiTextBatalkanJadwal">Apakah Anda yakin ingin mengubah status?</p>
+                </div>
+                <div class="modal-footer">
+                    <form id="formUbahStatusBatalkanJadwal" action="{{ route('jadwal.batalkan') }}" method="POST">
+                        @csrf
+                        <input type="text" id="kodePengajuanInputBatalkanJadwal" name="kode_pengajuan">
+                        <input type="hidden" id="statusPengajuanInputBatalkanJadwal" name="status">
                         <button type="submit" class="btn btn-primary">Ya, Ubah</button>
                     </form>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

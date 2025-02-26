@@ -1,15 +1,15 @@
 import './form-pengajuan-update'
 
 document.addEventListener("DOMContentLoaded", function () {
-    initPengajuanDataTable();
-    modalStatusBatalkan();
+    initJadwalDataTable();
+    modalStatusBatalkanJadwal();
 });
 
-function initPengajuanDataTable() {
+function initJadwalDataTable() {
     $(document).ready(function() {
         $.fn.DataTable.ext.pager.numbers_length = 3;
 
-        let table = $('#pengajuanTable').DataTable({
+        let table = $('#jadwalTable').DataTable({
             processing: true,
             serverSide: true,
             pageLength: 10,
@@ -17,7 +17,7 @@ function initPengajuanDataTable() {
             fixedHeader: true,
             responsive: true,
             ajax: {
-                url: '/pengajuan-jadwal/pengajuan-jadwal-data',
+                url: '/pengajuan-jadwal/jadwal-data',
                 type: 'GET',
             },
             columns: [
@@ -42,11 +42,10 @@ function initPengajuanDataTable() {
                             </button>
                         `;
 
-                        // Jika status bukan diterima, ditolak, atau dibatalkan, tampilkan tombol Edit & Batalkan
-                        if (!['diterima', 'ditolak', 'dibatalkan'].includes(row.status)) {
+                        // Jika status bukan belum dipakai, sedang dipakai.Tampilkan Batalkan
+                        if (!['belum dipakai','sedang dipakai', 'tergantikan'].includes(row.status)) {
                             buttons += `
-                                <button type="button" class="btn btn-warning btn-sm btn-edit" data-kode="${row.kode_pengajuan}">Edit</button>
-                                <button type="button" class="btn btn-danger btn-sm btn-batalkan" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiBatalkan" data-kode="${row.kode_pengajuan}" data-status="diterima">
+                                <button type="button" class="btn btn-danger btn-sm btn-batalkan" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiBatalkanJadwal" data-kode="${row.kode_pengajuan}" data-status="diterima">
                                     Batalkan
                                 </button>
                             `;
@@ -66,7 +65,7 @@ function initPengajuanDataTable() {
             let kodePengajuan = $(this).data('kode');
 
             // Set judul modal
-            $('#detailPengajuanLabel').text(`Detail Pengajuan: ${kodePengajuan}`);
+            $('#detailJadwalLabel').text(`Detail Jadwal: ${kodePengajuan}`);
 
             $.ajax({
                 url: `/pengajuan-jadwal/detail/${kodePengajuan}`,
@@ -175,17 +174,17 @@ function moveTools() {
     }
 }
 
-function modalStatusBatalkan(){
-    let modalKonfirmasiBatalkan = document.getElementById("modalKonfirmasiBatalkan");
+function modalStatusBatalkanJadwal(){
+    let modalKonfirmasiBatalkan = document.getElementById("modalKonfirmasiBatalkanJadwal");
 
     modalKonfirmasiBatalkan.addEventListener("show.bs.modal", function (event) {
         let button = event.relatedTarget;
         let kodePengajuan = button.getAttribute("data-kode");
         let statusBaru = button.getAttribute("data-status");
 
-        let modalText = document.getElementById("konfirmasiTextBatalkan");
-        let inputKode = document.getElementById("kodePengajuanInputBatalkan");
-        let inputStatus = document.getElementById("statusPengajuanInputBatalkan");
+        let modalText = document.getElementById("konfirmasiTextBatalkanJadwal");
+        let inputKode = document.getElementById("kodePengajuanInputBatalkanJadwal");
+        let inputStatus = document.getElementById("statusPengajuanInputBatalkanJadwal");
 
         modalText.innerHTML = `Apakah Anda yakin ingin mengubah status menjadi <strong>${statusBaru}</strong>?`;
         inputKode.value = kodePengajuan;

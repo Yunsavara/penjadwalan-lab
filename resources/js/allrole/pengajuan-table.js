@@ -1,13 +1,15 @@
+import './form-pengajuan-update'
+
 document.addEventListener("DOMContentLoaded", function () {
-    initLaboranPengajuanDataTable();
-    modalStatusDiterima();
+    initPengajuanDataTable();
+    modalStatusBatalkanPengajuan();
 });
 
-function initLaboranPengajuanDataTable() {
+function initPengajuanDataTable() {
     $(document).ready(function() {
         $.fn.DataTable.ext.pager.numbers_length = 3;
 
-        let table = $('#pengajuanLaboranTable').DataTable({
+        let table = $('#pengajuanTable').DataTable({
             processing: true,
             serverSide: true,
             pageLength: 10,
@@ -15,7 +17,7 @@ function initLaboranPengajuanDataTable() {
             fixedHeader: true,
             responsive: true,
             ajax: {
-                url: '/laboran/pengajuan-jadwal/pengajuan-jadwal-data',
+                url: '/pengajuan-jadwal/pengajuan-jadwal-data',
                 type: 'GET',
             },
             columns: [
@@ -32,47 +34,24 @@ function initLaboranPengajuanDataTable() {
                 {
                     data: null,
                     name: 'action',
-                    render: function (data, type, row) {
+                    render: function(data, type, row) {
                         let buttons = `
-                            <div class="d-flex flex-wrap align-items-center gap-1">
-                                <button type="button" class="btn btn-primary btn-sm btn-detail" data-bs-toggle="modal" data-bs-target="#detailPengajuanModal"
+                            <button type="button" class="btn btn-primary btn-sm btn-detail" data-bs-toggle="modal" data-bs-target="#detailPengajuanModal"
                                 data-kode="${row.kode_pengajuan}">
                                 Detail
-                                </button>
+                            </button>
                         `;
 
-                        // Tampilkan dropdown status hanya jika statusnya masih "pending"
-                        if (row.status === "pending") {
+                        // Jika status bukan diterima, ditolak, atau dibatalkan, tampilkan tombol Edit & Batalkan
+                        if (!['diterima', 'ditolak', 'dibatalkan'].includes(row.status)) {
                             buttons += `
-                                <div class="dropdown dropstart">
-                                    <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Status
-                                    </button>
-                                    <ul class="dropdown-menu p-0">
-                                        <li>
-                                            <button class="dropdown-item ubah-status" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi"
-                                                data-kode="${row.kode_pengajuan}" data-status="diterima">
-                                                Terima
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item ubah-status" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi"
-                                                data-kode="${row.kode_pengajuan}" data-status="ditolak">
-                                                Tolak
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button class="dropdown-item ubah-status" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi"
-                                                data-kode="${row.kode_pengajuan}" data-status="dibatalkan">
-                                                Batalkan
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <button type="button" class="btn btn-warning btn-sm btn-edit" data-kode="${row.kode_pengajuan}">Edit</button>
+                                <button type="button" class="btn btn-danger btn-sm btn-batalkan" data-bs-toggle="modal" data-bs-target="#modalKonfirmasiBatalkan" data-kode="${row.kode_pengajuan}" data-status="diterima">
+                                    Batalkan
+                                </button>
                             `;
                         }
 
-                        buttons += `</div>`; // Tutup wrapper div utama
                         return buttons;
                     }
                 },
@@ -176,7 +155,6 @@ function initLaboranPengajuanDataTable() {
                 }
             });
         });
-
     });
 }
 
@@ -197,17 +175,17 @@ function moveTools() {
     }
 }
 
-function modalStatusDiterima(){
-    let modalKonfirmasi = document.getElementById("modalKonfirmasi");
+function modalStatusBatalkanPengajuan(){
+    let modalKonfirmasiBatalkan = document.getElementById("modalKonfirmasiBatalkanPengajuan");
 
-    modalKonfirmasi.addEventListener("show.bs.modal", function (event) {
+    modalKonfirmasiBatalkan.addEventListener("show.bs.modal", function (event) {
         let button = event.relatedTarget;
         let kodePengajuan = button.getAttribute("data-kode");
         let statusBaru = button.getAttribute("data-status");
 
-        let modalText = document.getElementById("konfirmasiText");
-        let inputKode = document.getElementById("kodePengajuanInput");
-        let inputStatus = document.getElementById("statusPengajuanInput");
+        let modalText = document.getElementById("konfirmasiTextBatalkan");
+        let inputKode = document.getElementById("kodePengajuanInputBatalkan");
+        let inputStatus = document.getElementById("statusPengajuanInputBatalkan");
 
         modalText.innerHTML = `Apakah Anda yakin ingin mengubah status menjadi <strong>${statusBaru}</strong>?`;
         inputKode.value = kodePengajuan;
