@@ -32,14 +32,18 @@ function initLaboranPengajuanDataTable() {
                 {
                     data: null,
                     name: 'action',
-                    render: function(data, type, row) {
-                        return `
+                    render: function (data, type, row) {
+                        let buttons = `
                             <div class="d-flex flex-wrap align-items-center gap-1">
                                 <button type="button" class="btn btn-primary btn-sm btn-detail" data-bs-toggle="modal" data-bs-target="#detailPengajuanModal"
                                 data-kode="${row.kode_pengajuan}">
                                 Detail
                                 </button>
+                        `;
 
+                        // Tampilkan dropdown status hanya jika statusnya masih "pending"
+                        if (row.status === "pending") {
+                            buttons += `
                                 <div class="dropdown dropstart">
                                     <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Status
@@ -57,10 +61,19 @@ function initLaboranPengajuanDataTable() {
                                                 Tolak
                                             </button>
                                         </li>
+                                        <li>
+                                            <button class="dropdown-item ubah-status" data-bs-toggle="modal" data-bs-target="#modalKonfirmasi"
+                                                data-kode="${row.kode_pengajuan}" data-status="dibatalkan">
+                                                Batalkan
+                                            </button>
+                                        </li>
                                     </ul>
                                 </div>
-                            </div>
-                        `;
+                            `;
+                        }
+
+                        buttons += `</div>`; // Tutup wrapper div utama
+                        return buttons;
                     }
                 },
             ],
