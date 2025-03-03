@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('spesifikasi');
             $table->text('deskripsi');
             $table->unsignedBigInteger('lab_id');
-            $table->foreign('lab_id')->on('id')->references('laboratorium_unpams');
+            $table->foreign('lab_id')->references('id')->on('laboratorium_unpams')->onDelete('cascade');
             $table->unsignedBigInteger('meja_id')->nullable()->constrained('barangs');
             $table->timestamps();
         });

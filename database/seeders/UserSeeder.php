@@ -78,7 +78,7 @@ class UserSeeder extends Seeder
             'slug' => Str::slug('Lembaga'),
             'password' => Hash::make('password'),
             'lokasi' => 'fleksible',
-            'role_id' => 1,
+            'role_id' => 3,
         ]);
     }
 }
