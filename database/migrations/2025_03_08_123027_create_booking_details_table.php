@@ -11,22 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jadwals', function (Blueprint $table) {
+        Schema::create('booking_details', function (Blueprint $table) {
             $table->id();
+
             $table->string('kode_pengajuan');
-            $table->text('keperluan');
+            $table->foreign('kode_pengajuan')->references('kode_pengajuan')->on('bookings');
+
+            $table->unsignedBigInteger('lab_id');
+            $table->foreign('lab_id')->references('id')->on('laboratorium_unpams');
+
             $table->date('tanggal');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
-            $table->enum('status', ['belum digunakan','sedang digunakan','dibatalkan','tergantikan']);
-
-            $table->unsignedBigInteger('lab_id');
-            $table->foreign('lab_id')
-              ->references('id')
-              ->on('laboratorium_unpams');
-
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->enum('status', ['pending', 'diterima', 'digunakan', 'selesai', 'ditolak', 'dibatalkan', 'digantikan'])->default('pending');
+            $table->text('keperluan');
             $table->timestamps();
         });
     }
@@ -36,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jadwals');
+        Schema::dropIfExists('booking_details');
     }
 };

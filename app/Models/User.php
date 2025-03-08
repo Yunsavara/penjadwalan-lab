@@ -44,22 +44,15 @@ class User extends Authenticatable
         return $this->role && $this->role->name === $roleName;
     }
 
-    // Relasi ke Pengajuan (User yang mengajukan jadwal)
-    public function pengajuan()
+    // Relasi ke Booking (User yang mengajukan jadwal)
+    public function booking()
     {
-        return $this->hasMany(Pengajuan::class, 'user_id', 'id');
+        return $this->hasMany(Booking::class);
     }
 
-    // Relasi ke Jadwal (Jadwal yang sudah diterima)
-    public function jadwal()
+    public function bookingLog()
     {
-        return $this->hasMany(Jadwal::class, 'user_id', 'id');
-    }
-
-    // Relasi ke Pengajuan Status Histories (Tracking perubahan status pengajuan oleh user )
-    public function pengajuanStatusHistories()
-    {
-        return $this->hasMany(StatusPengajuanHistories::class, 'changed_by', 'id');
+        return $this->hasMany(BookingLog::class);
     }
 
 

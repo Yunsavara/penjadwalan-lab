@@ -30,14 +30,17 @@ Route::group(['middleware' => 'guest'], function() {
 Route::group(['middleware'=> 'auth'], function() {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Pengajuan jadwal
+    // Booking jadwal
     Route::get('/pengajuan-jadwal', [PengajuanController::class, 'index'])->name('pengajuan');
-    Route::get('/pengajuan-jadwal/pengajuan-jadwal-data', [PengajuanController::class, 'getData']); //datatables
+    Route::post('/pengajuan-jadwal', [PengajuanController::class, 'store'])->name('pengajuan.store');
+
+    Route::get('/pengajuan-jadwal/pengajuan-jadwal-data', [PengajuanController::class, 'getDataPengajuan']); //datatables
+    Route::get('/pengajuan-jadwal/jadwal-data', [PengajuanController::class, 'getDataJadwal']);
     Route::get('/pengajuan-jadwal/detail/{kode_pengajuan}', [PengajuanController::class, 'getDetail']); //detail baris
-    Route::post('/pengajuan-jadwal/tambah-pengajuan', [PengajuanController::class, 'store'])->name('pengajuan.store');
     Route::get('/pengajuan-jadwal/edit/{kode_pengajuan}', [PengajuanController::class, 'edit'])->name('pengajuan.update');
     Route::put('/pengajuan-jadwal/edit/{kode_pengajuan}', [PengajuanController::class, 'update']);
     Route::post('/pengajuan-jadwal/batalkan', [PengajuanController::class, 'batalkanPengajuan'])->name('pengajuan.batalkan');
+    Route::post('/pengajuan-jadwal/batalkan/jadwal', [PengajuanController::class, 'batalkanJadwal'])->name('jadwal.batalkan');
 
 });
 
@@ -79,7 +82,8 @@ Route::group(['middleware' => ['role:laboran']], function() {
 
     // Pengajuan
     Route::get('/laboran/pengajuan-jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.pengajuan');
-    Route::get('/laboran/pengajuan-jadwal/pengajuan-jadwal-data', [LaboranPengajuanController::class, 'getData']);
+    Route::get('/laboran/pengajuan-jadwal/pengajuan-jadwal-data', [LaboranPengajuanController::class, 'getDataPengajuan']);
+    Route::get('/laboran/pengajuan-jadwal/jadwal-data', [LaboranPengajuanController::class, 'getDataJadwal']);
     Route::post('/laboran/pengajuan-jadwal/update-status', [LaboranPengajuanController::class, 'updateStatus'])->name('pengajuan.update-status');
 });
 

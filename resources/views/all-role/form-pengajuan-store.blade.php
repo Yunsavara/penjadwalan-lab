@@ -1,75 +1,74 @@
-<div class="container-fluid px-3">
-    <form action="{{ route('pengajuan.store') }}" method="POST">
-        @csrf
+<!-- Button Trigger Modal Form Pengajuan -->
+<div class="col-12 py-2 d-flex flex-wrap justify-content-end mt-2">
+    <button type="button" class="btn btn-primary col-12 col-md-auto" data-bs-toggle="modal" data-bs-target="#formPengajuanStore">
+        Buat Pengajuan
+    </button>
+</div>
 
-        <div class="col-12 mb-3">
-            <label for="pilihRuangan">Ruangan</label>
-            <select name="lab_id" id="pilihRuangan" class="form-select">
-                <option value=""></option>
-                @foreach ($Ruangan as $item)
-                    @php
-                        $label = array_filter([
-                            $item->Jenislab?->name && $item->name ? "{$item->Jenislab->name} {$item->name}" : $item->name,
-                            $item->kapasitas ? "Kapasitas: {$item->kapasitas}" : null,
-                            $item->lokasi ? "Lokasi: {$item->lokasi}" : null
-                        ]);
-                    @endphp
-                    @if ($label)
-                        <option value="{{ $item->id }}" {{ old('lab_id') == $item->id ? 'selected' : '' }}>
-                            {{ implode(' ', $label) }}
+<!-- Modal Form Pengajuan -->
+<div class="modal fade" id="formPengajuanStore" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Buat Pengajuan</h1>
+            <button type="button" data-feather="x" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="modal-body">
+
+        <!-- Form Input -->
+        <form action="{{ route('pengajuan.store') }}" method="POST">
+            @csrf
+            <!-- Input Tanggal -->
+            <div class="col-12 mb-3">
+                <label for="tanggalPengajuan">Tanggal Pengajuan</label>
+                <input type="text" id="tanggalPengajuan" class="form-control" placeholder="Pilih tanggal"
+                value="{{ is_array(old('tanggal_pengajuan')) ? implode(', ', old('tanggal_pengajuan')) : old('tanggal_pengajuan') }}">
+                <input type="hidden" name="tanggal_pengajuan" id="tanggalHidden" value="{{ is_array(old('tanggal_pengajuan')) ? implode(',', old('tanggal_pengajuan')) : old('tanggal_pengajuan') }}">
+            </div>
+
+            <!-- Input Ruangan -->
+            <div class="col-12 mb-3">
+                <label for="ruangLab">Pilih Ruangan</label>
+                <select name="lab_id[]" id="ruangLab" class="form-select select2" multiple>
+                    <option value=""></option>
+                    @foreach($Ruangan as $lab)
+                        <option value="{{ $lab->id }}" {{ in_array($lab->id, old('lab_id', [])) ? 'selected' : '' }}>
+                            {{ $lab->name }}
                         </option>
-                    @endif
-                @endforeach
-            </select>
-        </div>
-
-        <div id="tanggalContainer">
-            <div id="tanggalInputs" class="tanggal-page">
-                @php
-                    $oldTanggal = old('tanggal_pengajuan', []);
-                    $oldJamMulai = old('jam_mulai', []);
-                    $oldJamSelesai = old('jam_selesai', []);
-                @endphp
-
-                @if (!empty($oldTanggal))
-                    @foreach ($oldTanggal as $index => $tanggal)
-                        <div class="tanggal-input">
-                            <input type="date" name="tanggal_pengajuan[]" class="form-control mb-2"
-                                   value="{{ $tanggal }}" required>
-                            <input type="time" name="jam_mulai[]" class="form-control mb-2"
-                                   value="{{ $oldJamMulai[$index] ?? '' }}" required>
-                            <input type="time" name="jam_selesai[]" class="form-control mb-2"
-                                   value="{{ $oldJamSelesai[$index] ?? '' }}" required>
-                        </div>
                     @endforeach
-                @else
-                    <div class="tanggal-input">
-                        <input type="date" name="tanggal_pengajuan[]" class="form-control mb-2" required>
-                        <input type="time" name="jam_mulai[]" class="form-control mb-2" required>
-                        <input type="time" name="jam_selesai[]" class="form-control mb-2" required>
-                    </div>
-                @endif
+                </select>
             </div>
 
-            <div class="d-flex justify-content-between mt-2">
-                <button type="button" id="prevTanggal" class="btn btn-secondary" disabled>Sebelumnya</button>
-                <button type="button" id="removeTanggal" class="btn btn-danger" disabled>Hapus Tanggal</button>
-                <button type="button" id="addTanggal" class="btn btn-secondary">Tambah Tanggal</button>
-                <button type="button" id="nextTanggal" class="btn btn-secondary" disabled>Berikutnya</button>
+            <!-- Input Jam Mulai & Selesai -->
+            <div class="col-12 mb-3 d-flex flex-wrap align-items-center justify-content-between">
+                <div class="col-12 col-md-5 mb-3">
+                    <label for="jamMulai">Jam Mulai</label>
+                    <input type="time" id="jamMulai" class="form-control" name="jam_mulai" value="{{ old('jam_mulai') }}">
+                </div>
+                <div class="col-12 col-md-5 mb-3">
+                    <label for="jamSelesai">Jam Selesai</label>
+                    <input type="time" id="jamSelesai" class="form-control" name="jam_selesai" value="{{ old('jam_selesai') }}">
+                </div>
             </div>
+
+            <!-- Input Keperluan -->
+            <div class="col-12 mb-3">
+                <label for="keperluanPengajuan">Keperluan</label>
+                <textarea name="keperluan" id="keperluanPengajuan" class="form-control" autocomplete="off"
+                        style="min-height:80px; max-height:80px;" placeholder="Keperluan untuk mengajar...">{{ old('keperluan') }}</textarea>
+            </div>
+
         </div>
 
-        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-
-        <div class="col-12 mb-3">
-            <label for="keperluanPengajuan">Keperluan</label>
-            <textarea name="keperluan" id="keperluanPengajuan" class="form-control" autocomplete="off"
-                      style="min-height:80px; max-height:80px;">{{ old('keperluan') }}</textarea>
-        </div>
-
-        <div class="col-12 d-flex justify-content-end">
-            <button type="reset" class="btn btn-danger me-2">Reset</button>
+        <div class="modal-footer">
+            <button type="reset" class="btn btn-danger">Reset</button>
             <button type="submit" class="btn btn-primary">Kirim</button>
         </div>
-    </form>
+
+      </form>
+        <!-- /Form Input -->
+    </div>
+  </div>
 </div>
