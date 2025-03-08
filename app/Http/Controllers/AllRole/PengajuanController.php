@@ -225,44 +225,35 @@ class PengajuanController extends Controller
     }
 
     // Detail Modal
-    public function getDetail($kode_pengajuan)
+    public function getDetailBooking($kode_pengajuan)
     {
-        $pengajuan = Pengajuan::with('laboratorium')
+        // Ambil booking berdasarkan kode_pengajuan
+        $booking = Booking::with(['bookingDetail.laboratorium'])
             ->where('kode_pengajuan', $kode_pengajuan)
             ->first();
 
-        if (!$pengajuan) {
-            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+        // Jika tidak ditemukan
+        if (!$booking) {
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan']);
         }
 
-        $histories = StatusPengajuanHistories::where('kode_pengajuan', $kode_pengajuan)
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($history) {
-                return [
-                    'tanggal' => $history->tanggal,
-                    'jam_mulai' => $history->jam_mulai,
-                    'jam_selesai' => $history->jam_selesai,
-                    'status' => $history->status,
-                    'changed_by_name' => User::find($history->changed_by)->name ?? 'Unknown',
-                    'created_at' => $history->created_at->format('Y-m-d H:i:s'),
-                ];
-            });
+        // Ambil detail booking
+        $details = $booking->bookingDetail->map(function ($detail) {
+            return [
+                'lab' => $detail->laboratorium->name,
+                'tanggal' => $detail->tanggal,
+                'jam_mulai' => $detail->jam_mulai,
+                'jam_selesai' => $detail->jam_selesai,
+                'status' => ucfirst($detail->status),
+            ];
+        });
 
         return response()->json([
             'success' => true,
             'data' => [
-                'pengajuan' => [
-                    'kode_pengajuan' => $pengajuan->kode_pengajuan,
-                    'laboratorium' => [
-                        'id' => $pengajuan->lab_id,
-                        'name' => $pengajuan->laboratorium->name,
-                    ],
-                    'keperluan' => $pengajuan->keperluan,
-                    'jadwal' => Pengajuan::where('kode_pengajuan', $kode_pengajuan)
-                        ->get(['tanggal', 'jam_mulai', 'jam_selesai']),
-                ],
-                'histories' => $histories,
+                'kode_pengajuan' => $booking->kode_pengajuan,
+                'status' => ucfirst($booking->status),
+                'details' => $details,
             ]
         ]);
     }

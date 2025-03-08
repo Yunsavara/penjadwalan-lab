@@ -11,6 +11,8 @@
 
     @include('all-role.navigasi')
 
+    @include('all-role.datatables-pengajuan-detail-modal')
+
     @include('all-role.form-pengajuan-store')
 
 @endsection

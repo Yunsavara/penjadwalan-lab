@@ -36,7 +36,8 @@ Route::group(['middleware'=> 'auth'], function() {
 
     Route::get('/pengajuan-jadwal/pengajuan-jadwal-data', [PengajuanController::class, 'getDataBooking']); //datatables
     Route::get('/pengajuan-jadwal/jadwal-data', [PengajuanController::class, 'getDataJadwal']);
-    Route::get('/pengajuan-jadwal/detail/{kode_pengajuan}', [PengajuanController::class, 'getDetail']); //detail baris
+
+    Route::get('/pengajuan-jadwal/detail/{kode}', [PengajuanController::class, 'getDetailBooking']); //detail baris
     Route::get('/pengajuan-jadwal/edit/{kode_pengajuan}', [PengajuanController::class, 'edit'])->name('pengajuan.update');
     Route::put('/pengajuan-jadwal/edit/{kode_pengajuan}', [PengajuanController::class, 'update']);
     Route::post('/pengajuan-jadwal/batalkan', [PengajuanController::class, 'batalkanPengajuan'])->name('pengajuan.batalkan');
