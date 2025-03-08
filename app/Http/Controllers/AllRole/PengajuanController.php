@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\AllRole;
 
-use Log;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Jadwal;
+use App\Models\Booking;
 use App\Models\Pengajuan;
+use App\Models\BookingLog;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\DetailPengajuan;
+use App\Models\BookingDetail;
 use App\Models\LaboratoriumUnpam;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\StatusPengajuanHistories;
@@ -20,6 +23,7 @@ use App\Http\Requests\AllRole\PengajuanUpdateRequest;
 class PengajuanController extends Controller
 {
     public function index(){
+        Log::info("Session error di index():", ['session' => session('error')]);
         $laboratorium = LaboratoriumUnpam::with('Jenislab') // Memuat relasi Jenislab
         ->select('id', 'jenislab_id', 'name', 'lokasi', 'kapasitas')
         ->get();
@@ -33,110 +37,100 @@ class PengajuanController extends Controller
 
     public function store(PengajuanStoreRequest $request)
     {
+        $kode_pengajuan = 'PJ-' . Carbon::now()->format('YmdHi') . Str::upper(Str::random(3));
+
         DB::beginTransaction();
 
         try {
-            $user = auth()->user();
-            $userPriority = $user->role->priority;
-            $kodePengajuan = 'PJ-' . strtoupper(Str::random(6));
+            $user_id = auth()->id();
+            $user_priority = auth()->user()->role->priority; // Ambil priority user
+            $pesan_bentrok = [];
 
-            $pengajuanData = [];
-            $historyData = [];
+            // 1. Cek apakah user sudah memiliki pengajuan untuk lab & tanggal yang sama
+            foreach ($request->lab_id as $lab) {
+                foreach ($request->tanggal_pengajuan as $tgl) {
+                    $bentrok_diri = BookingDetail::where('lab_id', $lab)
+                        ->where('tanggal', $tgl)
+                        ->whereIn('status', ['pending', 'diterima'])
+                        ->whereHas('booking', function ($query) use ($user_id) {
+                            $query->where('user_id', $user_id);
+                        })
+                        ->with(['booking', 'laboratorium'])
+                        ->get();
 
-            foreach ($request->tanggal_pengajuan as $index => $tanggal) {
-                $jamMulaiBaru = $request->jam_mulai[$index] ?? null;
-                $jamSelesaiBaru = $request->jam_selesai[$index] ?? null;
-
-                if (!$jamMulaiBaru || !$jamSelesaiBaru) {
-                    throw new \Exception("Jam mulai atau jam selesai tidak ditemukan untuk tanggal {$tanggal}.");
-                }
-
-                $bentrokHistories = StatusPengajuanHistories::where('user_id', $user->id)
-                    ->where('lab_id', $request->lab_id)
-                    ->where('tanggal', $tanggal)
-                    ->whereIn('status', ['pending', 'diterima', 'sedang dipakai'])
-                    ->where(function ($query) use ($jamMulaiBaru, $jamSelesaiBaru) {
-                        $query->where(function ($q) use ($jamMulaiBaru, $jamSelesaiBaru) {
-                            $q->where('jam_mulai', '<', $jamSelesaiBaru)
-                                ->where('jam_selesai', '>', $jamMulaiBaru);
-                        });
-                    })
-                    ->get(['kode_pengajuan', 'status']);
-
-                if ($bentrokHistories->isNotEmpty()) {
-                    $bentrokInfo = $bentrokHistories->map(function ($item) {
-                        return "{$item->kode_pengajuan} (Status: {$item->status})";
-                    })->implode(', ');
-
-                    DB::rollBack();
-                    return redirect()->route('pengajuan')->withInput()->with(
-                        'error',
-                        "Pengajuan pada tanggal {$tanggal} bentrok dengan:<br> {$bentrokInfo}."
-                    );
-                }
-
-                $bentrokJadwal = Jadwal::where('lab_id', $request->lab_id)
-                    ->where('tanggal', $tanggal)
-                    ->whereIn('status', ['belum digunakan', 'sedang digunakan'])
-                    ->where(function ($query) use ($jamMulaiBaru, $jamSelesaiBaru) {
-                        $query->where(function ($q) use ($jamMulaiBaru, $jamSelesaiBaru) {
-                            $q->where('jam_mulai', '<', $jamSelesaiBaru)
-                                ->where('jam_selesai', '>', $jamMulaiBaru);
-                        });
-                    })
-                    ->get();
-
-                if ($bentrokJadwal->isNotEmpty()) {
-                    foreach ($bentrokJadwal as $jadwal) {
-                        $jadwalPriority = $jadwal->user->role->priority; // Ambil priority dari user yang punya jadwal
-
-                        // dd($jadwal->user->role->priority);
-
-                        if ($userPriority > $jadwalPriority) {
-                            DB::rollBack();
-                            return redirect()->route('pengajuan')->withInput()->with(
-                                'error',
-                                "Pengajuan pada tanggal {$tanggal} bentrok dengan jadwal user lain yang memiliki prioritas lebih tinggi."
-                            );
+                    if ($bentrok_diri->isNotEmpty()) {
+                        foreach ($bentrok_diri as $data) {
+                            $pesan_bentrok[] = "Kode Pengajuan: <strong>{$data->booking->kode_pengajuan}</strong><br> Lab {$data->laboratorium->name} tanggal {$data->tanggal} dari {$data->jam_mulai} sampai {$data->jam_selesai} (Status: {$data->status})";
                         }
                     }
                 }
-
-                $pengajuanData[] = [
-                    'kode_pengajuan' => $kodePengajuan,
-                    'user_id' => $user->id,
-                    'lab_id' => $request->lab_id,
-                    'tanggal' => $tanggal,
-                    'jam_mulai' => $jamMulaiBaru,
-                    'jam_selesai' => $jamSelesaiBaru,
-                    'keperluan' => $request->keperluan,
-                    'status' => 'pending',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-
-                $historyData[] = [
-                    'kode_pengajuan' => $kodePengajuan,
-                    'tanggal' => $tanggal,
-                    'jam_mulai' => $jamMulaiBaru,
-                    'jam_selesai' => $jamSelesaiBaru,
-                    'status' => 'pending',
-                    'user_id' => $user->id,
-                    'lab_id' => $request->lab_id,
-                    'changed_by' => $user->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
             }
 
-            Pengajuan::insert($pengajuanData);
-            StatusPengajuanHistories::insert($historyData);
+            // Jika ada bentrok dengan diri sendiri, langsung tolak
+            if (!empty($pesan_bentrok)) {
+                DB::rollBack();
+                return back()->withInput()->with('error', 'Pengajuan bentrok dengan jadwal berikut:<br>' . implode('<br>', $pesan_bentrok));
+            }
+
+            // 2. Cek apakah ada bentrok dengan orang lain yang memiliki priority lebih tinggi
+            foreach ($request->lab_id as $lab) {
+                foreach ($request->tanggal_pengajuan as $tgl) {
+                    $bentrok_orang_lain = BookingDetail::where('lab_id', $lab)
+                        ->where('tanggal', $tgl)
+                        ->whereIn('status', ['diterima', 'digunakan']) // Hanya cek yang sudah diterima/digunakan
+                        ->whereHas('booking.user', function ($query) use ($user_id) {
+                            $query->where('id', '!=', $user_id); // Jangan cek diri sendiri
+                        })
+                        ->with(['booking.user', 'laboratorium']) // Ambil data user untuk priority
+                        ->get();
+
+                    foreach ($bentrok_orang_lain as $data) {
+                        $priority_orang_lain = $data->booking->user->role->priority;
+
+                        if ($user_priority < $priority_orang_lain) {
+                            // Jika priority user lebih tinggi, pengajuan tetap masuk tanpa mengganti status booking lain
+                            continue;
+                        } else {
+                            // Jika priority user lebih rendah, tidak bisa booking
+                            $pesan_bentrok[] = "Lab {$data->laboratorium->name} pada tanggal {$data->tanggal} dari {$data->jam_mulai} sampai {$data->jam_selesai}";
+                        }
+                    }
+                }
+            }
+
+            // Jika ada bentrok dengan orang lain yang lebih tinggi priority-nya, tolak
+            if (!empty($pesan_bentrok)) {
+                DB::rollBack();
+                return back()->withInput()->with('error', 'Pengajuan tidak dapat diproses karena ada jadwal dengan prioritas lebih tinggi:<br>' . implode('<br>', $pesan_bentrok));
+            }
+
+            // 3. Simpan booking jika semua check lolos
+            $booking = Booking::create([
+                'kode_pengajuan' => $kode_pengajuan,
+                'user_id' => $user_id,
+                'status' => 'pending',
+            ]);
+
+            foreach ($request->lab_id as $lab) {
+                foreach ($request->tanggal_pengajuan as $tgl) {
+                    BookingDetail::create([
+                        'kode_pengajuan' => $kode_pengajuan,
+                        'lab_id' => $lab,
+                        'tanggal' => $tgl,
+                        'jam_mulai' => $request->jam_mulai,
+                        'jam_selesai' => $request->jam_selesai,
+                        'status' => 'pending',
+                        'keperluan' => $request->keperluan,
+                    ]);
+                }
+            }
 
             DB::commit();
-            return redirect()->route('pengajuan')->with('success', 'Pengajuan berhasil dikirim!');
+            return redirect()->route('pengajuan')->with('success', 'Pengajuan berhasil diajukan dengan kode ' . $kode_pengajuan);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('pengajuan')->with('error', 'Pengajuan gagal dikirim: ' . $e->getMessage());
+            return redirect()->route('pengajuan')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 

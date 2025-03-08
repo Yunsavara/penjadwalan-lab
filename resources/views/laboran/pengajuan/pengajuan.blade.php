@@ -6,21 +6,8 @@
     <h1 class="fw-bold">{{ $page_meta['page'] }}</h1>
     <hr>
 
-    {{-- Alert Sukses --}}
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Sukses!</strong> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {!! session('error') !!}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
+    {{-- Alert --}}
+    <x-validation></x-validation>
 
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">

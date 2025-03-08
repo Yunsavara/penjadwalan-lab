@@ -9,14 +9,7 @@ import './form-barang';
 import './jenis-lab'
 import './form-laboratorium'
 import './laboratorium'
-import './form-mata-kuliah'
-import './mata-kuliah'
-import './allrole/form-pengajuan-store'
-import './allrole/pengajuan-table'
-import './allrole/jadwal-table'
-import './allrole/form-pengajuan-update'
-import './laboran/pengajuan-table'
-import './laboran/jadwal-table'
+import './all-role/pengajuan/form-pengajuan'
 
 
 // Datatables

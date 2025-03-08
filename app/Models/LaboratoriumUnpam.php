@@ -26,18 +26,11 @@ class LaboratoriumUnpam extends Model
         return $this->belongsTo(Jenislab::class, 'jenislab_id');
     }
 
-    // Relasi ke Pengajuan (Pengajuan yang terkait dengan lab ini)
-    public function pengajuan()
+    // Relasi ke Booking Detail (Pengajuan yang terkait dengan lab ini)
+    public function bookingDetail()
     {
-        return $this->hasMany(Pengajuan::class, 'lab_id', 'id');
+        return $this->hasMany(BookingDetail::class);
     }
-
-    // Relasi ke Jadwal (Jadwal yang terkait dengan lab ini)
-    public function jadwal()
-    {
-        return $this->hasMany(Jadwal::class, 'lab_id', 'id');
-    }
-
 
     public function getSlugOptions(): SlugOptions
     {
@@ -45,16 +38,4 @@ class LaboratoriumUnpam extends Model
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
     }
-
-    // Barang
-    // public function laboratorium()
-    // {
-    //     return $this->belongsTo(Laboratorium::class, 'laboratorium_id');
-    // }
-
-    // Disini
-    // public function barang()
-    // {
-    //     return $this->hasOne(Barang::class, 'laboratorium_id');
-    // }
 }

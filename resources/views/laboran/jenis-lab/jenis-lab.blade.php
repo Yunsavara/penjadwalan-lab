@@ -6,13 +6,6 @@
     <h1 class="fw-bold">{{ $page_meta['page'] }}</h1>
     <hr>
 
-    {{-- Cards --}}
-    <div class="container-fluid col-12 d-flex justify-content-start gap-md-5 flex-wrap p-0">
-        <x-card.counter background="white" color="black" counter="5" title="Pusat"></x-card.counter>
-        <x-card.counter background="white" color="black" counter="4" title="Viktor"></x-card.counter>
-        <x-card.counter background="white" color="black" counter="2" title="Serang"></x-card.counter>
-    </div>
-
     {{-- Alert Sukses --}}
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
