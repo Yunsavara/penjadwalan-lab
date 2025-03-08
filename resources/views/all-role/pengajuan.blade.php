@@ -9,6 +9,8 @@
     <!-- Alert -->
      <x-validation></x-validation>
 
+    @include('all-role.navigasi')
+
     @include('all-role.form-pengajuan-store')
 
 @endsection

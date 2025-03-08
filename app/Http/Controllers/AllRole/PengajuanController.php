@@ -137,7 +137,7 @@ class PengajuanController extends Controller
     // Datatables jadwal
     public function getDataJadwal(Request $request)
     {
-        $userId = Auth::id(); // Ambil user yang sedang login
+        $userId = Auth::id();
 
         $query = Jadwal::select('kode_pengajuan', 'keperluan', 'status', 'lab_id')
             ->where('user_id', $userId); // Filter berdasarkan user yang login
@@ -167,42 +167,60 @@ class PengajuanController extends Controller
         ]);
     }
 
-    // Datatables pengajuan
-    public function getDataPengajuan(Request $request)
+    // Datatables
+    public function getDataBooking(Request $request)
     {
-        $userId = auth()->id(); // Ambil ID user yang sedang login
+        $user_id = auth()->id();
 
-        // Query untuk mengambil data unik berdasarkan kode_pengajuan milik user login
-        $query = Pengajuan::select([
-                    'kode_pengajuan',
-                    DB::raw('GROUP_CONCAT(DISTINCT tanggal ORDER BY tanggal ASC SEPARATOR ", ") as tanggal_pengajuan'),
-                    'keperluan',
-                    'status',
-                    'lab_id',
-                    'user_id'
-                ])
-                ->where('user_id', $userId) // Filter berdasarkan user yang login
-                ->groupBy('kode_pengajuan', 'keperluan', 'status', 'lab_id', 'user_id');
+        // Ambil data dari tabel `bookings` dengan relasi ke `booking_details`
+        $query = Booking::with(['bookingDetail.laboratorium'])
+            ->where('user_id', $user_id); // Tetap filter berdasarkan user login
 
-        // Filter pencarian
-        if ($search = $request->input('search.value')) {
-            $query->having('kode_pengajuan', 'like', "%$search%")
-                ->orHaving('keperluan', 'like', "%$search%")
-                ->orHaving('tanggal_pengajuan', 'like', "%$search%");
+        // Pencarian (jika ada)
+        if ($request->has('search') && !empty($request->search['value'])) {
+            $search = $request->search['value'];
+
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_pengajuan', 'like', "%{$search}%")
+                ->orWhereHas('bookingDetail', function ($q) use ($search) {
+                    $q->where('status', 'like', "%{$search}%");
+                })
+                ->orWhereHas('bookingDetail.laboratorium', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+            });
         }
 
-        // Pagination
-        $data = $query->paginate($request->input('length'));
+        // Total data sebelum paginasi
+        $totalData = $query->count();
 
-        // Total record untuk pagination berdasarkan user login
-        $recordsTotal = Pengajuan::where('user_id', $userId)->distinct('kode_pengajuan')->count();
-        $recordsFiltered = $query->count();
+        // Paginate manual untuk server-side
+        $start = $request->start;
+        $length = $request->length ?? 10;
+        $data = $query->skip($start)->take($length)->get();
+
+        // Format data untuk DataTables
+        $result = [];
+        foreach ($data as $index => $booking) {
+            // Gabungkan semua lab dalam satu string
+            $labs = $booking->bookingDetail->pluck('laboratorium.name')->unique()->implode(', ');
+
+            // Gabungkan semua status dalam satu string (jika perlu)
+            $statuses = $booking->bookingDetail->pluck('status')->unique()->implode(', ');
+
+            $result[] = [
+                'index' => $start + $index + 1,
+                'kode_pengajuan' => $booking->kode_pengajuan,
+                'lab' => $labs,
+                'status' => ucfirst($statuses),
+            ];
+        }
 
         return response()->json([
-            'draw' => intval($request->input('draw')),
-            'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $recordsFiltered,
-            'data' => $data->items(),
+            'draw' => intval($request->draw),
+            'recordsTotal' => $totalData,
+            'recordsFiltered' => $totalData, // Bisa diubah jika pakai filter
+            'data' => $result
         ]);
     }
 

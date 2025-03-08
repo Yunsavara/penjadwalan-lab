@@ -10,6 +10,7 @@ import './jenis-lab'
 import './form-laboratorium'
 import './laboratorium'
 import './all-role/pengajuan/form-pengajuan'
+import './all-role/pengajuan/datatables-pengajuan'
 
 
 // Datatables
