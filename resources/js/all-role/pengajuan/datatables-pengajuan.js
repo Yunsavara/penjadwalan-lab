@@ -32,10 +32,14 @@ function initPengajuanDatatable() {
                 name: 'aksi',
                 render: function (data, type, row) {
                     return `
-                        <button class="btn btn-sm btn-primary btn-detail"
-                            data-kode="${row.kode_pengajuan}">
-                            Detail
-                        </button>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Aksi
+                            </button>
+                            <ul class="dropdown-menu py-0">
+                                <li><a class="dropdown-item btn-detail" data-kode="${row.kode_pengajuan}">Detail</a></li>
+                            </ul>
+                        </div>
                     `;
                 }
             }
@@ -67,11 +71,20 @@ function showDetailModal(kodePengajuan) {
                 // Isi daftar lab & jadwal
                 let labList = document.getElementById("modalLab");
                 labList.innerHTML = ""; // Kosongkan dulu sebelum diisi ulang
-
                 data.details.forEach(detail => {
                     let li = document.createElement("li");
                     li.textContent = `${detail.lab} (${detail.tanggal}, ${detail.jam_mulai} - ${detail.jam_selesai})`;
                     labList.appendChild(li);
+                });
+
+                // 🔹 **Isi log status**
+                let logList = document.getElementById("modalLogs");
+                logList.innerHTML = ""; // Kosongkan sebelum isi ulang
+
+                data.logs.forEach(log => {
+                    let li = document.createElement("li");
+                    li.innerHTML = `<strong>${log.status}</strong> oleh <em>${log.user}</em> pada ${log.waktu} <br> Catatan: ${log.catatan}`;
+                    logList.appendChild(li);
                 });
 
                 // Tampilkan modal

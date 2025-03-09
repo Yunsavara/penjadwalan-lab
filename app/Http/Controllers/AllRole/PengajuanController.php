@@ -236,7 +236,7 @@ class PengajuanController extends Controller
     public function getDetailBooking($kode_pengajuan)
     {
         // Ambil booking berdasarkan kode_pengajuan
-        $booking = Booking::with(['bookingDetail.laboratorium'])
+        $booking = Booking::with(['bookingDetail.laboratorium', 'bookingDetail.bookingLog.user'])
             ->where('kode_pengajuan', $kode_pengajuan)
             ->first();
 
@@ -256,12 +256,25 @@ class PengajuanController extends Controller
             ];
         });
 
+        // Ambil logs untuk setiap bookingDetail
+        $logs = $booking->bookingDetail->flatMap(function ($detail) {
+            return $detail->bookingLog->map(function ($log) {
+                return [
+                    'status' => ucfirst($log->status),
+                    'user' => $log->user->name ?? 'System',
+                    'waktu' => $log->created_at->format('Y-m-d H:i:s'),
+                    'catatan' => $log->catatan ?? '-',
+                ];
+            });
+        });
+
         return response()->json([
             'success' => true,
             'data' => [
                 'kode_pengajuan' => $booking->kode_pengajuan,
                 'status' => ucfirst($booking->status),
                 'details' => $details,
+                'logs' => $logs, // Kirim log ke frontend
             ]
         ]);
     }
@@ -289,7 +302,6 @@ class PengajuanController extends Controller
             'data' => $pengajuan
         ]);
     }
-
 
     public function update(PengajuanUpdateRequest $request, $kode_pengajuan)
     {
