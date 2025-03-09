@@ -52,14 +52,14 @@ function initMultipleRuangan(){
 
 export function showEditModal(kodePengajuan) {
     $.ajax({
-        url: `/pengajuan-jadwal/update/${kodePengajuan}`,
+        url: `/jadwal/pengajuan-update/${kodePengajuan}`,
         type: "GET",
         success: function (response) {
             if (response.success) {
                 let data = response.data;
 
                 // Set form action dengan kode pengajuan
-                $("#editForm").attr("action", `/pengajuan-jadwal/update/${kodePengajuan}`);
+                $("#editForm").attr("action", `/jadwal/pengajuan-update/${kodePengajuan}`);
 
                 // Isi nilai di modal edit
                 $("#editKodePengajuan").val(data.kode_pengajuan);

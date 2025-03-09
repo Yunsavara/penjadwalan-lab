@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\BarangController;
+use App\Http\Controllers\AllRole\JadwalController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\DashboardController;
 use App\Http\Controllers\Laboran\JenisLabController;
@@ -30,25 +31,20 @@ Route::group(['middleware' => 'guest'], function() {
 Route::group(['middleware'=> 'auth'], function() {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Booking jadwal
-    Route::get('/pengajuan-jadwal', [PengajuanController::class, 'index'])->name('pengajuan');
+    // Booking atau Pengajuan
+    Route::get('/jadwal', [PengajuanController::class, 'index'])->name('pengajuan');
+    Route::post('/jadwal', [PengajuanController::class, 'store'])->name('pengajuan.store');
+    Route::get('/jadwal/pengajuan-data', [PengajuanController::class, 'getDataBooking']); //datatables
+    Route::get('/jadwal/pengajuan-detail/{kode_pengajuan}', [PengajuanController::class, 'getDetailBooking']); //detail
+    Route::get('/jadwal/pengajuan-update/{kode_pengajuan}', [PengajuanController::class, 'edit'])->name('pengajuan.update');
+    Route::put('/jadwal/pengajuan-update/{kode_pengajuan}', [PengajuanController::class, 'update']);
+    Route::post('/jadwal/pengajuan-batalkan', [PengajuanController::class, 'batalkanBooking'])->name('pengajuan.batalkan');
 
-    // Store
-    Route::post('/pengajuan-jadwal', [PengajuanController::class, 'store'])->name('pengajuan.store');
+    // Jadwal
+    Route::get('/jadwal/jadwal-data', [JadwalController::class, 'getDataJadwal']);
+    Route::get('/jadwal/jadwal-detail/{kode_pengajuan}', [JadwalController::class, 'getDetailJadwal']);
+    Route::post('/jadwal/jadwal-batalkan', [JadwalController::class, 'batalkanJadwal'])->name('jadwal.batalkan');
 
-    // Get Data
-    Route::get('/pengajuan-jadwal/pengajuan-jadwal-data', [PengajuanController::class, 'getDataBooking']); //datatables
-    Route::get('/pengajuan-jadwal/detail/{kode}', [PengajuanController::class, 'getDetailBooking']); //detail baris
-    Route::get('/pengajuan-jadwal/jadwal-data', [PengajuanController::class, 'getDataJadwal']);
-
-    // Edit
-    Route::get('/pengajuan-jadwal/update/{kode_pengajuan}', [PengajuanController::class, 'edit'])->name('pengajuan.update');
-    Route::put('/pengajuan-jadwal/update/{kode_pengajuan}', [PengajuanController::class, 'update']);
-
-    // Batalkan
-    Route::post('/pengajuan-jadwal/batalkan', [PengajuanController::class, 'batalkanBooking'])->name('pengajuan.batalkan');
-
-    Route::post('/pengajuan-jadwal/batalkan/jadwal', [PengajuanController::class, 'batalkanJadwal'])->name('jadwal.batalkan');
 
 });
 

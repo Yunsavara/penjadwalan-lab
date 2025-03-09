@@ -14,7 +14,7 @@ function initPengajuanDatatable() {
         serverSide: true,
         responsive: true,
         ajax: {
-            url: "/pengajuan-jadwal/pengajuan-jadwal-data",
+            url: "/jadwal/pengajuan-data",
             type: "GET",
             dataType: "json",
         },
@@ -33,22 +33,29 @@ function initPengajuanDatatable() {
                 data: null,
                 name: 'aksi',
                 render: function (data, type, row) {
-                    return `
+                    let aksiButtons = `
                         <div class="dropdown">
                             <button class="btn btn-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Aksi
                             </button>
                             <ul class="dropdown-menu py-0">
+                                <li><a class="dropdown-item btn-detail" data-kode="${row.kode_pengajuan}">Detail</a></li>`;
+
+                    // Tampilkan "Edit" dan "Batalkan" hanya jika status "pending"
+                    if (row.status === "Pending") {
+                        aksiButtons += `
                                 <li><a class="dropdown-item btn-edit" data-kode="${row.kode_pengajuan}">Edit</a></li>
-                                <li><a class="dropdown-item btn-detail" data-kode="${row.kode_pengajuan}">Detail</a></li>
-                                <li><a class="dropdown-item btn-batal text-danger" data-kode="${row.kode_pengajuan}">Batalkan</a></li>
-                        </div>
-                    `;
+                                <li><a class="dropdown-item btn-batal text-danger" data-kode="${row.kode_pengajuan}">Batalkan</a></li>`;
+                    }
+
+                    aksiButtons += `</ul></div>`;
+
+                    return aksiButtons;
                 }
             }
         ],
         initComplete: function () {
-            moveTools();
+            moveToolsPengajuan();
         }
     });
 
@@ -71,11 +78,13 @@ function initPengajuanDatatable() {
     });
 }
 
-function moveTools() {
-    const search = document.querySelector(".dt-search");
-    const sorting = document.querySelector(".dt-length");
-    const info = document.querySelector(".dt-info");
-    const paging = document.querySelector(".dt-paging");
+function moveToolsPengajuan() {
+    const pengajuanTable = document.getElementById("tablePengajuan").closest("#tablePengajuan_wrapper");
+
+    const search = pengajuanTable.querySelector(".dt-search");
+    const sorting = pengajuanTable.querySelector(".dt-length");
+    const info = pengajuanTable.querySelector(".dt-info");
+    const paging = pengajuanTable.querySelector(".dt-paging");
 
     if (search && sorting && info && paging) {
         search.querySelector("input").placeholder = "Pencarian...";
@@ -84,6 +93,6 @@ function moveTools() {
         document.getElementById("infoPengajuan").appendChild(info);
         document.getElementById("pagingPengajuan").appendChild(paging);
     } else {
-        console.log("Tools Error");
+        console.log("Tools Pengajuan Error");
     }
 }
