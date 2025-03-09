@@ -19,51 +19,69 @@ class PengajuanUpdateRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'tanggal_pengajuan' => is_string($this->tanggal_pengajuan)
+                ? explode(',', $this->tanggal_pengajuan)
+                : $this->tanggal_pengajuan
+        ]);
+    }
+
     public function rules(): array
     {
         return [
-            'kode_pengajuan' => 'required|string|exists:pengajuans,kode_pengajuan',
-
-            'lab_id' => 'required|exists:laboratorium_unpams,id',
-            'tanggal_pengajuan' => 'required|array',
+            'kode_pengajuan' => 'required|string|exists:bookings,kode_pengajuan',
+            'lab_id' => 'required|array',
+            'lab_id.*' => 'exists:laboratorium_unpams,id',
+            'tanggal_pengajuan' => 'required|array|min:1',
             'tanggal_pengajuan.*' => 'date|after_or_equal:today',
-
-            'jam_mulai' => 'required|array',
-            'jam_mulai.*' => 'date_format:H:i',
-
-            'jam_selesai' => 'required|array',
-            'jam_selesai.*' => 'date_format:H:i|after:jam_mulai.*',
-
-            'keperluan' => 'required|string'
+            'jam_mulai' => [
+                'required',
+                'date_format:H:i',
+                function ($attribute, $value, $fail) {
+                    if ($this->input('tanggal_pengajuan')) {
+                        foreach ($this->input('tanggal_pengajuan') as $tanggal) {
+                            if ($tanggal === date('Y-m-d') && $value < date('H:i')) {
+                                $fail('Jam mulai tidak boleh kurang dari waktu saat ini untuk tanggal hari ini.');
+                            }
+                        }
+                    }
+                },
+            ],
+            'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+            'keperluan' => 'required|string|max:1000',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'kode_pengajuan.required' => 'Kode pengajuan wajib diisi.',
+            'kode_pengajuan.required' => 'Kode pengajuan harus diisi.',
             'kode_pengajuan.string' => 'Kode pengajuan harus berupa teks.',
-            'kode_pengajuan.exists' => 'Kode pengajuan tidak ditemukan di database.',
+            'kode_pengajuan.exists' => 'Kode pengajuan tidak valid.',
 
-            'lab_id.required' => 'Ruang lab harus dipilih.',
-            'lab_id.exists' => 'Ruang lab yang dipilih tidak valid.',
+            'lab_id.required' => 'Pilih minimal satu ruangan lab.',
+            'lab_id.array' => 'Format ruangan lab tidak valid.',
+            'lab_id.*.exists' => 'Ruangan lab yang dipilih tidak ditemukan.',
 
-            'tanggal_pengajuan.required' => 'Minimal satu tanggal harus dipilih.',
-            'tanggal_pengajuan.array' => 'Format tanggal pengajuan tidak valid.',
-            'tanggal_pengajuan.*.date' => 'Format tanggal tidak valid.',
+            'tanggal_pengajuan.required' => 'Pilih minimal satu tanggal.',
+            'tanggal_pengajuan.array' => 'Format tanggal tidak valid.',
+            'tanggal_pengajuan.min' => 'Pilih minimal satu tanggal.',
+            'tanggal_pengajuan.*.date' => 'Tanggal harus berupa format tanggal yang valid.',
             'tanggal_pengajuan.*.after_or_equal' => 'Tanggal tidak boleh kurang dari hari ini.',
 
             'jam_mulai.required' => 'Jam mulai harus diisi.',
-            'jam_mulai.array' => 'Format jam mulai tidak valid.',
-            'jam_mulai.*.date_format' => 'Jam mulai harus dalam format HH:MM.',
+            'jam_mulai.date_format' => 'Format jam mulai harus dalam format HH:MM.',
 
             'jam_selesai.required' => 'Jam selesai harus diisi.',
-            'jam_selesai.array' => 'Format jam selesai tidak valid.',
-            'jam_selesai.*.date_format' => 'Jam selesai harus dalam format HH:MM.',
-            'jam_selesai.*.after' => 'Jam selesai harus lebih besar dari jam mulai.',
+            'jam_selesai.date_format' => 'Format jam selesai harus dalam format HH:MM.',
+            'jam_selesai.after' => 'Jam selesai harus lebih besar dari jam mulai.',
 
             'keperluan.required' => 'Keperluan harus diisi.',
-            'keperluan.string' => 'Keperluan harus berupa teks.'
+            'keperluan.string' => 'Keperluan harus berupa teks.',
+            'keperluan.max' => 'Keperluan tidak boleh lebih dari 1000 karakter.',
         ];
     }
+
 }
