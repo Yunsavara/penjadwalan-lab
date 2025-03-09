@@ -87,11 +87,13 @@ class PengajuanController extends Controller
                     foreach ($bentrok_orang_lain as $data) {
                         $priority_orang_lain = $data->booking->user->role->priority;
 
+                        if ($data->status === 'digunakan') {
+                            // Jika status "digunakan", siapa pun tidak bisa update
+                            DB::rollBack();
+                            return back()->withInput()->with('error', "<strong>Perubahan Gagal</strong><br>Karena Lab {$data->laboratorium->name} pada tanggal {$data->tanggal} dengan jam mulai {$data->jam_mulai} dan jam selesai {$data->jam_selesai} sedang digunakan");
+                        }
+
                         if ($user_priority < $priority_orang_lain) {
-                            // Jika priority user lebih tinggi, pengajuan tetap masuk tanpa mengganti status booking lain
-                            continue;
-                        } else {
-                            // Jika priority user lebih rendah, tidak bisa booking
                             $pesan_bentrok[] = "Lab {$data->laboratorium->name} pada tanggal {$data->tanggal} dari {$data->jam_mulai} sampai {$data->jam_selesai}";
                         }
                     }
@@ -348,7 +350,7 @@ class PengajuanController extends Controller
                 return back()->withInput()->with('error', 'Pengajuan bentrok dengan jadwal berikut:<br>' . implode('<br>', $pesan_bentrok));
             }
 
-            // 2. Cek bentrok dengan orang lain yang memiliki priority lebih tinggi
+            // 2. Cek bentrok dengan orang lain
             foreach ($request->lab_id as $lab) {
                 foreach ($request->tanggal_pengajuan as $tgl) {
                     $bentrok_orang_lain = BookingDetail::where('lab_id', $lab)
@@ -363,10 +365,13 @@ class PengajuanController extends Controller
                     foreach ($bentrok_orang_lain as $data) {
                         $priority_orang_lain = $data->booking->user->role->priority;
 
+                        if ($data->status === 'digunakan') {
+                            // Jika status "digunakan", siapa pun tidak bisa update
+                            DB::rollBack();
+                            return back()->withInput()->with('error', "<strong>Perubahan Gagal</strong><br>Karena Lab {$data->laboratorium->name} pada tanggal {$data->tanggal} dengan jam mulai {$data->jam_mulai} dan jam selesai {$data->jam_selesai} sedang digunakan");
+                        }
+
                         if ($user_priority < $priority_orang_lain) {
-                            // Jika priority user lebih tinggi, lanjut update
-                            continue;
-                        } else {
                             // Jika priority user lebih rendah atau sama, tolak update
                             $pesan_bentrok[] = "Lab {$data->laboratorium->name} pada tanggal {$data->tanggal} dari {$data->jam_mulai} sampai {$data->jam_selesai} (Status: {$data->status})";
                         }
