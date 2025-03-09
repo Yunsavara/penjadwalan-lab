@@ -27,7 +27,7 @@ class PengajuanController extends Controller
         $laboratorium = LaboratoriumUnpam::with('Jenislab') // Memuat relasi Jenislab
         ->select('id', 'jenislab_id', 'name', 'lokasi', 'kapasitas')
         ->get();
-        return view('all-role.pengajuan', [
+        return view('all-role.index', [
             'Ruangan' => $laboratorium,
             'page_meta' => [
                 'page' => 'Jadwal dan Pengajuan',
@@ -144,40 +144,7 @@ class PengajuanController extends Controller
         }
     }
 
-    // Datatables jadwal
-    // public function getDataJadwal(Request $request)
-    // {
-    //     $userId = Auth::id();
-
-    //     $query = Jadwal::select('kode_pengajuan', 'keperluan', 'status', 'lab_id')
-    //         ->where('user_id', $userId); // Filter berdasarkan user yang login
-
-    //     // Filter pencarian
-    //     if ($search = $request->input('search.value')) {
-    //         $query->where(function ($q) use ($search) {
-    //             $q->where('kode_pengajuan', 'like', "%$search%")
-    //             ->orWhere('keperluan', 'like', "%$search%");
-    //         });
-    //     }
-
-    //     // Clone query untuk menghitung total record setelah filtering
-    //     $recordsFiltered = $query->count();
-
-    //     // Pagination
-    //     $data = $query->paginate($request->input('length'));
-
-    //     // Total record untuk pagination (tanpa filter), tetap hanya untuk user login
-    //     $recordsTotal = Jadwal::where('user_id', $userId)->count();
-
-    //     return response()->json([
-    //         'draw' => intval($request->input('draw')),
-    //         'recordsTotal' => $recordsTotal,
-    //         'recordsFiltered' => $recordsFiltered,
-    //         'data' => $data->items(),
-    //     ]);
-    // }
-
-    // Datatables
+    // Datatables Pengajuan
     public function getDataBooking(Request $request)
     {
         $user_id = auth()->id();
@@ -319,6 +286,12 @@ class PengajuanController extends Controller
                 ->where('user_id', $user_id) // Pastikan hanya bisa update milik sendiri
                 ->firstOrFail();
 
+            // Cek jika status bukan "pending"
+            if ($booking->status !== 'pending') {
+                DB::rollBack();
+                return redirect()->route('pengajuan')->with('error', 'Pengajuan yang sudah diproses tidak bisa diperbarui.');
+            }
+
             // Ambil semua booking_details terkait dengan kode_pengajuan
             $bookingDetails = BookingDetail::where('kode_pengajuan', $kode_pengajuan)->get();
 
@@ -406,7 +379,7 @@ class PengajuanController extends Controller
                         'booking_detail_id' => $newBookingDetail->id,
                         'user_id' => auth()->id(),
                         'status' => 'pending',
-                        'catatan' => 'Pengajuan diperbarui',
+                        'catatan' => 'Pengajuan diajukan',
                     ]);
                 }
             }
@@ -433,17 +406,20 @@ class PengajuanController extends Controller
                 ->where('user_id', $user_id)
                 ->firstOrFail();
 
+            // Jika status booking sudah diterima, tidak bisa dibatalkan
+            if ($booking->status === 'diterima') {
+                DB::rollBack();
+                return redirect()->route('pengajuan')->with('error', 'Pengajuan yang sudah diterima tidak bisa dibatalkan.');
+            }
+
             // Ambil semua booking_details yang belum digunakan/selesai
             $bookingDetails = BookingDetail::where('kode_pengajuan', $kode_pengajuan)
-                ->whereNotIn('status', ['digunakan', 'selesai']) // Tidak boleh batalkan yang sudah digunakan/selesai
+                ->whereNotIn('status', ['digunakan', 'selesai'])
                 ->get();
 
             if ($bookingDetails->isEmpty()) {
                 DB::rollBack();
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Tidak ada jadwal yang bisa dibatalkan.'
-                ], 400);
+                return redirect()->route('pengajuan')->with('error', 'Tidak ada jadwal yang bisa dibatalkan.');
             }
 
             // Ubah status semua booking_details menjadi "dibatalkan"
@@ -455,7 +431,7 @@ class PengajuanController extends Controller
                     'booking_detail_id' => $detail->id,
                     'user_id' => $user_id,
                     'status' => 'dibatalkan',
-                    'catatan' => 'Pengajuan dibatalkan',
+                    'catatan' => 'Pengajuan dibatalkan.',
                 ]);
             }
 
@@ -469,19 +445,14 @@ class PengajuanController extends Controller
             }
 
             DB::commit();
-            return response()->json([
-                'success' => true,
-                'message' => 'Pengajuan berhasil dibatalkan.'
-            ]);
+            return redirect()->route('pengajuan')->with('success', 'Pengajuan berhasil dibatalkan.');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
+            return redirect()->route('pengajuan')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
 
     // public function batalkanJadwal(Request $request)
     // {

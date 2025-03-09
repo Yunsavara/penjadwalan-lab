@@ -5,13 +5,14 @@
         <div id="sortingPengajuan" class="col-12 col-md-auto mb-2"></div>
     </div>
 
-    <div class="col-12 table-responsive">
-        <table id="tablePengajuan" class="table table-striped display">
+    <div class="col-12 overflow-x-auto">
+        <table id="tablePengajuan" class="table table-striped display" style="width: 100%; white-space: nowrap">
             <thead class="table-dark">
                 <th>No</th>
                 <th>Kode Pengajuan</th>
                 <th>Ruangan</th>
                 <th>Status</th>
+                <th>Aksi</th>
             </thead>
         </table>
     </div>

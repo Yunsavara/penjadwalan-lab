@@ -2,19 +2,19 @@ import { Modal } from 'bootstrap';
 
 export function showDetailModal(kodePengajuan) {
     $.ajax({
-        url: `/jadwal/pengajuan-detail/${kodePengajuan}`,
+        url: `/jadwal/jadwal-detail/${kodePengajuan}`,
         type: "GET",
         success: function (response) {
+            console.log(response);
+
             if (response.success) {
                 let data = response.data;
 
-                // Update elemen modal langsung
-                document.getElementById("modalKodePengajuan").textContent = data.kode_pengajuan;
-                document.getElementById("modalStatusPengajuan").textContent = data.status;
+                document.getElementById("modalKodeJadwal").textContent = data.kode_pengajuan;
 
                 // Isi daftar lab & jadwal
-                let labList = document.getElementById("modalLabPengajuan");
-                labList.innerHTML = ""; // Kosongkan dulu sebelum diisi ulang
+                let labList = document.getElementById("modalLabJadwal");
+                labList.innerHTML = "";
                 data.details.forEach(detail => {
                     let li = document.createElement("li");
                     li.textContent = `${detail.lab} (${detail.tanggal}, ${detail.jam_mulai} - ${detail.jam_selesai})`;
@@ -22,9 +22,8 @@ export function showDetailModal(kodePengajuan) {
                 });
 
                 // Isi log status
-                let logList = document.getElementById("modalLogsPengajuan");
-                logList.innerHTML = ""; // Kosongkan sebelum isi ulang
-
+                let logList = document.getElementById("modalLogsJadwal");
+                logList.innerHTML = "";
                 data.logs.forEach(log => {
                     let li = document.createElement("li");
                     li.innerHTML = `<strong>${log.status}</strong> oleh <em>${log.user}</em> pada ${log.waktu} <br> Catatan: ${log.catatan}`;
@@ -32,7 +31,7 @@ export function showDetailModal(kodePengajuan) {
                 });
 
                 // Tampilkan modal
-                const modalElement = document.getElementById('modalDetailPengajuan');
+                const modalElement = document.getElementById('modalDetailJadwal');
                 const modal = new Modal(modalElement);
                 modal.show();
             } else {

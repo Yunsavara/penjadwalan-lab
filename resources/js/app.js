@@ -12,6 +12,7 @@ import './laboratorium'
 import './all-role/pengajuan/form-pengajuan-store'
 import './all-role/pengajuan/form-pengajuan-edit'
 import './all-role/pengajuan/datatables-pengajuan'
+import './all-role/jadwal/datatables-jadwal'
 
 
 // Datatables

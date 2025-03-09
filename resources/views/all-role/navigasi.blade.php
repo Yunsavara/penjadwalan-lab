@@ -8,9 +8,9 @@
   </ul>
   <div class="tab-content" id="pills-tabContent">
     <div class="tab-pane fade show active" id="pills-jadwal" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
-
+        @include('all-role.jadwal.datatables-jadwal')
     </div>
     <div class="tab-pane fade" id="pills-pengajuan" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
-        @include('all-role.datatables-pengajuan')
+        @include('all-role.pengajuan.datatables-pengajuan')
     </div>
   </div>
