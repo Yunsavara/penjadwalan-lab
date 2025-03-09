@@ -12,6 +12,8 @@
     @include('all-role.navigasi')
 
     @include('all-role.jadwal.datatables-jadwal-detail-modal')
+    @include('all-role.jadwal.datatables-jadwal-batalkan-modal')
+
 
     @include('all-role.pengajuan.datatables-pengajuan-detail-modal')
     @include('all-role.pengajuan.datatables-pengajuan-batalkan-modal')

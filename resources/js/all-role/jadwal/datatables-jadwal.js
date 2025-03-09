@@ -1,5 +1,5 @@
 import { showDetailModal } from "../jadwal/modal-detail-jadwal.js";
-// import { batalkanPengajuan } from "../pengajuan/batalkan-pengajuan.js";
+import { batalkanJadwal } from "./batalkan-jadwal.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     generateTableHead();
@@ -64,7 +64,6 @@ function initJadwalDatatable() {
                 data: null,
                 name: 'aksi',
                 render: function (data, type, row) {
-                    console.log(row);
                     let aksiButtons = `
                         <div class="dropdown">
                             <button class="btn btn-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -74,9 +73,10 @@ function initJadwalDatatable() {
                                 <li><a class="dropdown-item btn-detail" data-kode="${row.kode_pengajuan}">Detail</a></li>`;
 
                     // Tampilkan"Batalkan" hanya jika status "diterima"
+                    console.log(`${row.id}`);
                     if (row.status === "Diterima") {
                         aksiButtons += `
-                                <li><a class="dropdown-item btn-batal text-danger" data-kode="${row.kode_pengajuan}">Batalkan</a></li>`;
+                               <li><a class="dropdown-item btn-batal text-danger" data-id="${row.id}">Batalkan</a></li>`;
                     }
 
                     aksiButtons += `</ul></div>`;
@@ -94,6 +94,12 @@ function initJadwalDatatable() {
     $('#tableJadwal tbody').on('click', '.btn-detail', function () {
         let kodePengajuan = $(this).data('kode');
         showDetailModal(kodePengajuan);
+    });
+
+    // Event listener untuk tombol "Batalkan"
+    $("#tableJadwal tbody").on("click", ".btn-batal", function () {
+        let bookingDetailId = $(this).data("id");
+        batalkanJadwal(bookingDetailId);
     });
 }
 

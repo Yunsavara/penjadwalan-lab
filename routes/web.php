@@ -38,11 +38,12 @@ Route::group(['middleware'=> 'auth'], function() {
     Route::get('/jadwal/pengajuan-detail/{kode_pengajuan}', [PengajuanController::class, 'getDetailBooking']); //detail
     Route::get('/jadwal/pengajuan-update/{kode_pengajuan}', [PengajuanController::class, 'edit'])->name('pengajuan.update');
     Route::put('/jadwal/pengajuan-update/{kode_pengajuan}', [PengajuanController::class, 'update']);
-    Route::post('/jadwal/batalkan', [PengajuanController::class, 'batalkanBooking'])->name('pengajuan.batalkan');
+    Route::post('/jadwal/pengajuan-batalkan', [PengajuanController::class, 'batalkanBooking'])->name('pengajuan.batalkan');
 
     // Jadwal
     Route::get('/jadwal/jadwal-data', [JadwalController::class, 'getDataJadwal']);
     Route::get('/jadwal/jadwal-detail/{kode_pengajuan}', [JadwalController::class, 'getDetailJadwal']);
+    Route::post('/jadwal/jadwal-batalkan', [JadwalController::class, 'batalkanJadwal'])->name('jadwal.batalkan');
 
 
 });

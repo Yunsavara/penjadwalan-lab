@@ -5,8 +5,6 @@ export function showDetailModal(kodePengajuan) {
         url: `/jadwal/jadwal-detail/${kodePengajuan}`,
         type: "GET",
         success: function (response) {
-            console.log(response);
-
             if (response.success) {
                 let data = response.data;
 
