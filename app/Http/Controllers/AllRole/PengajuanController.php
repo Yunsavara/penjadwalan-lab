@@ -113,7 +113,7 @@ class PengajuanController extends Controller
 
             foreach ($request->lab_id as $lab) {
                 foreach ($request->tanggal_pengajuan as $tgl) {
-                    BookingDetail::create([
+                    $bookingDetail = BookingDetail::create([
                         'kode_pengajuan' => $kode_pengajuan,
                         'lab_id' => $lab,
                         'tanggal' => $tgl,
@@ -121,6 +121,14 @@ class PengajuanController extends Controller
                         'jam_selesai' => $request->jam_selesai,
                         'status' => 'pending',
                         'keperluan' => $request->keperluan,
+                    ]);
+
+                    // Masukin ke log
+                    BookingLog::create([
+                        'booking_detail_id' => $bookingDetail->id,
+                        'user_id' => $user_id,
+                        'status' => 'pending',
+                        'catatan' => 'Pengajuan diajukan',
                     ]);
                 }
             }
