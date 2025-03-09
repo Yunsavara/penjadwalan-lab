@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->string('kode_pengajuan')->unique();
-            $table->enum('status', ['pending', 'diterima', 'ditolak'])->default('pending');
+            $table->enum('status', ['pending', 'diterima', 'ditolak', 'dibatalkan'])->default('pending');
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

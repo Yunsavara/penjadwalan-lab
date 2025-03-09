@@ -215,14 +215,13 @@ class PengajuanController extends Controller
             // Gabungkan semua lab dalam satu string
             $labs = $booking->bookingDetail->pluck('laboratorium.name')->unique()->implode(', ');
 
-            // Gabungkan semua status dalam satu string (jika perlu)
-            $statuses = $booking->bookingDetail->pluck('status')->unique()->implode(', ');
+            $status = ucfirst($booking->status); // Ambil status dari tabel `bookings`
 
             $result[] = [
                 'index' => $start + $index + 1,
                 'kode_pengajuan' => $booking->kode_pengajuan,
                 'lab' => $labs,
-                'status' => ucfirst($statuses),
+                'status' => ucfirst($status),
             ];
         }
 
@@ -421,89 +420,109 @@ class PengajuanController extends Controller
         }
     }
 
-    public function batalkanPengajuan(Request $request)
+    public function batalkanBooking(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            $kodePengajuan = $request->kode_pengajuan;
+            $user_id = auth()->id();
+            $kode_pengajuan = $request->kode_pengajuan;
 
-            // Ambil semua pengajuan dengan kode yang sama
-            $pengajuans = Pengajuan::where('kode_pengajuan', $kodePengajuan)->get();
+            // Ambil booking yang sesuai dengan kode pengajuan dan milik user
+            $booking = Booking::where('kode_pengajuan', $kode_pengajuan)
+                ->where('user_id', $user_id)
+                ->firstOrFail();
 
-            if ($pengajuans->isEmpty()) {
-                return redirect()->back()->with('error', 'Pengajuan tidak ditemukan.');
+            // Ambil semua booking_details yang belum digunakan/selesai
+            $bookingDetails = BookingDetail::where('kode_pengajuan', $kode_pengajuan)
+                ->whereNotIn('status', ['digunakan', 'selesai']) // Tidak boleh batalkan yang sudah digunakan/selesai
+                ->get();
+
+            if ($bookingDetails->isEmpty()) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada jadwal yang bisa dibatalkan.'
+                ], 400);
             }
 
-            // Update status pengajuan menjadi "dibatalkan"
-            Pengajuan::where('kode_pengajuan', $kodePengajuan)->update(['status' => 'dibatalkan']);
+            // Ubah status semua booking_details menjadi "dibatalkan"
+            foreach ($bookingDetails as $detail) {
+                $detail->update(['status' => 'dibatalkan']);
 
-            // Simpan perubahan ke dalam `pengajuan_status_histories`
-            $historyData = [];
-            foreach ($pengajuans as $pengajuan) {
-                $historyData[] = [
-                    'kode_pengajuan' => $kodePengajuan,
-                    'tanggal' => $pengajuan->tanggal,
-                    'jam_mulai' => $pengajuan->jam_mulai,
-                    'jam_selesai' => $pengajuan->jam_selesai,
+                // Simpan log pembatalan
+                BookingLog::create([
+                    'booking_detail_id' => $detail->id,
+                    'user_id' => $user_id,
                     'status' => 'dibatalkan',
-                    'user_id' => $pengajuan->user_id,
-                    'lab_id' => $pengajuan->lab_id,
-                    'changed_by' => auth()->id(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+                    'catatan' => 'Pengajuan dibatalkan',
+                ]);
             }
-            StatusPengajuanHistories::insert($historyData);
+
+            // Cek apakah semua booking_details sudah dibatalkan
+            $countTotal = BookingDetail::where('kode_pengajuan', $kode_pengajuan)->count();
+            $countCancelled = BookingDetail::where('kode_pengajuan', $kode_pengajuan)->where('status', 'dibatalkan')->count();
+
+            if ($countTotal == $countCancelled) {
+                // Jika semua booking_details dibatalkan, ubah status di bookings
+                $booking->update(['status' => 'dibatalkan']);
+            }
 
             DB::commit();
-            return redirect()->back()->with('success', "Pengajuan berhasil dibatalkan.");
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengajuan berhasil dibatalkan.'
+            ]);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', "Terjadi kesalahan: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
     }
 
-    public function batalkanJadwal(Request $request)
-    {
-        DB::beginTransaction();
+    // public function batalkanJadwal(Request $request)
+    // {
+    //     DB::beginTransaction();
 
-        try {
-            $kodePengajuan = $request->kode_pengajuan;
+    //     try {
+    //         $kodePengajuan = $request->kode_pengajuan;
 
-            // Ambil semua pengajuan dengan kode yang sama
-            $jadwals = Jadwal::where('kode_pengajuan', $kodePengajuan)->get();
+    //         // Ambil semua pengajuan dengan kode yang sama
+    //         $jadwals = Jadwal::where('kode_pengajuan', $kodePengajuan)->get();
 
-            if ($jadwals->isEmpty()) {
-                return redirect()->back()->with('error', 'Jadwal tidak ditemukan.');
-            }
+    //         if ($jadwals->isEmpty()) {
+    //             return redirect()->back()->with('error', 'Jadwal tidak ditemukan.');
+    //         }
 
-            // Update status pengajuan menjadi "dibatalkan"
-            Jadwal::where('kode_pengajuan', $kodePengajuan)->update(['status' => 'dibatalkan']);
+    //         // Update status pengajuan menjadi "dibatalkan"
+    //         Jadwal::where('kode_pengajuan', $kodePengajuan)->update(['status' => 'dibatalkan']);
 
-            // Simpan perubahan ke dalam `pengajuan_status_histories`
-            $historyData = [];
-            foreach ($jadwals as $jadwal) {
-                $historyData[] = [
-                    'kode_pengajuan' => $kodePengajuan,
-                    'tanggal' => $jadwal->tanggal,
-                    'jam_mulai' => $jadwal->jam_mulai,
-                    'jam_selesai' => $jadwal->jam_selesai,
-                    'status' => 'dibatalkan',
-                    'user_id' => $jadwal->user_id,
-                    'lab_id' => $jadwal->lab_id,
-                    'changed_by' => auth()->id(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-            StatusPengajuanHistories::insert($historyData);
+    //         // Simpan perubahan ke dalam `pengajuan_status_histories`
+    //         $historyData = [];
+    //         foreach ($jadwals as $jadwal) {
+    //             $historyData[] = [
+    //                 'kode_pengajuan' => $kodePengajuan,
+    //                 'tanggal' => $jadwal->tanggal,
+    //                 'jam_mulai' => $jadwal->jam_mulai,
+    //                 'jam_selesai' => $jadwal->jam_selesai,
+    //                 'status' => 'dibatalkan',
+    //                 'user_id' => $jadwal->user_id,
+    //                 'lab_id' => $jadwal->lab_id,
+    //                 'changed_by' => auth()->id(),
+    //                 'created_at' => now(),
+    //                 'updated_at' => now(),
+    //             ];
+    //         }
+    //         StatusPengajuanHistories::insert($historyData);
 
-            DB::commit();
-            return redirect()->back()->with('success', "Pengajuan berhasil dibatalkan.");
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', "Terjadi kesalahan: " . $e->getMessage());
-        }
-    }
+    //         DB::commit();
+    //         return redirect()->back()->with('success', "Pengajuan berhasil dibatalkan.");
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return redirect()->back()->with('error', "Terjadi kesalahan: " . $e->getMessage());
+    //     }
+    // }
 }
