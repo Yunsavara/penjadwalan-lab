@@ -19,8 +19,37 @@ class PengajuanController extends Controller
         ]);
     }
 
-    // Datatables
-    public function getData(Request $request)
+    public function getDataJadwal(Request $request)
+    {
+        $query = Jadwal::select('kode_pengajuan', 'keperluan', 'status', 'lab_id');
+
+        // Filter pencarian
+        if ($search = $request->input('search.value')) {
+            $query->where('kode_pengajuan', 'like', "%$search%")
+                ->orWhere('keperluan', 'like', "%$search%");
+        }
+
+        // Clone query untuk menghitung total record setelah filtering
+        $recordsFiltered = $query->count();
+
+        // Pagination
+        $data = $query->paginate($request->input('length'));
+
+        // Total record untuk pagination (tanpa filter)
+        $recordsTotal = Jadwal::count();
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data->items(),
+        ]);
+    }
+
+
+
+    // Datatables Pengajuan
+    public function getDataPengajuan(Request $request)
     {
         // Query untuk mengambil data unik berdasarkan kode_pengajuan
         $query = Pengajuan::select([
