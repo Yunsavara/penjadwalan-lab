@@ -1,5 +1,6 @@
 import { showDetailModal } from "./modal-detail-pengajuan.js";
 import { showEditModal } from "./form-pengajuan-edit.js";
+import { batalkanPengajuan } from "./batalkan-pengajuan.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     initPengajuanDatatable();
@@ -38,9 +39,9 @@ function initPengajuanDatatable() {
                                 Aksi
                             </button>
                             <ul class="dropdown-menu py-0">
-                                <li><a class="dropdown-item btn-detail" data-kode="${row.kode_pengajuan}">Detail</a></li>
                                 <li><a class="dropdown-item btn-edit" data-kode="${row.kode_pengajuan}">Edit</a></li>
-                            </ul>
+                                <li><a class="dropdown-item btn-detail" data-kode="${row.kode_pengajuan}">Detail</a></li>
+                                <li><a class="dropdown-item btn-batal text-danger" data-kode="${row.kode_pengajuan}">Batalkan</a></li>
                         </div>
                     `;
                 }
@@ -63,6 +64,11 @@ function initPengajuanDatatable() {
         showEditModal(kodePengajuan);
     });
 
+    // Event listener untuk tombol "Batalkan"
+    $("#tablePengajuan tbody").on("click", ".btn-batal", function () {
+        let kodePengajuan = $(this).data("kode");
+        batalkanPengajuan(kodePengajuan);
+    });
 }
 
 function moveTools() {

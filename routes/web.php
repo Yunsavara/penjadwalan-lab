@@ -45,8 +45,9 @@ Route::group(['middleware'=> 'auth'], function() {
     Route::get('/pengajuan-jadwal/update/{kode_pengajuan}', [PengajuanController::class, 'edit'])->name('pengajuan.update');
     Route::put('/pengajuan-jadwal/update/{kode_pengajuan}', [PengajuanController::class, 'update']);
 
-    //
-    Route::post('/pengajuan-jadwal/batalkan', [PengajuanController::class, 'batalkanPengajuan'])->name('pengajuan.batalkan');
+    // Batalkan
+    Route::post('/pengajuan-jadwal/batalkan', [PengajuanController::class, 'batalkanBooking'])->name('pengajuan.batalkan');
+
     Route::post('/pengajuan-jadwal/batalkan/jadwal', [PengajuanController::class, 'batalkanJadwal'])->name('jadwal.batalkan');
 
 });

@@ -12,6 +12,7 @@
     @include('all-role.navigasi')
 
     @include('all-role.datatables-pengajuan-detail-modal')
+    @include('all-role.datatables-pengajuan-batalkan-modal')
 
     @include('all-role.form-pengajuan-store')
     @include('all-role.form-pengajuan-update')
