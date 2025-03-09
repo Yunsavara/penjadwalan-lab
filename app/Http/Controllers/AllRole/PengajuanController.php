@@ -143,37 +143,37 @@ class PengajuanController extends Controller
     }
 
     // Datatables jadwal
-    public function getDataJadwal(Request $request)
-    {
-        $userId = Auth::id();
+    // public function getDataJadwal(Request $request)
+    // {
+    //     $userId = Auth::id();
 
-        $query = Jadwal::select('kode_pengajuan', 'keperluan', 'status', 'lab_id')
-            ->where('user_id', $userId); // Filter berdasarkan user yang login
+    //     $query = Jadwal::select('kode_pengajuan', 'keperluan', 'status', 'lab_id')
+    //         ->where('user_id', $userId); // Filter berdasarkan user yang login
 
-        // Filter pencarian
-        if ($search = $request->input('search.value')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('kode_pengajuan', 'like', "%$search%")
-                ->orWhere('keperluan', 'like', "%$search%");
-            });
-        }
+    //     // Filter pencarian
+    //     if ($search = $request->input('search.value')) {
+    //         $query->where(function ($q) use ($search) {
+    //             $q->where('kode_pengajuan', 'like', "%$search%")
+    //             ->orWhere('keperluan', 'like', "%$search%");
+    //         });
+    //     }
 
-        // Clone query untuk menghitung total record setelah filtering
-        $recordsFiltered = $query->count();
+    //     // Clone query untuk menghitung total record setelah filtering
+    //     $recordsFiltered = $query->count();
 
-        // Pagination
-        $data = $query->paginate($request->input('length'));
+    //     // Pagination
+    //     $data = $query->paginate($request->input('length'));
 
-        // Total record untuk pagination (tanpa filter), tetap hanya untuk user login
-        $recordsTotal = Jadwal::where('user_id', $userId)->count();
+    //     // Total record untuk pagination (tanpa filter), tetap hanya untuk user login
+    //     $recordsTotal = Jadwal::where('user_id', $userId)->count();
 
-        return response()->json([
-            'draw' => intval($request->input('draw')),
-            'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $recordsFiltered,
-            'data' => $data->items(),
-        ]);
-    }
+    //     return response()->json([
+    //         'draw' => intval($request->input('draw')),
+    //         'recordsTotal' => $recordsTotal,
+    //         'recordsFiltered' => $recordsFiltered,
+    //         'data' => $data->items(),
+    //     ]);
+    // }
 
     // Datatables
     public function getDataBooking(Request $request)
@@ -261,7 +261,7 @@ class PengajuanController extends Controller
             return $detail->bookingLog->map(function ($log) {
                 return [
                     'status' => ucfirst($log->status),
-                    'user' => $log->user->name ?? 'System',
+                    'user' => $log->user->email ?? 'System',
                     'waktu' => $log->created_at->format('Y-m-d H:i:s'),
                     'catatan' => $log->catatan ?? '-',
                 ];
@@ -281,25 +281,26 @@ class PengajuanController extends Controller
 
     public function edit($kode_pengajuan)
     {
-        $pengajuan = Pengajuan::where('kode_pengajuan', $kode_pengajuan)->get()->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'kode_pengajuan' => $item->kode_pengajuan,
-                'keperluan' => $item->keperluan,
-                'lab_id' => $item->lab_id,
-                'tanggal' => $item->tanggal,
-                'jam_mulai' => date('H:i', strtotime($item->jam_mulai)), // Ubah format jam
-                'jam_selesai' => date('H:i', strtotime($item->jam_selesai)), // Ubah format jam
-            ];
-        });
+        $pengajuan = Booking::where('kode_pengajuan', $kode_pengajuan)->first();
 
-        if ($pengajuan->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan!']);
+        if (!$pengajuan) {
+            return response()->json(['success' => false, 'message' => 'Pengajuan tidak ditemukan']);
         }
+
+        // Ambil semua ruangan untuk pilihan dropdown
+        $ruangan = LaboratoriumUnpam::all();
 
         return response()->json([
             'success' => true,
-            'data' => $pengajuan
+            'data' => [
+                'kode_pengajuan' => $pengajuan->kode_pengajuan,
+                'tanggal' => $pengajuan->bookingDetail->pluck('tanggal')->unique()->values()->toArray(),
+                'jam_mulai' => $pengajuan->bookingDetail->first()->jam_mulai ?? '',
+                'jam_selesai' => $pengajuan->bookingDetail->first()->jam_selesai ?? '',
+                'keperluan' => $pengajuan->bookingDetail->first()->keperluan ?? '',
+                'lab_id' => $pengajuan->bookingDetail->pluck('lab_id')->toArray(),
+                'ruang' => $ruangan,
+            ]
         ]);
     }
 

@@ -1,4 +1,5 @@
-import { Modal } from 'bootstrap';
+import { showDetailModal } from "./modal-detail-pengajuan.js";
+import { showEditModal } from "./form-pengajuan-edit.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     initPengajuanDatatable();
@@ -38,6 +39,7 @@ function initPengajuanDatatable() {
                             </button>
                             <ul class="dropdown-menu py-0">
                                 <li><a class="dropdown-item btn-detail" data-kode="${row.kode_pengajuan}">Detail</a></li>
+                                <li><a class="dropdown-item btn-edit" data-kode="${row.kode_pengajuan}">Edit</a></li>
                             </ul>
                         </div>
                     `;
@@ -54,51 +56,13 @@ function initPengajuanDatatable() {
         let kodePengajuan = $(this).data('kode');
         showDetailModal(kodePengajuan);
     });
-}
 
-function showDetailModal(kodePengajuan) {
-    $.ajax({
-        url: `/pengajuan-jadwal/detail/${kodePengajuan}`,
-        type: "GET",
-        success: function (response) {
-            if (response.success) {
-                let data = response.data;
-
-                // Update elemen modal langsung
-                document.getElementById("modalKodePengajuan").textContent = data.kode_pengajuan;
-                document.getElementById("modalStatus").textContent = data.status;
-
-                // Isi daftar lab & jadwal
-                let labList = document.getElementById("modalLab");
-                labList.innerHTML = ""; // Kosongkan dulu sebelum diisi ulang
-                data.details.forEach(detail => {
-                    let li = document.createElement("li");
-                    li.textContent = `${detail.lab} (${detail.tanggal}, ${detail.jam_mulai} - ${detail.jam_selesai})`;
-                    labList.appendChild(li);
-                });
-
-                // 🔹 **Isi log status**
-                let logList = document.getElementById("modalLogs");
-                logList.innerHTML = ""; // Kosongkan sebelum isi ulang
-
-                data.logs.forEach(log => {
-                    let li = document.createElement("li");
-                    li.innerHTML = `<strong>${log.status}</strong> oleh <em>${log.user}</em> pada ${log.waktu} <br> Catatan: ${log.catatan}`;
-                    logList.appendChild(li);
-                });
-
-                // Tampilkan modal
-                const modalElement = document.getElementById('modalDetail');
-                const modal = new Modal(modalElement);
-                modal.show();
-            } else {
-                alert("Gagal mengambil data detail.");
-            }
-        },
-        error: function () {
-            alert("Terjadi kesalahan saat mengambil data.");
-        }
+    // Event listener untuk tombol "Edit"
+    $('#tablePengajuan tbody').on('click', '.btn-edit', function () {
+        let kodePengajuan = $(this).data('kode');
+        showEditModal(kodePengajuan);
     });
+
 }
 
 function moveTools() {
