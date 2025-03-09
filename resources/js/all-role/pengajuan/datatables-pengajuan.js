@@ -55,7 +55,7 @@ function initPengajuanDatatable() {
             }
         ],
         initComplete: function () {
-            moveTools();
+            moveToolsPengajuan();
         }
     });
 
@@ -78,11 +78,13 @@ function initPengajuanDatatable() {
     });
 }
 
-function moveTools() {
-    const search = document.querySelector(".dt-search");
-    const sorting = document.querySelector(".dt-length");
-    const info = document.querySelector(".dt-info");
-    const paging = document.querySelector(".dt-paging");
+function moveToolsPengajuan() {
+    const pengajuanTable = document.getElementById("tablePengajuan").closest("#tablePengajuan_wrapper");
+
+    const search = pengajuanTable.querySelector(".dt-search");
+    const sorting = pengajuanTable.querySelector(".dt-length");
+    const info = pengajuanTable.querySelector(".dt-info");
+    const paging = pengajuanTable.querySelector(".dt-paging");
 
     if (search && sorting && info && paging) {
         search.querySelector("input").placeholder = "Pencarian...";
@@ -91,6 +93,6 @@ function moveTools() {
         document.getElementById("infoPengajuan").appendChild(info);
         document.getElementById("pagingPengajuan").appendChild(paging);
     } else {
-        console.log("Tools Error");
+        console.log("Tools Pengajuan Error");
     }
 }

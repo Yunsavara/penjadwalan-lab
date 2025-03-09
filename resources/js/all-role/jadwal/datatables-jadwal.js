@@ -87,7 +87,7 @@ function initJadwalDatatable() {
             }
         ],
         initComplete: function () {
-            moveTools();
+            moveToolsJadwal();
         }
     });
     // Event listener untuk tombol "Detail"
@@ -103,11 +103,13 @@ function initJadwalDatatable() {
     });
 }
 
-function moveTools() {
-    const search = document.querySelector(".dt-search");
-    const sorting = document.querySelector(".dt-length");
-    const info = document.querySelector(".dt-info");
-    const paging = document.querySelector(".dt-paging");
+function moveToolsJadwal() {
+    const jadwalTable = document.getElementById("tableJadwal").closest("#tableJadwal_wrapper");
+
+    const search = jadwalTable.querySelector(".dt-search");
+    const sorting = jadwalTable.querySelector(".dt-length");
+    const info = jadwalTable.querySelector(".dt-info");
+    const paging = jadwalTable.querySelector(".dt-paging");
 
     if (search && sorting && info && paging) {
         search.querySelector("input").placeholder = "Pencarian...";
@@ -116,6 +118,6 @@ function moveTools() {
         document.getElementById("infoJadwal").appendChild(info);
         document.getElementById("pagingJadwal").appendChild(paging);
     } else {
-        console.log("Tools Error");
+        console.log("Tools Jadwal Error");
     }
 }
