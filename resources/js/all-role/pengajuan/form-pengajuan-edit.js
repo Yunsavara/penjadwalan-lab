@@ -52,7 +52,7 @@ function initMultipleRuangan(){
 
 export function showEditModal(kodePengajuan) {
     $.ajax({
-        url: `/pengajuan-jadwal/edit/${kodePengajuan}`,
+        url: `/pengajuan-jadwal/update/${kodePengajuan}`,
         type: "GET",
         success: function (response) {
             if (response.success) {
@@ -64,8 +64,8 @@ export function showEditModal(kodePengajuan) {
                 // Isi nilai di modal edit
                 $("#editKodePengajuan").val(data.kode_pengajuan);
                 $("#editTanggalHidden").val(data.tanggal.join(',')); // Hidden input
-                $("#editJamMulai").val(data.jam_mulai);
-                $("#editJamSelesai").val(data.jam_selesai);
+                $("#editJamMulai").val(data.jam_mulai.substring(0,5));
+                $("#editJamSelesai").val(data.jam_selesai.substring(0,5));
                 $("#editKeperluanPengajuan").val(data.keperluan);
 
                 // Update Flatpickr setelah tanggal diubah
