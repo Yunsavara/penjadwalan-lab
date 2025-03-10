@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('lokasi');
+            $table->unsignedBigInteger('lokasi_id');
+            
             $table->integer('kapasitas');
             $table->enum('status', ['tersedia', 'tidak tersedia'])->default('tersedia');            $table->unsignedBigInteger('jenislab_id');
             $table->timestamps();

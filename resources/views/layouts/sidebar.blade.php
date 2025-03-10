@@ -33,6 +33,9 @@
                     <li class="sidebar-item @if (Route::currentRouteName() == 'admin.roles') active @endif">
                         <a href="{{ route('admin.roles') }}" class="sidebar-link">Roles</a>
                     </li>
+                    <li class="sidebar-item @if (Route::currentRouteName() == 'admin.roles') active @endif">
+                        <a href="{{ route('admin.roles') }}" class="sidebar-link">Operasional</a>
+                    </li>
                 </ul>
             </li>
         @endif
