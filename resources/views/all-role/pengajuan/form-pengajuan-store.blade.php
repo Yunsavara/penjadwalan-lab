@@ -1,11 +1,3 @@
-<!-- Button Trigger Modal Form Pengajuan -->
-<div class="col-12 py-2 d-flex flex-wrap justify-content-end mt-2">
-    <button type="button" class="btn btn-primary col-12 col-md-auto" data-bs-toggle="modal" data-bs-target="#formPengajuanStore">
-        Buat Pengajuan
-    </button>
-</div>
-
-<!-- Modal Form Pengajuan -->
 <div class="modal fade" id="formPengajuanStore" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

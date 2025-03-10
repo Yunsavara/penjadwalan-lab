@@ -1,19 +1,13 @@
-<div class="container-fluid px-2 d-flex flex-wrap justify-content-between bg-white shadow-sm rounded border">
+<div class="col-12 d-flex flex-wrap justify-content-between bg-white">
 
     <div class="col-12 py-2 d-flex flex-wrap align-items-center justify-content-between">
         <div id="searchPengajuan" class="col-12 col-md-auto mb-2"></div>
         <div id="sortingPengajuan" class="col-12 col-md-auto mb-2"></div>
     </div>
 
-    <div class="col-12 overflow-x-auto">
-        <table id="tablePengajuan" class="table table-striped display" style="width: 100%; white-space: nowrap">
-            <thead class="table-dark">
-                <th>No</th>
-                <th>Kode Pengajuan</th>
-                <th>Ruangan</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </thead>
+    <div class="col-12 position-relative overflow-auto" style="min-height: 15.5rem;">
+        <table id="tablePengajuan" class="table table-striped position-absolute top-0" style="width: 100%; z-index: 0;">
+            {{-- Generate Head Disini --}}
         </table>
     </div>
 

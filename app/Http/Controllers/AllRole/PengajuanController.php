@@ -30,7 +30,7 @@ class PengajuanController extends Controller
         return view('all-role.index', [
             'Ruangan' => $laboratorium,
             'page_meta' => [
-                'page' => 'Jadwal dan Pengajuan',
+                'page' => 'Jadwal',
             ]
         ]);
     }
