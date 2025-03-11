@@ -14,7 +14,7 @@ class PengajuanController extends Controller
     public function index(){
         return view('laboran.pengajuan.pengajuan', [
             'page_meta' => [
-                'page' => 'Pengajuan'
+                'page' => 'Jadwal'
             ]
         ]);
     }
@@ -45,8 +45,6 @@ class PengajuanController extends Controller
             'data' => $data->items(),
         ]);
     }
-
-
 
     // Datatables Pengajuan
     public function getDataPengajuan(Request $request)

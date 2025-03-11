@@ -16,11 +16,12 @@ return new class extends Migration
             $table->json('hari_operasional');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
+
             $table->unsignedBigInteger('lokasi_id');
             $table->foreign('lokasi_id')
               ->references('id')
               ->on('lokasis');
-            $table->enum('status', ['aktif', 'tidak aktif'])->default('aktif');
+
             $table->timestamps();
         });
     }

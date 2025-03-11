@@ -28,11 +28,11 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
                 'string',
                 'max:15',
                 Rule::unique('laboratorium_unpams')->where(function ($query) {
-                    return $query->where('lokasi', request()->lokasi);
+                    return $query->where('lokasi_id', request()->lokasi);
                 })
             ],
             'jenislab_id' => 'required|string|exists:jenislabs,id',
-            'lokasi' => 'required|string|in:pusat,viktor,serang',
+            'lokasi_id' => 'required|string|exists:lokasis,id',
             'kapasitas' => 'required|integer',
             'status' => 'required|string|in:tersedia,tidak tersedia'
         ];
@@ -50,9 +50,9 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
             'jenislab_id.string' => 'Jenis lab harus berupa teks.',
             'jenislab_id.exists' => 'Jenis lab yang dipilih tidak valid.',
 
-            'lokasi.required' => 'Lokasi laboratorium wajib diisi.',
-            'lokasi.string' => 'Lokasi harus berupa teks.',
-            'lokasi.in' => 'Lokasi yang dipilih tidak valid. Pilih antara: pusat, viktor, atau serang.',
+            'lokasi_id.required' => 'Lokasi laboratorium wajib diisi.',
+            'lokasi_id.string' => 'Lokasi harus berupa teks.',
+            'lokasi_id.exists' => 'Lokasi yang dipilih tidak valid.',
 
             'kapasitas.required' => 'Kapasitas laboratorium wajib diisi.',
             'kapasitas.integer' => 'Kapasitas harus berupa angka.',

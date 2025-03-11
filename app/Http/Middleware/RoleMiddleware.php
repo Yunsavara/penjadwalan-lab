@@ -15,35 +15,30 @@ class RoleMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
 
-     public function handle(Request $request, Closure $next, $role)
+     public function handle(Request $request, Closure $next, ...$roles)
      {
-        // Kalau belum login diarahin ke halaman login
-        if(!Auth::user()){
-            return redirect()->route('login');
-        }
+         // Kalau belum login, redirect ke login
+         if (!Auth::check()) {
+             return redirect()->route('login');
+         }
 
-        // Jika user adalah admin, beri akses ke semua halaman
-        if (Auth::user()->role->name === 'admin') {
-            return $next($request);
-        }
+        //  Auth::logout();
 
-        // Kalau Tidak Sesuai Role di balikin ke halaman sebelumnya
-        if(Auth::user()->role->name !== $role){
-            return redirect()->back();
-        }
+         $userRole = Auth::user()->role->name;
 
-        return $next($request);
+         // Cek apakah role user ada dalam daftar yang diizinkan
+         if (!in_array($userRole, $roles)) {
+             return redirect()->back();
+         }
+
+         return $next($request);
      }
+
 
 }
 
 
-//     // Jika user adalah admin, beri akses ke semua halaman
-    //     if ($user->role->name === 'admin') {
-    //         return $next($request);
-    //     }
-
-    //     // Jika role user tidak sesuai dengan middleware, tolak akses dengan redirect
-    //     if ($user->role->name !== $role) {
-    //         return redirect()->back();
-    //     }
+        // Jika user adalah admin, beri akses ke semua halaman
+        // if (Auth::user()->role->name === 'admin') {
+        //     return $next($request);
+        // }

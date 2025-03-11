@@ -15,16 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->unsignedBigInteger('lokasi_id');
-            
             $table->integer('kapasitas');
-            $table->enum('status', ['tersedia', 'tidak tersedia'])->default('tersedia');            $table->unsignedBigInteger('jenislab_id');
-            $table->timestamps();
+            $table->enum('status', ['tersedia', 'tidak tersedia'])->default('tersedia');
 
+            $table->unsignedBigInteger('lokasi_id');
+            $table->foreign('lokasi_id')
+            ->references('id')
+            ->on('lokasis');
 
+            $table->unsignedBigInteger('jenislab_id');
             $table->foreign('jenislab_id')
               ->references('id')
               ->on('jenislabs');
+
+              $table->timestamps();
         });
     }
 

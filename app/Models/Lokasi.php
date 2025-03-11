@@ -14,4 +14,9 @@ class Lokasi extends Model
     {
         return $this->hasMany(WaktuOperasional::class);
     }
+
+    public function laboratoriumUnpam()
+    {
+        return $this->hasMany(LaboratoriumUnpam::class, 'lokasi_id');
+    }
 }
