@@ -13,6 +13,8 @@ class RolesSeeder extends Seeder
      */
     public function run(): void
     {
+        // Makin Kecil makin tinggi prioritasnya
+
         roles::create([
             'name' => 'admin',
             'priority' => 1
@@ -21,7 +23,6 @@ class RolesSeeder extends Seeder
         roles::create([
             'name' => 'laboran',
             'priority' => 2
-
         ]);
 
         roles::create([

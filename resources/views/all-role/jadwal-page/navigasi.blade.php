@@ -33,10 +33,10 @@
             </nav>
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-jadwal" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
-                    @include('all-role.jadwal.datatables-jadwal')
+                    @include('all-role.jadwal-page.jadwal.datatables-jadwal')
                 </div>
                 <div class="tab-pane fade" id="nav-pengajuan" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
-                    @include('all-role.pengajuan.datatables-pengajuan')
+                    @include('all-role.jadwal-page.pengajuan.datatables-pengajuan')
                 </div>
             </div>
         </div>

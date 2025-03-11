@@ -14,7 +14,7 @@ class LaboratoriumUnpam extends Model
     protected $fillable = [
         'name',
         'slug',
-        'lokasi',
+        'lokasi_id',
         'kapasitas',
         'status',
         'jenislab_id'
@@ -32,6 +32,13 @@ class LaboratoriumUnpam extends Model
         return $this->hasMany(BookingDetail::class);
     }
 
+    // Relasi ke Lokasi
+    public function lokasi()
+    {
+        return $this->belongsTo(Lokasi::class, 'lokasi_id');
+    }
+
+    // Generate Slug dari Name
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()

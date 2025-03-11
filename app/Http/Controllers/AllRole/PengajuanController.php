@@ -25,9 +25,9 @@ class PengajuanController extends Controller
     public function index(){
         Log::info("Session error di index():", ['session' => session('error')]);
         $laboratorium = LaboratoriumUnpam::with('Jenislab') // Memuat relasi Jenislab
-        ->select('id', 'jenislab_id', 'name', 'lokasi', 'kapasitas')
+        ->select('id', 'jenislab_id', 'name', 'lokasi_id', 'kapasitas')
         ->get();
-        return view('all-role.index', [
+        return view('all-role.jadwal-page.index', [
             'Ruangan' => $laboratorium,
             'page_meta' => [
                 'page' => 'Jadwal',

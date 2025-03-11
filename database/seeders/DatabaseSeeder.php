@@ -18,7 +18,9 @@ class DatabaseSeeder extends Seeder
                 RolesSeeder::class,
                 UserSeeder::class,
                 JenisLabSeeder::class,
+                LokasiSeeder::class,
                 LaboratoriumUnpamSeeder::class,
+                WaktuOperasionalSeeder::class,
             ]
         );
     }

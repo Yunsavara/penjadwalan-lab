@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Laboran\LaboratoriumUnpam\LaboratoriumUnpamStoreRequest;
 use App\Http\Requests\Laboran\LaboratoriumUnpam\LaboratoriumUnpamUpdateRequest;
+use App\Models\Lokasi;
 
 class LaboratoriumUnpamController extends Controller
 {
@@ -23,10 +24,12 @@ class LaboratoriumUnpamController extends Controller
     public function create(){
 
         $Jenislab = Jenislab::select(['id', 'name'])->get();
+        $Lokasi = Lokasi::select(['id', 'name'])->get();
 
         return view("laboran.laboratorium.form-laboratorium", [
             'Laboratorium' => new LaboratoriumUnpam(),
             'Jenislab' => $Jenislab,
+            'Lokasi' => $Lokasi,
             'page_meta' => [
                 'page' => "Tambah Laboratorium",
                 'method' => 'POST',
@@ -56,24 +59,25 @@ class LaboratoriumUnpamController extends Controller
     // Untuk Datatables
     public function getData(Request $request)
     {
-        // Query dengan join ke tabel jenislabs
+        // Query dengan join ke tabel jenislabs dan lokasis
         $query = LaboratoriumUnpam::query()
             ->select([
                 'laboratorium_unpams.id',
                 'laboratorium_unpams.name',
                 'laboratorium_unpams.slug as slug',
                 'jenislabs.name as jenislab_name',
-                'laboratorium_unpams.lokasi',
+                'lokasis.name as lokasi',
                 'laboratorium_unpams.kapasitas',
                 'laboratorium_unpams.status'
             ])
-            ->leftJoin('jenislabs', 'laboratorium_unpams.jenislab_id', '=', 'jenislabs.id');
+            ->leftJoin('jenislabs', 'laboratorium_unpams.jenislab_id', '=', 'jenislabs.id')
+            ->leftJoin('lokasis', 'laboratorium_unpams.lokasi_id', '=', 'lokasis.id'); // Join ke lokasis
 
         // Filter berdasarkan pencarian
         if ($search = $request->input('search.value')) {
             $query->where('laboratorium_unpams.name', 'like', "%$search%")
-                ->orWhere('laboratorium_unpams.lokasi', 'like', "%$search%")
-                ->orWhere('jenislabs.name', 'like', "%$search%"); // Tambahkan filter nama jenislab
+                ->orWhere('lokasis.name', 'like', "%$search%") // Cari berdasarkan nama lokasi
+                ->orWhere('jenislabs.name', 'like', "%$search%");
         }
 
         // Pagination
@@ -89,11 +93,16 @@ class LaboratoriumUnpamController extends Controller
         ]);
     }
 
+
     public function edit(LaboratoriumUnpam $Laboratorium){
+
         $Jenislab = Jenislab::select(['id', 'name'])->get();
+        $Lokasi = Lokasi::select(['id', 'name'])->get();
+
         return view("laboran.laboratorium.form-laboratorium", [
             'Laboratorium' => $Laboratorium,
             'Jenislab' => $Jenislab,
+            'Lokasi' => $Lokasi,
             'page_meta' => [
                 'page' => "Ubah Laboratorium",
                 'method' => 'PUT',
