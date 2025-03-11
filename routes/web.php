@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\BarangController;
+use App\Http\Controllers\AllRole\GenerateJadwalController;
 use App\Http\Controllers\AllRole\JadwalController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\DashboardController;
@@ -93,9 +94,12 @@ Route::group(['middleware' => ['role:lembaga,prodi,user']], function() {
     Route::put('/jadwal/pengajuan-update/{kode_pengajuan}', [PengajuanController::class, 'update']);
     Route::post('/jadwal/pengajuan-batalkan', [PengajuanController::class, 'batalkanBooking'])->name('pengajuan.batalkan');
 
-    // Jadwal
+    // Jadwal Yang Di Booking
     Route::get('/jadwal/jadwal-data', [JadwalController::class, 'getDataJadwal']);
     Route::get('/jadwal/jadwal-detail/{kode_pengajuan}', [JadwalController::class, 'getDetailJadwal']);
     Route::post('/jadwal/jadwal-batalkan', [JadwalController::class, 'batalkanJadwal'])->name('jadwal.batalkan');
+
+    // Jadwal Generate
+    Route::get('/jadwal/generate-jadwal', [GenerateJadwalController::class, 'generateJadwal'])->name('jadwal.generate');
 
 });

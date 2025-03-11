@@ -58,7 +58,7 @@
 
                 <ul class="collapse list-unstyled dropdown-menu-vanilla @if (Str::is($laboratoriumRoutes, Route::currentRouteName())) active @endif" id="laboratoriumContainer">
                     <li class="sidebar-item @if (Str::is('laboran.jenis-lab*', Route::currentRouteName())) active @endif">
-                        <a href="{{ route('laboran.jenis-lab') }}" class="sidebar-link">Jenis Lab</a>
+                        <a href="{{ route('laboran.jenis-lab') }}" class="sidebar-link">Jenis</a>
                     </li>
                     <li class="sidebar-item @if (Str::is('laboran.laboratorium*', Route::currentRouteName())) active @endif">
                         <a href="{{ route('laboran.laboratorium') }}" class="sidebar-link">Laboratorium</a>

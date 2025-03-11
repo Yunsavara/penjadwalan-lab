@@ -13,7 +13,7 @@
       </h2>
       <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
         <div class="accordion-body">
-            <h3>HELLLOOOOO</h3>
+            @include('all-role.jadwal-page.generate-jadwal.datatables-generate-jadwal')
         </div>
       </div>
     </div>
