@@ -89,6 +89,8 @@ function generateJadwal(waktuOperasionals, laboratorium, bookings) {
 function loadJadwalToDataTable(jadwal) {
     $('#jadwalGenerateTable').DataTable({
         data: jadwal,
+        pageLength: 5,
+        lengthMenu: [5, 10, 15, 20, 30],
         destroy: true,
         columns: [
             { data: 'tanggal' },
