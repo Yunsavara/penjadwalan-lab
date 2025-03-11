@@ -29,15 +29,16 @@ class GenerateJadwalController extends Controller
 
         $jadwal = [];
 
+        // Pencarian dan pagination
         $start = $request->input('start', 0);
         $length = $request->input('length', 10);
+        $search = $request->input('search.value', '');
 
         // Loop dari hari ini sampai akhir tahun
         $currentDate = now();
-        $count = 0;
         while ($currentDate->toDateString() <= $endOfYear) {
             $hari = $currentDate->locale('id')->translatedFormat('l'); // Menghasilkan nama hari dalam bahasa Indonesia
-            $tanggal = $currentDate->toDateString();
+            $tanggal = $currentDate->toDateString(); // Format tanggal untuk pencarian (Y-m-d)
 
             foreach ($waktuOperasionals as $waktu) {
                 if (!in_array($hari, $waktu->hari_operasional)) {
@@ -53,64 +54,79 @@ class GenerateJadwalController extends Controller
                         ->where('tanggal', $tanggal)
                         ->map(function ($b) {
                             return [
-                                'jam_mulai' => $b->jam_mulai,
-                                'jam_selesai' => $b->jam_selesai
+                                'jam_mulai' => Carbon::parse($b->jam_mulai),
+                                'jam_selesai' => Carbon::parse($b->jam_selesai)
                             ];
                         })
                         ->sortBy('jam_mulai')
                         ->values();
 
-                    $startTime = $waktu->jam_mulai;
-                    $endTime = $waktu->jam_selesai;
+                    $startTime = Carbon::parse($waktu->jam_mulai);
+                    $endTime = Carbon::parse($waktu->jam_selesai);
 
+                    // Menambahkan slot yang tersedia di antara jadwal yang sudah dipesan
                     foreach ($bookedSlots as $booked) {
+                        // Slot tersedia sebelum jam mulai booking
                         if ($startTime < $booked['jam_mulai']) {
                             $jadwal[] = [
-                                'tanggal' => $tanggal,
+                                'tanggal' => $currentDate->locale('id')->translatedFormat('d F Y'), // Format tanggal untuk tampilan
                                 'lokasi' => $lokasi,
                                 'ruang_lab' => $lab->name,
                                 'jenis_lab' => $lab->jenislab->name,
-                                'jam_mulai' => $startTime,
-                                'jam_selesai' => $booked['jam_mulai'],
+                                'jam_mulai' => $startTime->format('h:i A'), // Format AM/PM
+                                'jam_selesai' => $booked['jam_mulai']->format('h:i A'), // Format AM/PM
                                 'status' => 'tersedia'
                             ];
                         }
 
+                        // Jadwal yang sudah dipesan
                         $jadwal[] = [
-                            'tanggal' => $tanggal,
+                            'tanggal' => $currentDate->locale('id')->translatedFormat('d F Y'), // Format tanggal untuk tampilan
                             'lokasi' => $lokasi,
                             'ruang_lab' => $lab->name,
                             'jenis_lab' => $lab->jenislab->name,
-                            'jam_mulai' => $booked['jam_mulai'],
-                            'jam_selesai' => $booked['jam_selesai'],
+                            'jam_mulai' => $booked['jam_mulai']->format('h:i A'), // Format AM/PM
+                            'jam_selesai' => $booked['jam_selesai']->format('h:i A'), // Format AM/PM
                             'status' => 'dipesan'
                         ];
 
-                        $startTime = $booked['jam_selesai'];
+                        $startTime = $booked['jam_selesai']; // Update waktu mulai selanjutnya
                     }
 
+                    // Jika ada waktu yang masih tersedia setelah booking yang ada
                     if ($startTime < $endTime) {
                         $jadwal[] = [
-                            'tanggal' => $tanggal,
+                            'tanggal' => $currentDate->locale('id')->translatedFormat('d F Y'), // Format tanggal untuk tampilan
                             'lokasi' => $lokasi,
                             'ruang_lab' => $lab->name,
                             'jenis_lab' => $lab->jenislab->name,
-                            'jam_mulai' => $startTime,
-                            'jam_selesai' => $endTime,
+                            'jam_mulai' => $startTime->format('h:i A'), // Format AM/PM
+                            'jam_selesai' => $endTime->format('h:i A'), // Format AM/PM
                             'status' => 'tersedia'
                         ];
                     }
                 }
             }
 
+            // Tambahkan satu hari lagi
             $currentDate->addDay();
+        }
+
+        // Implementasi pencarian
+        if ($search) {
+            $jadwal = array_filter($jadwal, function($item) use ($search) {
+                return strpos(strtolower($item['ruang_lab']), strtolower($search)) !== false ||
+                    strpos(strtolower($item['jenis_lab']), strtolower($search)) !== false ||
+                    strpos(strtolower($item['lokasi']), strtolower($search)) !== false ||
+                    strpos($item['tanggal'], $search) !== false;
+            });
         }
 
         // Implementasi pagination
         $totalFiltered = count($jadwal);
         $filteredJadwal = array_slice($jadwal, $start, $length);
 
-        // Return the data for DataTables
+        // Return data untuk datatables
         return response()->json([
             "draw" => $request->input('draw', 1),
             "recordsTotal" => count($jadwal),
