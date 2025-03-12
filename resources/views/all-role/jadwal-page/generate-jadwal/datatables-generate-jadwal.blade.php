@@ -1,6 +1,7 @@
 <table id="jadwalGenerateTable" class="table table-striped">
     <thead>
         <tr>
+            <th>No</th>
             <th>Tanggal</th>
             <th>Lokasi</th>
             <th>Ruang Lab</th>

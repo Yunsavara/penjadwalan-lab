@@ -13,6 +13,13 @@ function loadJadwalToDataTable() {
         pageLength: 5,
         lengthMenu: [5, 10, 15, 20, 30],
         columns: [
+            {
+                data: null,
+                name: 'index',
+                render: function (data, type, row, meta) {
+                    return meta.row + 1; // Indexing Table
+                }
+            },
             { data: 'tanggal' },
             { data: 'lokasi' },
             { data: 'ruang_lab' },

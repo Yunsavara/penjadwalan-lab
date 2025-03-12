@@ -16,6 +16,12 @@ import './all-role/riwayat/jadwal/datatables-jadwal'
 import './all-role/generate-jadwal/datatables-generate-jadwal'
 
 
+// Laboran
+import './laboran/generate-jadwal/datatables-generate-jadwal'
+import './laboran/pengajuan/datatables-pengajuan'
+import './laboran/booking-log/datatable-booking-log'
+
+
 // Datatables
 import 'datatables.net';
 import 'datatables.net-responsive';
