@@ -5,14 +5,17 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\BarangController;
-use App\Http\Controllers\AllRole\GenerateJadwalController;
-use App\Http\Controllers\AllRole\JadwalController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\AllRole\JadwalController;
 use App\Http\Controllers\Auth\DashboardController;
 use App\Http\Controllers\Laboran\JenisLabController;
 use App\Http\Controllers\AllRole\PengajuanController;
+use App\Http\Controllers\AllRole\GenerateJadwalController;
+use App\Http\Controllers\Laboran\LaboranPengajuanController;
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
-use App\Http\Controllers\Laboran\PengajuanController as LaboranPengajuanController;
+use App\Http\Controllers\Laboran\LaboranLogPengajuanController;
+use App\Http\Controllers\Laboran\LaboranGenerateJadwalController;
+use App\Http\Controllers\Laboran\LaboranBookingLogPengajuanController;
 
 Route::group(['middleware' => 'guest'], function() {
     // Home
@@ -74,10 +77,15 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
     // Booking atau Pengajuan
     Route::get('/laboran/jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.pengajuan');
     Route::get('/laboran/jadwal/pengajuan-data', [LaboranPengajuanController::class, 'getDataBooking']);
-    Route::post('/laboran/jadwal/update-status', [LaboranPengajuanController::class, 'updateStatus'])->name('pengajuan.update-status');
 
-    // Jadwal
-    Route::get('/laboran/jadwal/jadwal-data', [LaboranPengajuanController::class, 'getDataJadwal']);
+    Route::post('/laboran/pengajuan-diterima', [LaboranPengajuanController::class, 'terimaPengajuan'])->name('pengajuan.terima');
+    Route::post('/laboran/pengajuan-ditolak', [LaboranPengajuanController::class, 'tolakPengajuan'])->name('pengajuan.tolak');
+
+    // Jadwal Generate (Bikin Bisa batalin jadwal nanti)
+    Route::get('/laboran/jadwal/generate-jadwal', [LaboranGenerateJadwalController::class, 'generateJadwal'])->name('jadwal.generate');
+
+    // Booking Log
+    Route::get('/laboran/jadwal/booking-log', [LaboranBookingLogPengajuanController::class, 'getDataBookingLog']);
 });
 
 

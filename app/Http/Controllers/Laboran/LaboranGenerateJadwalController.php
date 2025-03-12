@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\AllRole;
+namespace App\Http\Controllers\Laboran;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\BookingDetail;
 use App\Models\WaktuOperasional;
 use App\Models\LaboratoriumUnpam;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Carbon;
 
-class GenerateJadwalController extends Controller
+class LaboranGenerateJadwalController extends Controller
 {
     public function generateJadwal(Request $request)
     {
@@ -72,6 +72,7 @@ class GenerateJadwalController extends Controller
                                 'tanggal' => $currentDate->locale('id')->translatedFormat('d F Y'), // Format tanggal untuk tampilan
                                 'lokasi' => $lokasi,
                                 'ruang_lab' => $lab->name,
+                                'kapasitas' => $lab->kapasitas,
                                 'jenis_lab' => $lab->jenislab->name,
                                 'jam_mulai' => $startTime->format('h:i A'), // Format AM/PM
                                 'jam_selesai' => $booked['jam_mulai']->format('h:i A'), // Format AM/PM
@@ -84,6 +85,7 @@ class GenerateJadwalController extends Controller
                             'tanggal' => $currentDate->locale('id')->translatedFormat('d F Y'), // Format tanggal untuk tampilan
                             'lokasi' => $lokasi,
                             'ruang_lab' => $lab->name,
+                            'kapasitas' => $lab->kapasitas,
                             'jenis_lab' => $lab->jenislab->name,
                             'jam_mulai' => $booked['jam_mulai']->format('h:i A'), // Format AM/PM
                             'jam_selesai' => $booked['jam_selesai']->format('h:i A'), // Format AM/PM
@@ -99,6 +101,7 @@ class GenerateJadwalController extends Controller
                             'tanggal' => $currentDate->locale('id')->translatedFormat('d F Y'), // Format tanggal untuk tampilan
                             'lokasi' => $lokasi,
                             'ruang_lab' => $lab->name,
+                            'kapasitas' => $lab->kapasitas,
                             'jenis_lab' => $lab->jenislab->name,
                             'jam_mulai' => $startTime->format('h:i A'), // Format AM/PM
                             'jam_selesai' => $endTime->format('h:i A'), // Format AM/PM
@@ -134,5 +137,4 @@ class GenerateJadwalController extends Controller
             "data" => $filteredJadwal
         ]);
     }
-
 }
