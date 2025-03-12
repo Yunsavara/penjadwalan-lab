@@ -203,7 +203,7 @@ a {
 
 /* Sidebar */
 .wrapper .sidebar {
-    background-color: white !important;
+    /* background-color: white !important; */
     position: fixed !important;
     width: 250px !important;
     min-height: 100vh !important;

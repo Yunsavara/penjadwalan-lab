@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- CSS and JS -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'public/css/mystyle.css'])
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
@@ -26,7 +26,7 @@
         @include('layouts.sidebar')
 
         {{-- Content --}}
-        <div class="content flex-grow">
+        <div class="content bg-white flex-grow">
 
             <div class="hidden-container">
                 <!-- Search Box Disini Biar Lebarnya Sesuai Dengan Content -->

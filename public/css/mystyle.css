@@ -27,8 +27,16 @@ body {
     color: rgba(111, 78, 55, 1);
 }
 
-.bg-lightBrown {
-    background-color: rgba(254, 216, 177, 1);
+/* Background */
+.bg-white {
+    background-color: rgba(241, 241, 241, 1);
+}
+
+.bg-brown100 {
+    background-color: rgba(255, 234, 197, 1);
+}
+.bg-brown200 {
+    background-color: rgba(255, 219, 181, 1);
 }
 
 .bg-darken {
@@ -41,8 +49,17 @@ body {
 }
 
 .bg-brown {
-    background-color: rgba(111, 78, 55, 1);
+    background-color: rgba(166, 123, 91, 1);
 }
+
+.bg-darkBrown {
+    background-color: rgba(108, 78, 49, 1);
+}
+
+.bg-darkerBrown {
+    background-color: rgba(96, 63, 38, 1);
+}
+/* End Background */
 
 .mydivider {
     width: 100px;
@@ -58,6 +75,12 @@ body {
 }
 
 .mycard {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.mycard-md {
     border: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;

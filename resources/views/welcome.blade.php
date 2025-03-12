@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <title>Penjadwalan Lab</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.css">
@@ -152,8 +152,8 @@
         </div>
     </div>
 
-    {{-- Collaborate With --}}
-    <div class="bg-lightBrown text-center py-5 mb-5">
+    {{-- Feature --}}
+    <div class="bg-brown200 text-center py-5 mb-5">
         <h4 class="fs-3 pb-5">Fitur Aplikasi</h4>
         <div class="container">
             <div class="row row-cols-1 row-cols-md-3 g-4  mb-5">
@@ -169,8 +169,8 @@
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card border-0">
-                        <div class="card-body mycard bg-brown p-5">
+                    <div class="card bg-transparent border-0">
+                        <div class="card-body mycard bg-darkBrown p-5">
                             <img class="myicons-feature" src="{{ asset('images/icons/settings.png') }}" alt="">
                             <center>
                                 <hr class="mydivider bolor-white">
