@@ -23,24 +23,8 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function lembaga(){
-        return view("lembaga.index", [
-            'page_meta' => [
-                'page' => 'Dashboard'
-            ]
-        ]);
-    }
-
-    public function prodi(){
-        return view("prodi.index", [
-            'page_meta' => [
-                'page' => 'Dashboard'
-            ]
-        ]);
-    }
-
-    public function user(){
-        return view("user.index", [
+    public function dashboardAllRole(){
+        return view("all-role.dashboard-page.index", [
             'page_meta' => [
                 'page' => 'Dashboard'
             ]

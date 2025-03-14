@@ -25,7 +25,7 @@ function initLaboratoriumDataTable() {
                     data: null,
                     name: 'index',
                     render: function(data, type, row, meta) {
-                        return meta.row + 1; // Indexing Table
+                        return meta.row + 1;
                     }
                 },
                 { data: 'name', name: 'name', },

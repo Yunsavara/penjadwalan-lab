@@ -1,12 +1,12 @@
-import { showDetailModal } from "../jadwal/modal-detail-jadwal.js";
+import { showDetailModal } from "./modal-detail-jadwal.js";
 import { batalkanJadwal } from "./batalkan-jadwal.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    generateTableHead();
+    generateTableHeadJadwal();
     initJadwalDatatable();
 });
 
-function generateTableHead() {
+function generateTableHeadJadwal() {
     let table = document.getElementById("tableJadwal");
 
     let thead = document.createElement("thead");
@@ -73,7 +73,6 @@ function initJadwalDatatable() {
                                 <li><a class="dropdown-item btn-detail" data-kode="${row.kode_pengajuan}">Detail</a></li>`;
 
                     // Tampilkan"Batalkan" hanya jika status "diterima"
-                    console.log(`${row.id}`);
                     if (row.status === "Diterima") {
                         aksiButtons += `
                                <li><a class="dropdown-item btn-batal text-danger" data-id="${row.id}">Batalkan</a></li>`;

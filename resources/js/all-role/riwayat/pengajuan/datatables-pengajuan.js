@@ -3,8 +3,38 @@ import { showEditModal } from "./form-pengajuan-edit.js";
 import { batalkanPengajuan } from "./batalkan-pengajuan.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+    generateTableHeadPengajuan();
     initPengajuanDatatable();
 });
+
+function generateTableHeadPengajuan() {
+    let table = document.getElementById("tablePengajuan");
+
+    let thead = document.createElement("thead");
+    thead.classList.add("table-dark", "sticky-top");
+
+    let tr = document.createElement("tr");
+
+    let headers = [
+        { text: "No", style: "min-width: 3rem" },
+        { text: "Kode Pengajuan", style: "min-width: 11.25rem" },
+        { text: "Ruangan", style: "width: auto" },
+        { text: "Status", style: "width: auto" },
+        { text: "Aksi", style: "width: auto" },
+    ];
+
+    headers.forEach(header => {
+        let th = document.createElement("th");
+        th.textContent = header.text;
+        if (header.style) {
+            th.style = header.style;
+        }
+        tr.appendChild(th);
+    });
+
+    thead.appendChild(tr);
+    table.appendChild(thead);
+}
 
 function initPengajuanDatatable() {
     $.fn.DataTable.ext.pager.numbers_length = 3;
@@ -27,8 +57,8 @@ function initPengajuanDatatable() {
                 }
             },
             { data: 'kode_pengajuan', name: 'kode_pengajuan' },
-            { data: 'lab', name: 'lab' },
-            { data: 'status', name: 'status' },
+            { data: 'lab', name: 'lab', className: 'min-tablet' },
+            { data: 'status', name: 'status', className: 'min-tablet' },
             {
                 data: null,
                 name: 'aksi',
@@ -52,6 +82,7 @@ function initPengajuanDatatable() {
 
                     return aksiButtons;
                 }
+                , className: 'min-desktop'
             }
         ],
         initComplete: function () {

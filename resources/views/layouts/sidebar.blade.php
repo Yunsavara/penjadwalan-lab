@@ -7,10 +7,12 @@
 
     <ul class="menu-container list-unstyled">
         <span class="divider" style="font-size:0.75rem;">MENU</span>
-        <li class="sidebar-item {{ Route::is(auth()->user()->role->name . '.dashboard') ? 'active' : '' }}">
-            <a href="{{ route(auth()->user()->role->name . '.dashboard') }}" class="sidebar-link"><i data-feather="layers" class="sidebar-icon-link"></i>Beranda</a>
+        {{-- Kalau selain admin dan laboran akan diarahkan ke dashboard umum --}}
+        <li class="sidebar-item {{ Route::is(in_array(auth()->user()->role->name, ['admin', 'laboran']) ? auth()->user()->role->name . '.dashboard' : 'dashboard') ? 'active' : '' }}">
+            <a href="{{ route(in_array(auth()->user()->role->name, ['admin', 'laboran']) ? auth()->user()->role->name . '.dashboard' : 'dashboard') }}" class="sidebar-link">
+                <i data-feather="layers" class="sidebar-icon-link"></i>Beranda
+            </a>
         </li>
-
 
         <span class="divider" style="font-size:0.75rem;">TOOLS</span>
 
@@ -33,6 +35,9 @@
                     <li class="sidebar-item @if (Route::currentRouteName() == 'admin.roles') active @endif">
                         <a href="{{ route('admin.roles') }}" class="sidebar-link">Roles</a>
                     </li>
+                    <li class="sidebar-item @if (Route::currentRouteName() == 'admin.roles') active @endif">
+                        <a href="{{ route('admin.roles') }}" class="sidebar-link">Operasional</a>
+                    </li>
                 </ul>
             </li>
         @endif
@@ -53,7 +58,7 @@
 
                 <ul class="collapse list-unstyled dropdown-menu-vanilla @if (Str::is($laboratoriumRoutes, Route::currentRouteName())) active @endif" id="laboratoriumContainer">
                     <li class="sidebar-item @if (Str::is('laboran.jenis-lab*', Route::currentRouteName())) active @endif">
-                        <a href="{{ route('laboran.jenis-lab') }}" class="sidebar-link">Jenis Lab</a>
+                        <a href="{{ route('laboran.jenis-lab') }}" class="sidebar-link">Jenis</a>
                     </li>
                     <li class="sidebar-item @if (Str::is('laboran.laboratorium*', Route::currentRouteName())) active @endif">
                         <a href="{{ route('laboran.laboratorium') }}" class="sidebar-link">Laboratorium</a>
@@ -62,7 +67,7 @@
             </li>
 
             <li class="sidebar-item {{ Route::is('laboran.pengajuan*') ? 'active' : '' }}">
-                <a href="{{ Route('laboran.pengajuan') }}" class="sidebar-link"><i data-feather="bar-chart-2" class="sidebar-icon-link"></i>Pengajuan</a>
+                <a href="{{ Route('laboran.pengajuan') }}" class="sidebar-link"><i data-feather="bar-chart-2" class="sidebar-icon-link"></i>Jadwal</a>
             </li>
 
             <li class="sidebar-item {{ Route::is('admin.barang*') ? 'active' : '' }}">

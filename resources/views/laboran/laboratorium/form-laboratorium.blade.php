@@ -6,13 +6,8 @@
     <h1 class="fw-bold">{{ $page_meta['page'] }}</h1>
     <hr>
 
-    {{-- Alert Error Input Data --}}
-    @if (session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Gagal!</strong> {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+    {{-- Alert Error --}}
+    <x-validation></x-validation>
 
     <div class="container-fluid px-3">
         <form action="{{ $page_meta['url'] }}" method="POST">
@@ -40,26 +35,19 @@
                         </option>
                     @endforeach
                 </select>
-                @error('jenislab_id')
-                    <div class="invalid-feedback d-block">
-                        {{ $message }}
-                    </div>
-                @enderror
             </div>
 
             <div class="col-12 mb-3">
                 <label for="lokasiLaboratorium">Lokasi Laboratorium</label>
-                <select name="lokasi" id="lokasiLaboratorium" class="form-select @error('lokasi') is-invalid @enderror">
+                <select name="lokasi_id" id="lokasiLaboratorium" class="form-select @error('lokasi_id') is-invalid @enderror">
                     <option value="" selected></option>
-                    <option value="pusat" {{ old('lokasi', $Laboratorium->lokasi)  === 'pusat' ? 'selected' : '' }}>Pusat</option>
-                    <option value="viktor" {{ old('lokasi', $Laboratorium->lokasi) === 'viktor' ? 'selected' : '' }}>Viktor</option>
-                    <option value="serang" {{ old('lokasi', $Laboratorium->lokasi) === 'serang' ? 'selected' : '' }}>Serang</option>
+                    @foreach ($Lokasi as $lok)
+                        <option value="{{ $lok->id }}"
+                            {{ old('lokasi_id', $Laboratorium->lokasi_id) == $lok->id ? 'selected' : '' }}>
+                            {{ $lok->name }}
+                        </option>
+                    @endforeach
                 </select>
-                @error('lokasi')
-                    <div class="invalid-feedback d-block">
-                        {{ $message }}
-                    </div>
-                @enderror
             </div>
 
             <div class="col-12 mb-3">

@@ -12,7 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class JadwalController extends Controller
 {
-    //Datatables jadwal
+
+    // Datatables Jadwal (umum)
+    public function getJadwalUmum(){
+        
+    }
+
+    //Datatables jadwal (berdasarkan user login)
     public function getDataJadwal(Request $request)
     {
         $user_id = auth()->id();
@@ -160,49 +166,5 @@ class JadwalController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan saat membatalkan jadwal.');
         }
     }
-
-
-    // public function batalkanJadwal(Request $request)
-    // {
-    //     DB::beginTransaction();
-
-    //     try {
-    //         $kodePengajuan = $request->kode_pengajuan;
-
-    //         // Ambil semua pengajuan dengan kode yang sama
-    //         $jadwals = Jadwal::where('kode_pengajuan', $kodePengajuan)->get();
-
-    //         if ($jadwals->isEmpty()) {
-    //             return redirect()->back()->with('error', 'Jadwal tidak ditemukan.');
-    //         }
-
-    //         // Update status pengajuan menjadi "dibatalkan"
-    //         Jadwal::where('kode_pengajuan', $kodePengajuan)->update(['status' => 'dibatalkan']);
-
-    //         // Simpan perubahan ke dalam `pengajuan_status_histories`
-    //         $historyData = [];
-    //         foreach ($jadwals as $jadwal) {
-    //             $historyData[] = [
-    //                 'kode_pengajuan' => $kodePengajuan,
-    //                 'tanggal' => $jadwal->tanggal,
-    //                 'jam_mulai' => $jadwal->jam_mulai,
-    //                 'jam_selesai' => $jadwal->jam_selesai,
-    //                 'status' => 'dibatalkan',
-    //                 'user_id' => $jadwal->user_id,
-    //                 'lab_id' => $jadwal->lab_id,
-    //                 'changed_by' => auth()->id(),
-    //                 'created_at' => now(),
-    //                 'updated_at' => now(),
-    //             ];
-    //         }
-    //         StatusPengajuanHistories::insert($historyData);
-
-    //         DB::commit();
-    //         return redirect()->back()->with('success', "Pengajuan berhasil dibatalkan.");
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return redirect()->back()->with('error', "Terjadi kesalahan: " . $e->getMessage());
-    //     }
-    // }
 
 }

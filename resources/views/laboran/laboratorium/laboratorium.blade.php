@@ -7,13 +7,8 @@
     <hr>
 
 
-     {{-- Alert Sukses --}}
-     @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Sukses!</strong> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+     {{-- Alert --}}
+     <x-validation></x-validation>
 
     {{-- Table --}}
     <div class="container-fluid py-3 px-2 d-flex flex-wrap justify-content-between bg-white shadow-sm rounded border">
