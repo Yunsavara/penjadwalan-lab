@@ -8,7 +8,7 @@ export function showTerimaModal(kodePengajuan) {
     modalInstance.show();
 
     // Ambil elemen untuk mengisi kode pengajuan
-    let modalKodePengajuan = document.getElementById("modalLaborangPengajuanKode");
+    let modalKodePengajuan = document.getElementById("modalLaboranPengajuanKode");
     modalKodePengajuan.textContent = kodePengajuan;
 
     // Isi input hidden dengan kode pengajuan
