@@ -6,6 +6,7 @@
 
     <!-- CSS and JS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
@@ -44,7 +45,6 @@
     <script>
         feather.replace();
     </script>
-
 
 </body>
 </html>

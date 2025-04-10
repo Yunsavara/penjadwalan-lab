@@ -13,15 +13,13 @@ class UsersController extends Controller
         return view("laboran.pengguna-page.index", [
             'page_meta' => [
                 'page'=> 'Pengguna',
-                'description' => 'Halaman untuk manajemen pengguna dan peran'
+                'description' => 'Halaman untuk manajemen pengguna dan peran.'
             ]
         ]);
     }
 
     public function getApiRoles(Request $request)
     {
-        $columns = ['index', 'name', 'priority'];
-
         $query = Roles::select(['name', 'priority']);
 
         // Pencarian

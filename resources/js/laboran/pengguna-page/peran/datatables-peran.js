@@ -1,12 +1,6 @@
 import DataTable from 'datatables.net';
-import 'datatables.net-fixedcolumns';
-import 'datatables.net-fixedcolumns-bs5';
 
-document.addEventListener("DOMContentLoaded", () => {
-    initPeranDatatable();
-});
-
-function initPeranDatatable() {
+export function initPeranDatatable() {
     const table = new DataTable("#tablePeran", {
         serverSide: true,
         processing: true,

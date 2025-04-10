@@ -1,7 +1,6 @@
 .select2 {
-    width:100%!important;
+    flex-grow:1 !important;
 }
-
 
 a {
     text-decoration: none !important;

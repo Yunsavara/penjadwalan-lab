@@ -1,6 +1,6 @@
 <div class="col-12 p-2 d-flex flex-wrap align-items-center justify-content-between">
     <div class="col-12 col-md-auto mb-2">
-        <span><b>Daftar Peran dan Prioritasnya</b></span>
+        <span><b>Daftar Peran dan Prioritasnya.</b></span>
     </div>
     <div class="col-12 col-md-auto mb-2">
         <a href=""><button class="btn btn-sm btn-primary"><i data-feather="plus"></i></button></a>

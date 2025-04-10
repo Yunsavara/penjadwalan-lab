@@ -40,12 +40,6 @@ Route::group(['middleware' => ['role:admin']], function() {
     // Dashboard
     Route::get('/admin/dashboard', [DashboardController::class,'admin'])->name('admin.dashboard');
 
-    // Manajemen - Pengguna
-    Route::get('/admin/pengguna', [UsersController::class, 'index'])->name('admin.pengguna');
-
-    // Manajemen - Roles
-    Route::get('/admin/roles', [RolesController::class, 'index'])->name('admin.roles');
-
     // Barang
     Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');
     Route::get('/admin/tambah-barang', [BarangController::class, 'create'])->name('admin.barang.create');
@@ -56,26 +50,22 @@ Route::group(['middleware' => ['role:admin']], function() {
 Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::get('/laboran/dashboard', [DashboardController::class,'laboran'])->name('laboran.dashboard');
 
-    // Pengguna
+    // Manajemen - Pengguna
+    Route::get('/laboran/pengguna', [UsersController::class, 'index'])->name('laboran.pengguna');
     Route::get('/laboran/api/data-peran', [UsersController::class, 'getApiRoles']);
-
-    // Jenis Lab
-    Route::get('/laboran/jenis-lab', [JenisLabController::class, 'index'])->name('laboran.jenis-lab');
-    Route::get('/laboran/jenis-lab/data', [JenisLabController::class, 'getData'])->name('jenislab.getData');
-
-    Route::get('/laboran/tambah-jenis-lab', [JenisLabController::class, 'create'])->name('laboran.jenis-lab.create');
-    Route::post('/laboran/tambah-jenis-lab', [JenisLabController::class, 'store']);
-    Route::get('/laboran/ubah-jenis-lab/{jenislab:slug}', [JenisLabController::class, 'edit'])->name('laboran.jenis-lab.edit');
-    Route::put('/laboran/ubah-jenis-lab/{jenislab:slug}', [JenisLabController::class, 'update']);
 
     // Laboratorium
     Route::get('/laboran/laboratorium', [LaboratoriumUnpamController::class, 'index'])->name('laboran.laboratorium');
-    Route::get('/laboran/laboratorium/laboratorium-data', [LaboratoriumUnpamController::class, 'getData']);
+    Route::get('/laboran/api/data-laboratorium', [LaboratoriumUnpamController::class, 'getApiLaboratorium']);
 
-    Route::get('/laboran/tambah-laboratorium', [LaboratoriumUnpamController::class, 'create'])->name('laboran.laboratorium.create');
-    Route::post('/laboran/tambah-laboratorium', [LaboratoriumUnpamController::class, 'store']);
+    Route::post('/laboran/tambah-laboratorium', [LaboratoriumUnpamController::class, 'store'])->name('laboran.laboratorium.store');
+
     Route::get('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'edit'])->name('laboran.laboratorium.edit');
     Route::put('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'update']);
+
+    Route::get('/laboran/jenis-lab/data', [JenisLabController::class, 'getData'])->name('jenislab.getData');
+
+
 
     // Booking atau Pengajuan
     Route::get('/laboran/jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.pengajuan');
