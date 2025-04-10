@@ -18,7 +18,7 @@
 
         @php
             // List route buat ke dropdown menu manajemen
-            $manajemenRoutes = ['admin.pengguna', 'admin.roles'];
+            $manajemenRoutes = ['admin.pengguna', 'admin.barang'];
         @endphp
 
         @if(auth()->user()->role->name === "admin")
@@ -32,15 +32,16 @@
                     <li class="sidebar-item @if (Route::currentRouteName() == 'admin.pengguna') active @endif">
                         <a href="{{ route('admin.pengguna') }}" class="sidebar-link">Pengguna</a>
                     </li>
-                    <li class="sidebar-item @if (Route::currentRouteName() == 'admin.roles') active @endif">
-                        <a href="{{ route('admin.roles') }}" class="sidebar-link">Roles</a>
-                    </li>
-                    <li class="sidebar-item @if (Route::currentRouteName() == 'admin.roles') active @endif">
-                        <a href="{{ route('admin.roles') }}" class="sidebar-link">Operasional</a>
+                    <li class="sidebar-item @if (Route::currentRouteName() == 'admin.barang') active @endif">
+                        <a href="{{ route('admin.barang') }}" class="sidebar-link">Barang</a>
                     </li>
                 </ul>
             </li>
         @endif
+
+                            {{-- <li class="sidebar-item @if (Route::currentRouteName() == 'admin.roles') active @endif">
+                        <a href="{{ route('admin.roles') }}" class="sidebar-link">Operasional</a>
+                    </li> --}}
 
 
         {{-- Admin atau Laboran --}}

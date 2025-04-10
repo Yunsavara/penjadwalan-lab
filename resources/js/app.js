@@ -20,16 +20,18 @@ import './all-role/generate-jadwal/datatables-generate-jadwal'
 import './laboran/generate-jadwal/datatables-generate-jadwal'
 import './laboran/pengajuan/datatables-pengajuan'
 import './laboran/booking-log/datatable-booking-log'
+import './laboran/pengguna-page/peran/datatables-peran'
 
 
 // Datatables
-import 'datatables.net';
 import 'datatables.net-responsive';
 import 'datatables.net-responsive-bs5';
 import "datatables.net-fixedheader";
-import "datatables.net-select-dt";
+import 'datatables.net-select';
+
 import $ from 'jquery';
 window.$ = window.jQuery = $;
+
 import "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js";
 
 // Flatpickr

@@ -14,13 +14,14 @@
 
     <title>@yield('title', 'Penjadwalan Lab')</title>
 
+
 </head>
 <body>
 
     {{-- Header atau Navbar --}}
     @include('layouts.header')
 
-    <div class="wrapper d-flex">
+    <div class="wrapper d-flex bg-body-tertiary vh-100">
 
         {{-- Sidebar --}}
         @include('layouts.sidebar')
@@ -32,8 +33,9 @@
                 <!-- Search Box Disini Biar Lebarnya Sesuai Dengan Content -->
                 @include('layouts.search-box')
                 @include('layouts.notif')
-                @yield('content')
             </div>
+
+            @yield('content')
         </div>
 
     </div>
