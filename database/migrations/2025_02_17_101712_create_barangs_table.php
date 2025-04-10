@@ -17,9 +17,12 @@ return new class extends Migration
             $table->text('spesifikasi');
             $table->text('deskripsi');
             $table->unsignedBigInteger('lab_id');
-            $table->foreign('lab_id')->references('id')->on('laboratorium_unpams')->onDelete('cascade');
-            $table->unsignedBigInteger('meja_id')->nullable()->constrained('barangs');
+            $table->enum('status',['rusak','tersedia','tidak dipakai'])->default('tidak dipakai');
+            $table->foreign('lab_id')->references('id')->on('laboratorium_unpams');
+            $table->unsignedBigInteger('meja_id')->nullable();
+            $table->foreign('meja_id')->references('id')->on('barangs');
             $table->timestamps();
+            // ->onDelete('set null')
         });
     }
 

@@ -56,6 +56,9 @@ Route::group(['middleware' => ['role:admin']], function() {
 Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::get('/laboran/dashboard', [DashboardController::class,'laboran'])->name('laboran.dashboard');
 
+    // Pengguna
+    Route::get('/laboran/api/data-peran', [UsersController::class, 'getApiRoles']);
+
     // Jenis Lab
     Route::get('/laboran/jenis-lab', [JenisLabController::class, 'index'])->name('laboran.jenis-lab');
     Route::get('/laboran/jenis-lab/data', [JenisLabController::class, 'getData'])->name('jenislab.getData');
