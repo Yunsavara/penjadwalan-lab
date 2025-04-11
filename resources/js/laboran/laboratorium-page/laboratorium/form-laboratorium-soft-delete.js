@@ -13,7 +13,7 @@ export function initSoftDeleteLaboratoriumModal() {
             form.setAttribute('action', `/laboran/hapus-laboratorium/${row.slug}`);
 
             // Set pesan konfirmasi
-            const message = `Apakah Anda yakin ingin menghapus Laboratorium <strong>${row.name}</strong> dari lokasi <strong>${row.lokasi_name}</strong> ?`;
+            const message = `Apakah Anda yakin ingin menghapus Laboratorium <strong>${row.name}</strong> dari Lokasi <strong>${row.lokasi_name}</strong> ?`;
             document.getElementById('deleteLabMessage').innerHTML = message;
 
             // Tampilkan modal

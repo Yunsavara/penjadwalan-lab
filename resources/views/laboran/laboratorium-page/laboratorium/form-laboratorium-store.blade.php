@@ -45,7 +45,7 @@
                     <label for="lokasiLaboratorium" class="form-label">Lokasi Laboratorium</label>
                     <div class="input-group">
                         <span class="input-group-text">
-                            <i data-feather="map-pin" width="15"></i>
+                            <i data-feather="map-pin" width="20"></i>
                         </span>
                         <select name="lokasi_id" id="lokasiLaboratorium" class="form-select @error('lokasi_id') is-invalid @enderror">
                             <option value="" selected></option>

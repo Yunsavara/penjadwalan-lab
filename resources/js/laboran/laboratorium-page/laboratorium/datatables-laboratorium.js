@@ -1,6 +1,3 @@
-import 'datatables.net-responsive-bs5';
-import 'datatables.net-fixedheader-bs5';
-import 'datatables.net-select';
 import DataTable from 'datatables.net';
 
 export function initLaboratoriumDatatable() {
@@ -31,7 +28,8 @@ export function initLaboratoriumDatatable() {
             },
             {
                 title: "Kapasitas",
-                data: "kapasitas"
+                data: "kapasitas",
+                className: "text-start"
             },
             {
                 title: "Status",
@@ -43,7 +41,7 @@ export function initLaboratoriumDatatable() {
             },
             {
                 title: "Lokasi",
-                data: "lokasi_name"
+                data: "lokasi_name" 
             },
             {
                 title: "Jenis",
@@ -62,7 +60,7 @@ export function initLaboratoriumDatatable() {
                                 Aksi
                             </button>
                             <ul class="dropdown-menu p-0">
-                                <li><button class="dropdown-item btn-edit-lab" data-row='${JSON.stringify(row)}'>Edit</button></li>
+                                <li><button class="dropdown-item btn-edit-lab" data-row='${JSON.stringify(row)}'>Ubah</button></li>
                                 <li><button class="dropdown-item text-danger btn-delete" data-row='${JSON.stringify(row)}'>Hapus</button></li>
                             </ul>
                         </div>

@@ -17,7 +17,7 @@
 
 
 </head>
-<body>
+<body class="pt-5">
 
     {{-- Header atau Navbar --}}
     @include('layouts.header')

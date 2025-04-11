@@ -4,7 +4,7 @@
 
         <div class="modal-header bg-warning">
           <h5 class="modal-title d-flex align-items-center flex-wrap" id="modalEditLabel">
-            <i data-feather="edit" class="me-2"></i>Edit Laboratorium
+            
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>

@@ -5,6 +5,10 @@ export function initDatatablesValueToModalUpdate() {
         if (e.target.classList.contains('btn-edit-lab')) {
             const data = JSON.parse(e.target.getAttribute('data-row'));
 
+            // Set Pesan data yang sedang di-ubah
+            const message = `<i data-feather="edit" class="me-2"></i>Ubah Laboratorium ${data.name} dari Lokasi ${data.lokasi_name}`;
+            document.getElementById('modalEditLabel').innerHTML = message;
+
             document.getElementById('edit-slug').value = data.slug;
             document.getElementById('edit-namaLab').value = data.name;
             document.getElementById('edit-jenisLab').value = data.jenislab_id;
