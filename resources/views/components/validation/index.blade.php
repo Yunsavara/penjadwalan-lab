@@ -14,7 +14,7 @@
 
 @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Periksa kembali inputan Anda!</strong>
+        <strong>Gagal Menambahkan Data, Periksa kembali inputan Anda!</strong>
         <ul class="mb-0">
             @foreach ($errors->all() as $error)
                 <li>{!! $error !!}</li>

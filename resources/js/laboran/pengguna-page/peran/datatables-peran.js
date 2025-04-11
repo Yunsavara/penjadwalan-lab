@@ -1,3 +1,7 @@
+import 'datatables.net-responsive';
+import 'datatables.net-responsive-bs5';
+import "datatables.net-fixedheader";
+import 'datatables.net-select';
 import DataTable from 'datatables.net';
 
 export function initPeranDatatable() {

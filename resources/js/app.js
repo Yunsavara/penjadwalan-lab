@@ -2,6 +2,11 @@
 import './bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// Jquery Global File
+import $ from 'jquery';
+window.$ = $;
+window.jQuery = $;
+
 // Script vanilla
 import './script';
 import './all-role/riwayat/pengajuan/form-pengajuan-store'
@@ -15,13 +20,6 @@ import './all-role/generate-jadwal/datatables-generate-jadwal'
 import './laboran/generate-jadwal/datatables-generate-jadwal'
 import './laboran/pengajuan/datatables-pengajuan'
 import './laboran/booking-log/datatable-booking-log'
-
-
-// Datatables
-import 'datatables.net-responsive';
-import 'datatables.net-responsive-bs5';
-import "datatables.net-fixedheader";
-import 'datatables.net-select';
 
 // Flatpickr
 import flatpickr from "flatpickr";

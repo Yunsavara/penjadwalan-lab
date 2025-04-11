@@ -28,7 +28,7 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
                 'string',
                 'max:15',
                 Rule::unique('laboratorium_unpams')->where(function ($query) {
-                    return $query->where('lokasi_id', request()->lokasi);
+                    return $query->where('lokasi_id', request()->lokasi_id);
                 })
             ],
             'jenislab_id' => 'required|string|exists:jenislabs,id',

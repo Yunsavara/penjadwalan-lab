@@ -41,12 +41,12 @@ class LaboratoriumUnpamController extends Controller
             return redirect()->route('laboran.laboratorium')->with('success', 'Laboratorium Berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('laboran.laboratorium.create')->with('error', 'Laboratorium Gagal ditambahkan');
+            return redirect()->route('laboran.laboratorium')->with('error', 'Laboratorium Gagal ditambahkan');
         }
     }
 
     public function getApiLaboratorium(Request $request) {
-        $query = LaboratoriumUnpam::select(['name', 'kapasitas', 'status', 'lokasi_id', 'jenislab_id']);
+        $query = LaboratoriumUnpam::select(['name', 'slug', 'kapasitas', 'status', 'lokasi_id', 'jenislab_id']);
 
         // Pencarian
         if ($request->has('search') && !empty($request->search['value'])) {
@@ -87,10 +87,13 @@ class LaboratoriumUnpamController extends Controller
             $result[] = [
                 'index' => $start + $index + 1,
                 'name' => $laboratorium->name,
+                'slug' => $laboratorium->slug,
                 'kapasitas' => $laboratorium->kapasitas,
                 'status' => $laboratorium->status,
-                'lokasi_id' => $laboratorium->lokasi->name,
-                'jenislab_id' => $laboratorium->jenislab->name,
+                'jenislab_id' => $laboratorium->jenislab->id,
+                'lokasi_id' => $laboratorium->lokasi->id,
+                'jenislab_name' => $laboratorium->jenislab->name,
+                'lokasi_name' => $laboratorium->lokasi->name,
             ];
         }
 
@@ -99,25 +102,6 @@ class LaboratoriumUnpamController extends Controller
             'recordsTotal' => $totalData,
             'recordsFiltered' => $totalFiltered,
             'data' => $result
-        ]);
-    }
-
-
-    public function edit(LaboratoriumUnpam $Laboratorium){
-
-        $Jenislab = Jenislab::select(['id', 'name'])->get();
-        $Lokasi = Lokasi::select(['id', 'name'])->get();
-
-        return view("laboran.laboratorium.form-laboratorium", [
-            'Laboratorium' => $Laboratorium,
-            'Jenislab' => $Jenislab,
-            'Lokasi' => $Lokasi,
-            'page_meta' => [
-                'page' => "Ubah Laboratorium",
-                'method' => 'PUT',
-                'url' => route('laboran.laboratorium.edit', $Laboratorium),
-                'button_text' => 'Ubah Laboratorium'
-            ]
         ]);
     }
 
@@ -133,7 +117,23 @@ class LaboratoriumUnpamController extends Controller
             return redirect()->route('laboran.laboratorium')->with('success', 'Laboratorium Berhasil di-ubah');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('laboran.laboratorium.edit')->with('error', 'Laboratorium Gagal di-ubah');
+            return redirect()->route('laboran.laboratorium')->with('error', 'Laboratorium Gagal di-ubah');
+        }
+    }
+
+    public function softDelete($slug)
+    {
+        DB::beginTransaction();
+
+        try {
+            $lab = LaboratoriumUnpam::where('slug', $slug)->firstOrFail();
+            $lab->delete(); // ini akan soft delete
+
+            DB::commit();
+            return redirect()->route('laboran.laboratorium')->with('success', 'Laboratorium Berhasil di-hapus');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('laboran.laboratorium')->with('error', 'Laboratorium Gagal di-hapus');
         }
     }
 }

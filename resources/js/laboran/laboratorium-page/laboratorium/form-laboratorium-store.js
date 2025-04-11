@@ -1,11 +1,4 @@
-import $ from 'jquery';
-window.$ = $;
-window.jQuery = $;
-
-import select2 from 'select2';
-select2();
-
-export function initSelect2(){
+export function initSelect2Store(){
     $('#formLaboratoriumStore').on('shown.bs.modal', function () {
         $('#jenisLab').select2({
             dropdownParent: $('#formLaboratoriumStore'),

@@ -1,3 +1,6 @@
+import 'datatables.net-responsive-bs5';
+import 'datatables.net-fixedheader-bs5';
+import 'datatables.net-select';
 import DataTable from 'datatables.net';
 
 export function initLaboratoriumDatatable() {
@@ -5,6 +8,7 @@ export function initLaboratoriumDatatable() {
         serverSide: true,
         processing: true,
         responsive: true,
+        fixedHeader: true,
         ajax: {
             url: "/laboran/api/data-laboratorium",
             method: "GET"
@@ -39,11 +43,11 @@ export function initLaboratoriumDatatable() {
             },
             {
                 title: "Lokasi",
-                data: "lokasi_id"
+                data: "lokasi_name"
             },
             {
                 title: "Jenis",
-                data: "jenislab_id"
+                data: "jenislab_name"
             },
             {
                 title: "Aksi",
@@ -58,8 +62,8 @@ export function initLaboratoriumDatatable() {
                                 Aksi
                             </button>
                             <ul class="dropdown-menu p-0">
-                                <li><a class="dropdown-item" href="/laboran/laboratorium/${row.id}/edit">Edit</a></li>
-                                <li><button class="dropdown-item text-danger btn-delete" data-id="${row.id}">Hapus</button></li>
+                                <li><button class="dropdown-item btn-edit-lab" data-row='${JSON.stringify(row)}'>Edit</button></li>
+                                <li><button class="dropdown-item text-danger btn-delete" data-row='${JSON.stringify(row)}'>Hapus</button></li>
                             </ul>
                         </div>
                     `;
@@ -69,7 +73,7 @@ export function initLaboratoriumDatatable() {
         // fixedColumns: {
         //     start: 3
         // },
-        order: [[2, 'asc']],
+        order: [[2, 'desc']],
         select: {
             style: "multi+shift",
             selector: "td:first-child"

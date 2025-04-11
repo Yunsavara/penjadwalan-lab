@@ -12,7 +12,7 @@
     <div id="sortingPeran" class="col-12 col-md-auto mb-2"></div>
 </div>
 
-<div class="table-responsive px-3" id="tablePeranContainer">
+<div class="table-responsive px-2" id="tablePeranContainer">
     <table class="table text-nowrap" id="tablePeran" style="width: 100%;">
     </table>
 </div>

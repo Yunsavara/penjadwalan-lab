@@ -5,11 +5,12 @@ namespace App\Models;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LaboratoriumUnpam extends Model
 {
 
-    use HasSlug;
+    use HasSlug, SoftDeletes;
 
     protected $fillable = [
         'name',
