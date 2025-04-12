@@ -1,5 +1,5 @@
 <div class="modal fade" id="formLaboratoriumStore" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
 
         <div class="modal-header bg-primary text-white">
@@ -92,3 +92,7 @@
       </div>
     </div>
   </div>
+
+{{-- Datanya nanti ditangkep jika input gagal, dibuat gini supaya bisa if else di javascript --}}
+<div id="formDataLaboratoriumStore" class="d-none" data-errors="{{ json_encode($errors->any()) }}" data-session="{{ session('form') }}">
+</div>

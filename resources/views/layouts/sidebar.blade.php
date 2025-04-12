@@ -1,4 +1,4 @@
-<div class="sidebar shadow py-3 px-4" id="sidebar">
+<div class="sidebar shadow py-5 px-4" id="sidebar">
     <div class="brand-logo gap-2 d-flex justify-content-center py-1">
         <i data-feather="activity" id="brandIcon"></i>
         <span>Penjadwalan Lab</span>

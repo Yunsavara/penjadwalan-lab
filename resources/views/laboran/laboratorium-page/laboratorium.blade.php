@@ -14,14 +14,10 @@
     @include('laboran.laboratorium-page.jenis-lab.form-jenis-lab-store')
     @include('laboran.laboratorium-page.jenis-lab.form-jenis-lab-update')
 
-    <div class="col-12 p-3">
+    <div class="col-12 px-3 py-4">
         <h2>{{ $page_meta['page'] }}</h2>
         <span>{{ $page_meta['description'] }}</span>
         <hr>
-
-        <div id="alertNotification">
-            <x-validation></x-validation>
-        </div>
 
         <div id="table-container">
             @include('laboran.laboratorium-page.navigasi-laboratorium')

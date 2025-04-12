@@ -10,12 +10,12 @@ select2();
 
 // Laboratorium
 import { initLaboratoriumDatatable } from "./laboratorium/datatables-laboratorium.js";
-import { initSelect2Store } from "./laboratorium/form-laboratorium-store.js";
-import { initDatatablesValueToModalUpdateLab } from "./laboratorium/form-laboratorium-update.js";
+import { initSelect2Store, errorStoreModalLaboratorium } from "./laboratorium/form-laboratorium-store.js";
+import { initDatatablesValueToModalUpdateLab, errorUpdateModalLaboratorium } from "./laboratorium/form-laboratorium-update.js";
 import { initSoftDeleteLaboratoriumModal } from './laboratorium/form-laboratorium-soft-delete.js';
 
 // Jenis Laboratorium
-import { initJenisLaboratoriumDatatable } from './jenis-lab/datatables-jenis-lab.js';
+import { initJenisLabDatatable } from './jenis-lab/datatables-jenis-lab.js';
 import { errorStoreModalJenisLab } from './jenis-lab/form-jenis-lab-store.js';
 import { errorUpdateModalJenisLab, initDatatablesValueToModalUpdateJenisLab } from './jenis-lab/form-jenis-lab.update.js';
 
@@ -28,10 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
     initSoftDeleteLaboratoriumModal();
 
     // Jenis Laboratorium
-    initJenisLaboratoriumDatatable();
+    initJenisLabDatatable();
     initDatatablesValueToModalUpdateJenisLab();
 
     // Kalau Gagal Input Form
+    errorStoreModalLaboratorium();
+    errorUpdateModalLaboratorium();
     errorStoreModalJenisLab();
     errorUpdateModalJenisLab();
 });

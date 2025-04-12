@@ -42,7 +42,7 @@ class JenisLabStoreRequest extends FormRequest
         ];
     }
 
-    // Kalau ada gagal input, suapaya modal nya tetap tampil
+    // Kalau ada gagal input, supaya modal nya tetap tampil
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(

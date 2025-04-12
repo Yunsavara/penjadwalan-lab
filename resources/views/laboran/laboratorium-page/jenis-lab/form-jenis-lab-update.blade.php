@@ -1,18 +1,16 @@
-<div class="modal fade" id="formJenisLaboratoriumUpdate" tabindex="-1" aria-labelledby="modalEditJenisLabLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
+<div class="modal fade" id="formJenisLabUpdate" tabindex="-1" aria-labelledby="modalEditJenisLabLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
 
         <div class="modal-header bg-warning">
           <h5 class="modal-title d-flex align-items-center flex-wrap" id="modalEditJenisLabLabel">
-
+            <i data-feather="edit" class="me-2"></i>
+            Ubah Jenis Lab
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
 
         <div class="modal-body">
-            <div class="alert-formJenisLaboratoriumUpdate">
-                <x-validation></x-validation>
-            </div>
           <form id="formEditJenisLab" method="POST">
             @csrf
             @method('PUT')
@@ -49,5 +47,5 @@
   </div>
 
 {{-- Datanya nanti ditangkep jika input gagal, dibuat gini supaya bisa if else di javascript --}}
-<div id="formDataJenisLaboratoriumUpdate" class="d-none" data-errors="{{ json_encode($errors->any()) }}" data-session="{{ session('form') }}" data-old='@json(old())'>
+<div id="formDataJenisLabUpdate" class="d-none" data-errors="{{ json_encode($errors->any()) }}" data-session="{{ session('form') }}" data-old='@json(old())'>
 </div>

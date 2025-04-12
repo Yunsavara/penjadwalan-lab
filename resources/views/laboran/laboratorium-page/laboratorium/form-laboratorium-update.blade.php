@@ -1,10 +1,11 @@
-<div class="modal fade" id="formLaboratoriumEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="formLaboratoriumUpdate" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog">
       <div class="modal-content">
 
         <div class="modal-header bg-warning">
           <h5 class="modal-title d-flex align-items-center flex-wrap" id="modalEditLaboratoriumLabel">
-
+            <i data-feather="edit" class="me-2"></i>
+            Ubah Laboratorium
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
@@ -79,3 +80,10 @@
       </div>
     </div>
   </div>
+
+{{-- Datanya nanti ditangkep jika input gagal, dibuat gini supaya bisa if else di javascript --}}
+<div id="formDataLaboratoriumUpdate"
+     data-session="{{ session('form') }}"
+     data-errors='@json($errors->toArray())'
+     data-old='@json(old())'>
+</div>

@@ -1,5 +1,5 @@
-<div class="modal fade" id="formJenisLaboratoriumStore" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
+<div class="modal fade" id="formJenisLabStore" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
         <div class="modal-header bg-primary text-white">
@@ -10,9 +10,6 @@
         </div>
 
         <div class="modal-body">
-            <div class="alert-formJenisLaboratoriumStore">
-                <x-validation></x-validation>
-            </div>
             <form action="{{ route('laboran.jenis-lab.store') }}" method="POST">
                 @csrf
 

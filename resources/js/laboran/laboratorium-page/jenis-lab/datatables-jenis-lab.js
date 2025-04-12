@@ -1,7 +1,7 @@
 import DataTable from 'datatables.net';
 
-export function initJenisLaboratoriumDatatable() {
-    const table = new DataTable("#tableJenisLaboratorium", {
+export function initJenisLabDatatable() {
+    const table = new DataTable("#tableJenisLab", {
         serverSide: true,
         processing: true,
         responsive: true,
@@ -66,13 +66,13 @@ export function initJenisLaboratoriumDatatable() {
             { targets: 0, width: "1%" }
         ],
         initComplete: function () {
-            moveToolsJenisLaboratorium();
+            moveToolsJenisLab();
         }
     });
 }
 
-function moveToolsJenisLaboratorium() {
-    const wrapper = document.getElementById("tableJenisLaboratorium").closest("#tableJenisLaboratorium_wrapper");
+function moveToolsJenisLab() {
+    const wrapper = document.getElementById("tableJenisLab").closest("#tableJenisLab_wrapper");
 
     const search = wrapper.querySelector(".dt-search");
     const length = wrapper.querySelector(".dt-length");
@@ -83,10 +83,10 @@ function moveToolsJenisLaboratorium() {
         const input = search.querySelector("input");
         if (input) input.placeholder = "Pencarian...";
 
-        document.getElementById("searchJenisLaboratorium").appendChild(search);
-        document.getElementById("sortingJenisLaboratorium").appendChild(length);
-        document.getElementById("infoJenisLaboratorium").appendChild(info);
-        document.getElementById("pagingJenisLaboratorium").appendChild(paging);
+        document.getElementById("searchJenisLab").appendChild(search);
+        document.getElementById("sortingJenisLab").appendChild(length);
+        document.getElementById("infoJenisLab").appendChild(info);
+        document.getElementById("pagingJenisLab").appendChild(paging);
     } else {
         console.warn("Tools Jenis Laboratorium Error: Beberapa elemen tidak ditemukan.");
     }
