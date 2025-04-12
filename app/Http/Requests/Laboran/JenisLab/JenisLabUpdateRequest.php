@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Laboran\JenisLab;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class JenisLabUpdateRequest extends FormRequest
 {
@@ -22,7 +24,7 @@ class JenisLabUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/|unique:jenislabs,name,' . $this->jenislab->slug . ',slug',
+            'name' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/|unique:jenislabs,name,' . $this->Jenislab->slug . ',slug',
             'description' => 'nullable|string'
         ];
     }
@@ -38,5 +40,16 @@ class JenisLabUpdateRequest extends FormRequest
 
             'description.string' => 'Deskripsi harus berupa string'
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            redirect()
+                ->route('laboran.laboratorium')
+                ->withErrors($validator)
+                ->withInput()
+                ->with('form', 'editJenisLab') // modal identifier
+        );
     }
 }

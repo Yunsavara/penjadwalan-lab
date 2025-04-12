@@ -5,7 +5,7 @@ const deleteModal = new Modal(modalElement);
 
 export function initSoftDeleteLaboratoriumModal() {
     document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('btn-delete')) {
+        if (e.target.classList.contains('btn-delete-laboratorium')) {
             const row = JSON.parse(e.target.getAttribute('data-row'));
 
             // Set form action

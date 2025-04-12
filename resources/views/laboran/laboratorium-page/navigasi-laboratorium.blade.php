@@ -36,6 +36,6 @@
         role="tabpanel"
         aria-labelledby="nav-jenis-laboratorium-tab"
         tabindex="0">
-        <!-- Konten untuk Jenis Laboratorium -->
+        @include('laboran.laboratorium-page.jenis-lab.datatables-jenis-lab')
     </div>
 </div>

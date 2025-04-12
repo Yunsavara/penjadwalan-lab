@@ -1,13 +1,13 @@
 import DataTable from 'datatables.net';
 
-export function initLaboratoriumDatatable() {
-    const table = new DataTable("#tableLaboratorium", {
+export function initJenisLaboratoriumDatatable() {
+    const table = new DataTable("#tableJenisLaboratorium", {
         serverSide: true,
         processing: true,
         responsive: true,
         fixedHeader: true,
         ajax: {
-            url: "/laboran/api/data-laboratorium",
+            url: "/laboran/api/data-jenis-laboratorium",
             method: "GET"
         },
         columns: [
@@ -16,36 +16,22 @@ export function initLaboratoriumDatatable() {
                 render: DataTable.render.select(),
                 orderable: false,
                 data: null,
+                className: "min-mobile"
             },
             {
                 title: "No",
                 data: "index",
-                orderable: false
+                orderable: false,
+                className: "min-mobile"
             },
             {
-                title: "Ruang Lab",
-                data: "name"
+                title: "Nama Jenis Lab",
+                data: "name",
+                className: "min-mobile"
             },
             {
-                title: "Kapasitas",
-                data: "kapasitas",
-                className: "text-start"
-            },
-            {
-                title: "Status",
-                data: "status",
-                render: function (data) {
-                    if (!data) return '';
-                    return data.charAt(0).toUpperCase() + data.slice(1);
-                }
-            },
-            {
-                title: "Lokasi",
-                data: "lokasi_name"
-            },
-            {
-                title: "Jenis",
-                data: "jenislab_name"
+                title: "Deskripsi",
+                data: "description",
             },
             {
                 title: "Aksi",
@@ -60,8 +46,8 @@ export function initLaboratoriumDatatable() {
                                 Aksi
                             </button>
                             <ul class="dropdown-menu p-0">
-                                <li><button class="dropdown-item btn-edit-laboratorium" data-row='${JSON.stringify(row)}'>Ubah</button></li>
-                                <li><button class="dropdown-item text-danger btn-delete-laboratorium" data-row='${JSON.stringify(row)}'>Hapus</button></li>
+                                <li><button class="dropdown-item btn-edit-jenis-lab" data-row='${JSON.stringify(row)}'>Ubah</button></li>
+                                <li><button class="dropdown-item text-danger btn-delete-jenis-lab" data-row='${JSON.stringify(row)}'>Hapus</button></li>
                             </ul>
                         </div>
                     `;
@@ -80,13 +66,13 @@ export function initLaboratoriumDatatable() {
             { targets: 0, width: "1%" }
         ],
         initComplete: function () {
-            moveToolsLaboratorium();
+            moveToolsJenisLaboratorium();
         }
     });
 }
 
-function moveToolsLaboratorium() {
-    const wrapper = document.getElementById("tableLaboratorium").closest("#tableLaboratorium_wrapper");
+function moveToolsJenisLaboratorium() {
+    const wrapper = document.getElementById("tableJenisLaboratorium").closest("#tableJenisLaboratorium_wrapper");
 
     const search = wrapper.querySelector(".dt-search");
     const length = wrapper.querySelector(".dt-length");
@@ -97,11 +83,11 @@ function moveToolsLaboratorium() {
         const input = search.querySelector("input");
         if (input) input.placeholder = "Pencarian...";
 
-        document.getElementById("searchLaboratorium").appendChild(search);
-        document.getElementById("sortingLaboratorium").appendChild(length);
-        document.getElementById("infoLaboratorium").appendChild(info);
-        document.getElementById("pagingLaboratorium").appendChild(paging);
+        document.getElementById("searchJenisLaboratorium").appendChild(search);
+        document.getElementById("sortingJenisLaboratorium").appendChild(length);
+        document.getElementById("infoJenisLaboratorium").appendChild(info);
+        document.getElementById("pagingJenisLaboratorium").appendChild(paging);
     } else {
-        console.warn("Tools Laboratorium Error: Beberapa elemen tidak ditemukan.");
+        console.warn("Tools Jenis Laboratorium Error: Beberapa elemen tidak ditemukan.");
     }
 }

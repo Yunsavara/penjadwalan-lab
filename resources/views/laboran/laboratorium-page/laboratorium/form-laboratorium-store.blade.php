@@ -14,22 +14,22 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label for="namaLab" class="form-label">Nama Ruangan</label>
+                    <label for="namaLaboratorium" class="form-label">Nama Ruangan</label>
                     <div class="input-group">
                         <span class="input-group-text">
                         <i data-feather="trello" width="20"></i>
                         </span>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="namaLab" placeholder="CBT-01" autocomplete="off" value="{{ old('name', $Laboratorium->name) }}">
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="namaLaboratorium" placeholder="CBT-01" autocomplete="off" value="{{ old('name', $Laboratorium->name) }}">
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="jenisLab" class="form-label ">Jenis Laboratorium</label>
+                    <label for="jenisLaboratorium" class="form-label ">Jenis Laboratorium</label>
                     <div class="input-group d-flex">
                         <span class="input-group-text">
                             <i data-feather="pocket" width="20"></i>
                         </span>
-                        <select name="jenislab_id" id="jenisLab" class="form-select @error('jenislab_id') is-invalid @enderror">
+                        <select name="jenislab_id" id="jenisLaboratorium" class="form-select @error('jenislab_id') is-invalid @enderror">
                             <option value="" selected></option>
                             @foreach ($Jenislab as $jenis)
                                 <option value="{{ $jenis->id }}"

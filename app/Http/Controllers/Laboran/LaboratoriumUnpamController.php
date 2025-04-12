@@ -13,12 +13,14 @@ use App\Models\Lokasi;
 
 class LaboratoriumUnpamController extends Controller
 {
+
     public function index(){
         $Jenislab = Jenislab::select(['id', 'name'])->get();
         $Lokasi = Lokasi::select(['id', 'name'])->get();
 
         return view("laboran.laboratorium-page.laboratorium", [
             'Laboratorium' => new LaboratoriumUnpam(),
+            'JenisLaboratorium' => new Jenislab(),
             'Jenislab' => $Jenislab,
             'Lokasi' => $Lokasi,
             'page_meta' => [

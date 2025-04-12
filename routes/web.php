@@ -57,6 +57,8 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
 
     // Laboratorium Page
     Route::get('/laboran/laboratorium', [LaboratoriumUnpamController::class, 'index'])->name('laboran.laboratorium');
+
+    // Laboratorium Datatables
     Route::get('/laboran/api/data-laboratorium', [LaboratoriumUnpamController::class, 'getApiLaboratorium']);
 
     // Laboratorium Store, Update & Soft Delete
@@ -64,9 +66,12 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::put('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'update']);
     Route::delete('/laboran/hapus-laboratorium/{Laboratorium:slug}', [LaboratoriumUnpamController::class, 'softDelete']);
 
-    // Jenis Laboratorium Store, Update & Soft Delete
-    Route::get('/laboran/jenis-lab/data', [JenisLabController::class, 'getData'])->name('jenislab.getData');
+    // Jenis Laboratorium Datatables
+    Route::get('/laboran/api/data-jenis-laboratorium', [JenisLabController::class, 'getApiJenisLaboratorium']);
 
+    // Jenis Laboratorium Store, Update & Soft Delete
+    Route::post('/laboran/tambah-jenis-laboratorium', [JenisLabController::class, 'store'])->name('laboran.jenis-lab.store');
+    Route::put('/laboran/ubah-jenis-laboratorium/{Jenislab:slug}', [JenisLabController::class, 'update']);
 
     // Booking atau Pengajuan
     Route::get('/laboran/jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.pengajuan');

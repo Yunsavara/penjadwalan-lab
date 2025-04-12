@@ -11,53 +11,64 @@ use App\Http\Requests\Laboran\JenisLab\JenisLabUpdateRequest;
 
 class JenisLabController extends Controller
 {
-    public function index(){
-        return view("laboran.jenis-lab.jenis-lab", [
-            'page_meta' => [
-                'page' => 'Jenis Lab'
-            ]
-        ]);
-    }
 
-    public function getData(Request $request)
-    {
-        // Menyaring data berdasarkan pencarian jika ada
-        $query = Jenislab::query()->select(['id','name','slug','description']);
+    // Index Nya ada di LaboratoriumUnpamController, karena pakai modal untuk formnya jadi gk pindah halaman
 
-        if ($search = $request->input('search.value')) {
-            $query->where('name', 'like', "%$search%")
-                  ->orWhere('description', 'like', "%$search%");
+    public function getApiJenisLaboratorium(Request $request) {
+        $query = Jenislab::select(['name', 'slug', 'description']);
+
+        // Pencarian
+        if ($request->has('search') && !empty($request->search['value'])) {
+            $search = $request->search['value'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $totalData = Jenislab::count();
+        $totalFiltered = $query->count();
+
+        // Sorting
+        $orderColumnIndex = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir') ?? 'asc';
+
+        $columns = ['index', 'name', 'slug', 'description'];
+        $orderColumnName = $columns[$orderColumnIndex] ?? 'name';
+
+        if (in_array($orderColumnName, ['name', 'slug', 'description'])) {
+            $query->orderBy($orderColumnName, $orderDirection);
+        } else {
+            $query->orderBy('name', 'asc');
         }
 
         // Pagination
-        $data = $query->paginate($request->input('length'));
+        $start = $request->start ?? 0;
+        $length = $request->length ?? 10;
 
-        // Total record untuk pagination
-        $recordsTotal = Jenislab::count();
-        $recordsFiltered = $query->count();
+        $data = $query->skip($start)->take($length)->get();
+
+        $result = [];
+        foreach ($data as $index => $jenislab) {
+            $result[] = [
+                'index' => $start + $index + 1,
+                'name' => $jenislab->name,
+                'slug' => $jenislab->slug,
+                'description' => $jenislab->description,
+            ];
+        }
 
         return response()->json([
-            'draw' => intval($request->input('draw')),
-            'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $recordsFiltered,
-            'data' => $data->items(),
-        ]);
-    }
-
-    public function create(){
-        return view("laboran.jenis-lab.form-jenis-lab", [
-            'Jenislab' => new Jenislab(),
-            'page_meta' => [
-                'page' => "Tambah Jenis Lab",
-                'method' => 'POST',
-                'url' => route('laboran.jenis-lab.create'),
-                'button_text' => 'Tambah Jenis Lab'
-            ]
+            'draw' => intval($request->draw),
+            'recordsTotal' => $totalData,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $result
         ]);
     }
 
     public function store(JenisLabStoreRequest $Request){
-        //dd($Request->all());
+        // dd($Request->all());
 
         DB::beginTransaction();
         try {
@@ -66,23 +77,11 @@ class JenisLabController extends Controller
 
             DB::commit();
 
-            return redirect()->route('laboran.jenis-lab')->with('success', 'Jenis Lab Berhasil ditambahkan');
+            return redirect()->route('laboran.laboratorium')->with('success', 'Jenis Laboratorium Berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('laboran.jenis-lab.create')->with('error', 'Jenis Lab Gagal ditambahkan');
+            return redirect()->route('laboran.laboratorium')->with('error', 'Jenis Laboratorium Gagal ditambahkan');
         }
-    }
-
-    public function edit(Jenislab $Jenislab){
-        return view("laboran.jenis-lab.form-jenis-lab", [
-            'Jenislab' => $Jenislab,
-            'page_meta' => [
-                'page' => "Ubah Jenis Lab",
-                'method' => 'PUT',
-                'url' => route('laboran.jenis-lab.edit', $Jenislab),
-                'button_text' => 'Ubah Jenis Lab'
-            ]
-        ]);
     }
 
     public function update(JenisLabUpdateRequest $Request, Jenislab $Jenislab){
@@ -94,10 +93,10 @@ class JenisLabController extends Controller
 
             DB::commit();
 
-            return redirect()->route('laboran.jenis-lab')->with('success', 'Jenis Lab Berhasil di-ubah');
+            return redirect()->route('laboran.laboratorium')->with('success', 'Jenis Lab Berhasil di-ubah');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('laboran.jenis-lab.edit')->with('error', 'Jenis Lab Gagal di-ubah');
+            return redirect()->route('laboran.laboratorium')->with('error', 'Jenis Lab Gagal di-ubah');
         }
     }
 }

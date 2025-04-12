@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Laboran\JenisLab;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class JenisLabStoreRequest extends FormRequest
 {
@@ -39,4 +41,17 @@ class JenisLabStoreRequest extends FormRequest
             'description.string' => 'Deskripsi harus berupa string'
         ];
     }
+
+    // Kalau ada gagal input, suapaya modal nya tetap tampil
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            redirect()
+                ->route('laboran.laboratorium')
+                ->withErrors($validator)
+                ->withInput()
+                ->with('form', 'createJenisLab') // modal identifier
+        );
+    }
+
 }

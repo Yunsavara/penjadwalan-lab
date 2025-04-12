@@ -1,6 +1,6 @@
 export function initSelect2Store(){
     $('#formLaboratoriumStore').on('shown.bs.modal', function () {
-        $('#jenisLab').select2({
+        $('#jenisLaboratorium').select2({
             dropdownParent: $('#formLaboratoriumStore'),
             theme: "bootstrap-5",
             placeholder: "Pilih Jenis Lab",
