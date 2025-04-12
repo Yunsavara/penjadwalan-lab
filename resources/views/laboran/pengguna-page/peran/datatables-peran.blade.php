@@ -1,6 +1,6 @@
 <div class="col-12 p-2 d-flex flex-wrap align-items-center justify-content-between">
     <div class="col-12 col-md-auto mb-2">
-        <span><b>Daftar Peran dan Prioritasnya</b></span>
+        <span><b>Daftar Peran dan Prioritasnya.</b></span>
     </div>
     <div class="col-12 col-md-auto mb-2">
         <a href=""><button class="btn btn-sm btn-primary"><i data-feather="plus"></i></button></a>
@@ -12,7 +12,7 @@
     <div id="sortingPeran" class="col-12 col-md-auto mb-2"></div>
 </div>
 
-<div class="table-responsive px-3" id="tablePeranContainer">
+<div class="table-responsive px-2" id="tablePeranContainer">
     <table class="table text-nowrap" id="tablePeran" style="width: 100%;">
     </table>
 </div>

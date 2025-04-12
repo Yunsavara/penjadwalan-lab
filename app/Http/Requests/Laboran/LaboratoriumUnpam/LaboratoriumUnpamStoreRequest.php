@@ -4,6 +4,8 @@ namespace App\Http\Requests\Laboran\LaboratoriumUnpam;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class LaboratoriumUnpamStoreRequest extends FormRequest
 {
@@ -28,7 +30,7 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
                 'string',
                 'max:15',
                 Rule::unique('laboratorium_unpams')->where(function ($query) {
-                    return $query->where('lokasi_id', request()->lokasi);
+                    return $query->where('lokasi_id', request()->lokasi_id);
                 })
             ],
             'jenislab_id' => 'required|string|exists:jenislabs,id',
@@ -61,5 +63,17 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
             'status.string' => 'Status harus berupa teks.',
             'status.in' => 'Status yang dipilih tidak valid. Pilih antara: tersedia atau tidak tersedia.',
         ];
+    }
+
+    // Kalau ada gagal input, supaya modal nya tetap tampil
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            redirect()
+                ->route('laboran.laboratorium')
+                ->withErrors($validator)
+                ->withInput()
+                ->with('form', 'createLaboratorium') // modal identifier
+        );
     }
 }

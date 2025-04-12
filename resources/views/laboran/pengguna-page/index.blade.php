@@ -3,6 +3,8 @@
 @section('title', 'Pengguna')
 
 @section('content')
+@vite(['resources/js/laboran/pengguna-page/peran'])
+
     <div class="col-12 p-3">
         <h2>{{ $page_meta['page'] }}</h2>
         <span>{{ $page_meta['description'] }}</span>

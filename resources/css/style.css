@@ -1,7 +1,6 @@
 .select2 {
-    width:100%!important;
+    flex-grow:1 !important;
 }
-
 
 a {
     text-decoration: none !important;
@@ -287,16 +286,11 @@ a {
 
 /* /Sidebar */
 
-/* Table Scroll */
-.table-responsive::-webkit-scrollbar {
-    height: 5px; /* tinggi horizontal scrollbar */
-}
 
-.table-responsive::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 10px;
-}
+/* Modal Bootstrap */
 
-.table-responsive::-webkit-scrollbar-track {
-    background-color: white;
+.btn-close {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
 }

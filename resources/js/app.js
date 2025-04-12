@@ -2,13 +2,13 @@
 import './bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// Jquery Global File
+import $ from 'jquery';
+window.$ = $;
+window.jQuery = $;
 
 // Script vanilla
 import './script';
-import './form-barang';
-import './jenis-lab'
-import './form-laboratorium'
-import './laboratorium'
 import './all-role/riwayat/pengajuan/form-pengajuan-store'
 import './all-role/riwayat/pengajuan/form-pengajuan-edit'
 import './all-role/riwayat/pengajuan/datatables-pengajuan'
@@ -20,19 +20,6 @@ import './all-role/generate-jadwal/datatables-generate-jadwal'
 import './laboran/generate-jadwal/datatables-generate-jadwal'
 import './laboran/pengajuan/datatables-pengajuan'
 import './laboran/booking-log/datatable-booking-log'
-import './laboran/pengguna-page/peran/datatables-peran'
-
-
-// Datatables
-import 'datatables.net-responsive';
-import 'datatables.net-responsive-bs5';
-import "datatables.net-fixedheader";
-import 'datatables.net-select';
-
-import $ from 'jquery';
-window.$ = window.jQuery = $;
-
-import "https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js";
 
 // Flatpickr
 import flatpickr from "flatpickr";

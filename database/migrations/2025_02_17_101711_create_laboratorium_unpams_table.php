@@ -28,7 +28,9 @@ return new class extends Migration
               ->references('id')
               ->on('jenislabs');
 
-              $table->timestamps();
+            $table->timestamps();
+
+            $table->softDeletes();
         });
     }
 
