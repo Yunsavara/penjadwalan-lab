@@ -15,7 +15,7 @@
             @csrf
             @method('PUT')
 
-            <input type="text" name="slug_jenis_lab_update" id="edit-slugJenisLab">
+            <input type="hidden" name="id_jenis_lab_update" id="edit-idJenisLab">
 
             <div class="mb-3">
               <label for="edit-namaJenisLab" class="form-label">Nama Jenis Lab</label>

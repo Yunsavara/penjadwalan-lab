@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Laboran\LaboratoriumUnpam;
 
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -25,43 +26,43 @@ class LaboratoriumUnpamUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
+            'name_laboratorium_update' => [
                 'required',
                 'string',
                 'max:15',
-                Rule::unique('laboratorium_unpams')->where(function ($query) {
-                    return $query->where('lokasi_id', request()->lokasi_id);
-                })->ignore($this->laboratorium)
+                Rule::unique('laboratorium_unpams', 'name_laboratorium')->where(function ($query) {
+                    return $query->where('lokasi_id', $this->lokasi_id_update);
+                })->ignore(Crypt::decryptString($this->id_laboratorium_update))
             ],
-            'jenislab_id' => 'required|string|exists:jenislabs,id',
-            'lokasi_id' => 'required|string|exists:lokasis,id',
-            'kapasitas' => 'required|integer',
-            'status' => 'required|string|in:tersedia,tidak tersedia'
+            'jenislab_id_update' => 'required|string|exists:jenislabs,id',
+            'lokasi_id_update' => 'required|string|exists:lokasis,id',
+            'kapasitas_laboratorium_update' => 'required|integer',
+            'status_laboratorium_update' => 'required|string|in:tersedia,tidak tersedia'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama laboratorium wajib diisi.',
-            'name.string' => 'Nama laboratorium harus berupa teks.',
-            'name.max' => 'Nama laboratorium tidak boleh lebih dari 15 karakter.',
-            'name.unique' => 'Nama laboratorium sudah ada di lokasi yang dipilih.',
+            'name_laboratorium_update.required' => 'Nama laboratorium wajib diisi.',
+            'name_laboratorium_update.string' => 'Nama laboratorium harus berupa teks.',
+            'name_laboratorium_update.max' => 'Nama laboratorium tidak boleh lebih dari 15 karakter.',
+            'name_laboratorium_update.unique' => 'Nama laboratorium sudah ada di lokasi yang dipilih.',
 
-            'jenislab_id.required' => 'Jenis lab wajib dipilih.',
-            'jenislab_id.string' => 'Jenis lab harus berupa teks.',
-            'jenislab_id.exists' => 'Jenis lab yang dipilih tidak valid.',
+            'jenislab_id_update.required' => 'Jenis lab wajib dipilih.',
+            'jenislab_id_update.string' => 'Jenis lab harus berupa teks.',
+            'jenislab_id_update.exists' => 'Jenis lab yang dipilih tidak valid.',
 
-            'lokasi.required' => 'Lokasi laboratorium wajib diisi.',
-            'lokasi.string' => 'Lokasi harus berupa teks.',
-            'lokasi.exists' => 'Lokasi yang dipilih tidak valid.',
+            'lokasi_laboratorium_update.required' => 'Lokasi laboratorium wajib diisi.',
+            'lokasi_laboratorium_update.string' => 'Lokasi harus berupa teks.',
+            'lokasi_laboratorium_update.exists' => 'Lokasi yang dipilih tidak valid.',
 
-            'kapasitas.required' => 'Kapasitas laboratorium wajib diisi.',
-            'kapasitas.integer' => 'Kapasitas harus berupa angka.',
+            'kapasitas_laboratorium_update.required' => 'Kapasitas laboratorium wajib diisi.',
+            'kapasitas_laboratorium_update.integer' => 'Kapasitas harus berupa angka.',
 
-            'status.required' => 'Status laboratorium wajib diisi.',
-            'status.string' => 'Status harus berupa teks.',
-            'status.in' => 'Status yang dipilih tidak valid. Pilih antara: tersedia atau tidak tersedia.',
+            'status_laboratorium_update.required' => 'Status laboratorium wajib diisi.',
+            'status_laboratorium_update.string' => 'Status harus berupa teks.',
+            'status_laboratorium_update.in' => 'Status yang dipilih tidak valid. Pilih antara: tersedia atau tidak tersedia.',
         ];
     }
 

@@ -10,13 +10,13 @@ export function initDatatablesValueToModalUpdateJenisLab() {
             // document.getElementById('modalEditJenisLabLabel').innerHTML = message;
 
             // set pesan yang sedang di-ubah
-            document.getElementById('edit-slugJenisLab').value = data.slug_jenis_lab;
+            document.getElementById('edit-idJenisLab').value = data.id_jenis_lab;
             document.getElementById('edit-namaJenisLab').value = data.name_jenis_lab;
             document.getElementById('edit-deskripsiJenisLab').value = data.description_jenis_lab;
 
             // form action
             const form = document.getElementById('formEditJenisLab');
-            form.setAttribute('action', `/laboran/ubah-jenis-laboratorium/${data.slug_jenis_lab}`);
+            form.setAttribute('action', `/laboran/ubah-jenis-laboratorium/${data.id_jenis_lab}`);
 
             // panggil modal
             const editModal = new Modal(document.getElementById('formJenisLabUpdate'));
@@ -40,7 +40,7 @@ export function errorUpdateModalJenisLab(){
         const modal = new Modal(document.getElementById('formJenisLabUpdate'));
 
         // Isi field dari old input
-        document.getElementById('edit-slugJenisLab').value = old.slug_jenis_lab_update || '';
+        document.getElementById('edit-idJenisLab').value = old.id_jenis_lab_update || '';
         document.getElementById('edit-namaJenisLab').value = old.name_jenis_lab_update || '';
         document.getElementById('edit-deskripsiJenisLab').value = old.description_jenis_lab_update || '';
 
@@ -50,7 +50,7 @@ export function errorUpdateModalJenisLab(){
 
         // Set action form
         const form = document.getElementById('formEditJenisLab');
-        form.setAttribute('action', `/laboran/ubah-jenis-laboratorium/${old.slug_jenis_lab || ''}`);
+        form.setAttribute('action', `/laboran/ubah-jenis-laboratorium/${old.id_jenis_lab_update || ''}`);
 
         // Show modal
         modal.show();

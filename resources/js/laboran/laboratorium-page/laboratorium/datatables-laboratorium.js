@@ -24,16 +24,16 @@ export function initLaboratoriumDatatable() {
             },
             {
                 title: "Ruang Lab",
-                data: "name"
+                data: "name_laboratorium"
             },
             {
                 title: "Kapasitas",
-                data: "kapasitas",
+                data: "kapasitas_laboratorium",
                 className: "text-start"
             },
             {
                 title: "Status",
-                data: "status",
+                data: "status_laboratorium",
                 render: function (data) {
                     if (!data) return '';
                     return data.charAt(0).toUpperCase() + data.slice(1);

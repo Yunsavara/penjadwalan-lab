@@ -2,22 +2,19 @@
 
 namespace App\Models;
 
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LaboratoriumUnpam extends Model
 {
 
-    use HasSlug, SoftDeletes;
+    use SoftDeletes;
 
     protected $fillable = [
-        'name',
-        'slug',
+        'name_laboratorium',
         'lokasi_id',
-        'kapasitas',
-        'status',
+        'kapasitas_laboratorium',
+        'status_laboratorium',
         'jenislab_id'
     ];
 
@@ -37,13 +34,5 @@ class LaboratoriumUnpam extends Model
     public function lokasi()
     {
         return $this->belongsTo(Lokasi::class, 'lokasi_id');
-    }
-
-    // Generate Slug dari Name
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
     }
 }

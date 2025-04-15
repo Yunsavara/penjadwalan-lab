@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Laboran\JenisLab;
 
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -24,12 +25,12 @@ class JenisLabUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name_jenis_lab_update' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/|unique:jenislabs,name_jenis_lab,' . $this->slug_jenis_lab_update . ',slug_jenis_lab',
+            'name_jenis_lab_update' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/|unique:jenislabs,name_jenis_lab,' . Crypt::decryptString($this->id_jenis_lab_update) . ',id',
             'description_jenis_lab_update' => 'nullable|string'
         ];
     }
 
-    // JenisLab->slug_jenis_lab_update
+    // $this->JenisLab->slug_jenis_lab_update
 
     public function messages(): array
     {

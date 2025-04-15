@@ -18,6 +18,7 @@ import { initSoftDeleteLaboratoriumModal } from './laboratorium/form-laboratoriu
 import { initJenisLabDatatable } from './jenis-lab/datatables-jenis-lab.js';
 import { errorStoreModalJenisLab } from './jenis-lab/form-jenis-lab-store.js';
 import { errorUpdateModalJenisLab, initDatatablesValueToModalUpdateJenisLab } from './jenis-lab/form-jenis-lab.update.js';
+import { initSoftDeleteJenisLabModal } from './jenis-lab/form-jenis-lab-soft-delete.js';
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -30,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Jenis Laboratorium
     initJenisLabDatatable();
     initDatatablesValueToModalUpdateJenisLab();
+    initSoftDeleteJenisLabModal();
 
     // Kalau Gagal Input Form
     errorStoreModalLaboratorium();

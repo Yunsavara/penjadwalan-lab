@@ -25,43 +25,43 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
+            'name_laboratorium_store' => [
                 'required',
                 'string',
                 'max:15',
-                Rule::unique('laboratorium_unpams')->where(function ($query) {
-                    return $query->where('lokasi_id', request()->lokasi_id);
+                Rule::unique('laboratorium_unpams', 'name_laboratorium')->where(function ($query) {
+                    return $query->where('lokasi_id', request()->lokasi_id_store);
                 })
             ],
-            'jenislab_id' => 'required|string|exists:jenislabs,id',
-            'lokasi_id' => 'required|string|exists:lokasis,id',
-            'kapasitas' => 'required|integer',
-            'status' => 'required|string|in:tersedia,tidak tersedia'
+            'jenislab_id_store' => 'required|string|exists:jenislabs,id',
+            'lokasi_id_store' => 'required|string|exists:lokasis,id',
+            'kapasitas_laboratorium_store' => 'required|integer',
+            'status_laboratorium_store' => 'required|string|in:tersedia,tidak tersedia'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama laboratorium wajib diisi.',
-            'name.string' => 'Nama laboratorium harus berupa teks.',
-            'name.max' => 'Nama laboratorium tidak boleh lebih dari 15 karakter.',
-            'name.unique' => 'Nama laboratorium sudah ada di lokasi yang dipilih.',
+            'name_laboratorium_store.required' => 'Nama laboratorium wajib diisi.',
+            'name_laboratorium_store.string' => 'Nama laboratorium harus berupa teks.',
+            'name_laboratorium_store.max' => 'Nama laboratorium tidak boleh lebih dari 15 karakter.',
+            'name_laboratorium_store.unique' => 'Nama laboratorium sudah ada di lokasi yang dipilih.',
 
-            'jenislab_id.required' => 'Jenis lab wajib dipilih.',
-            'jenislab_id.string' => 'Jenis lab harus berupa teks.',
-            'jenislab_id.exists' => 'Jenis lab yang dipilih tidak valid.',
+            'jenislab_id_store.required' => 'Jenis lab wajib dipilih.',
+            'jenislab_id_store.string' => 'Jenis lab harus berupa teks.',
+            'jenislab_id_store.exists' => 'Jenis lab yang dipilih tidak valid.',
 
-            'lokasi_id.required' => 'Lokasi laboratorium wajib diisi.',
-            'lokasi_id.string' => 'Lokasi harus berupa teks.',
-            'lokasi_id.exists' => 'Lokasi yang dipilih tidak valid.',
+            'lokasi_id_store.required' => 'Lokasi laboratorium wajib diisi.',
+            'lokasi_id_store.string' => 'Lokasi harus berupa teks.',
+            'lokasi_id_store.exists' => 'Lokasi yang dipilih tidak valid.',
 
-            'kapasitas.required' => 'Kapasitas laboratorium wajib diisi.',
-            'kapasitas.integer' => 'Kapasitas harus berupa angka.',
+            'kapasitas_laboratorium_store.required' => 'Kapasitas laboratorium wajib diisi.',
+            'kapasitas_laboratorium_store.integer' => 'Kapasitas harus berupa angka.',
 
-            'status.required' => 'Status laboratorium wajib diisi.',
-            'status.string' => 'Status harus berupa teks.',
-            'status.in' => 'Status yang dipilih tidak valid. Pilih antara: tersedia atau tidak tersedia.',
+            'status_laboratorium_store.required' => 'Status laboratorium wajib diisi.',
+            'status_laboratorium_store.string' => 'Status harus berupa teks.',
+            'status_laboratorium_store.in' => 'Status yang dipilih tidak valid. Pilih antara: tersedia atau tidak tersedia.',
         ];
     }
 

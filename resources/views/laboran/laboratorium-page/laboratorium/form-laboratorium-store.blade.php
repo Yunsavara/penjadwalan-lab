@@ -19,7 +19,12 @@
                         <span class="input-group-text">
                         <i data-feather="trello" width="20"></i>
                         </span>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="namaLaboratorium" placeholder="CBT-01" autocomplete="off" value="{{ old('name', $Laboratorium->name) }}">
+                        <input type="text" name="name_laboratorium_store" class="form-control @error('name_laboratorium_store') is-invalid @enderror" id="namaLaboratorium" placeholder="CBT-01" autocomplete="off" value="{{ old('name_laboratorium_store', $Laboratorium->name_laboratorium_store) }}">
+                        @error('name_laboratorium_store')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
 
@@ -29,15 +34,20 @@
                         <span class="input-group-text">
                             <i data-feather="pocket" width="20"></i>
                         </span>
-                        <select name="jenislab_id" id="jenisLaboratorium" class="form-select @error('jenislab_id') is-invalid @enderror">
+                        <select name="jenislab_id_store" id="jenisLaboratorium" class="form-select @error('jenislab_id_store') is-invalid @enderror">
                             <option value="" selected></option>
                             @foreach ($Jenislab as $jenis)
                                 <option value="{{ $jenis->id }}"
-                                    {{ old('jenislab_id', $Laboratorium->jenislab_id) == $jenis->id ? 'selected' : '' }}>
-                                    {{ $jenis->name }}
+                                    {{ old('jenislab_id_store', $Laboratorium->jenislab_id) == $jenis->id ? 'selected' : '' }}>
+                                    {{ $jenis->name_jenis_lab }}
                                 </option>
                             @endforeach
                         </select>
+                        @error('jenislab_id_store')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
 
@@ -47,15 +57,20 @@
                         <span class="input-group-text">
                             <i data-feather="map-pin" width="20"></i>
                         </span>
-                        <select name="lokasi_id" id="lokasiLaboratorium" class="form-select @error('lokasi_id') is-invalid @enderror">
+                        <select name="lokasi_id_store" id="lokasiLaboratorium" class="form-select @error('lokasi_id_store') is-invalid @enderror">
                             <option value="" selected></option>
                             @foreach ($Lokasi as $lok)
                             <option value="{{ $lok->id }}"
-                                {{ old('lokasi_id', $Laboratorium->lokasi_id) == $lok->id ? 'selected' : '' }}>
+                                {{ old('lokasi_id_store', $Laboratorium->lokasi_id) == $lok->id ? 'selected' : '' }}>
                                 {{ $lok->name }}
                             </option>
                             @endforeach
                         </select>
+                        @error('lokasi_id_store')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
 
@@ -65,7 +80,12 @@
                         <span class="input-group-text">
                             <i data-feather="grid" width="20"></i>
                         </span>
-                        <input type="text" name="kapasitas" class="form-control @error('kapasitas') is-invalid @enderror" id="kapasitasLaboratorium" placeholder="30" autocomplete="off" value="{{ old('kapasitas', $Laboratorium->kapasitas) }}">
+                        <input type="text" name="kapasitas_laboratorium_store" class="form-control @error('kapasitas_laboratorium_store') is-invalid @enderror" id="kapasitasLaboratorium" placeholder="30" autocomplete="off" value="{{ old('kapasitas_laboratorium_store', $Laboratorium->kapasitas_laboratorium_store) }}">
+                        @error('kapasitas_laboratorium_store')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
 
@@ -75,10 +95,15 @@
                         <span class="input-group-text">
                             <i data-feather="bar-chart-2" width="20"></i>
                         </span>
-                        <select name="status" id="statusLaboratorium" class="form-select @error('status') is-invalid @enderror">
-                            <option value="tersedia" {{ old('status', $Laboratorium->status) === 'tersedia' ? 'selected' : '' }}>Tersedia</option>
-                            <option value="tidak tersedia" {{ old('status', $Laboratorium->status) === 'tidak tersedia' ? 'selected' : '' }}>Tidak Tersedia</option>
+                        <select name="status_laboratorium_store" id="statusLaboratorium" class="form-select @error('status_laboratorium_store') is-invalid @enderror">
+                            <option value="tersedia" {{ old('status_laboratorium_store', $Laboratorium->status_laboratorium_store) === 'tersedia' ? 'selected' : '' }}>Tersedia</option>
+                            <option value="tidak tersedia" {{ old('status_laboratorium_store', $Laboratorium->status_laboratorium_store) === 'tidak tersedia' ? 'selected' : '' }}>Tidak Tersedia</option>
                         </select>
+                        @error('status_laboratorium_store')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
             </div>
