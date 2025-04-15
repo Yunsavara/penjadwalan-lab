@@ -15,15 +15,15 @@ class JenisLabController extends Controller
     // Index Nya ada di LaboratoriumUnpamController, karena pakai modal untuk formnya jadi gk pindah halaman
 
     public function getApiJenisLaboratorium(Request $request) {
-        $query = Jenislab::select(['name', 'slug', 'description']);
+        $query = Jenislab::select(['name_jenis_lab', 'slug_jenis_lab', 'description_jenis_lab']);
 
         // Pencarian
         if ($request->has('search') && !empty($request->search['value'])) {
             $search = $request->search['value'];
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+                $q->where('name_jenis_lab', 'like', "%{$search}%")
+                    ->orWhere('slug_jenis_lab', 'like', "%{$search}%")
+                    ->orWhere('description_jenis_lab', 'like', "%{$search}%");
             });
         }
 
@@ -34,13 +34,13 @@ class JenisLabController extends Controller
         $orderColumnIndex = $request->input('order.0.column');
         $orderDirection = $request->input('order.0.dir') ?? 'asc';
 
-        $columns = ['index', 'name', 'slug', 'description'];
-        $orderColumnName = $columns[$orderColumnIndex] ?? 'name';
+        $columns = ['index', 'name_jenis_lab', 'slug_jenis_lab', 'description_jenis_lab'];
+        $orderColumnName = $columns[$orderColumnIndex] ?? 'name_jenis_lab';
 
-        if (in_array($orderColumnName, ['name', 'slug', 'description'])) {
+        if (in_array($orderColumnName, ['name_jenis_lab', 'slug_jenis_lab', 'description_jenis_lab'])) {
             $query->orderBy($orderColumnName, $orderDirection);
         } else {
-            $query->orderBy('name', 'asc');
+            $query->orderBy('name_jenis_lab', 'asc');
         }
 
         // Pagination
@@ -53,9 +53,9 @@ class JenisLabController extends Controller
         foreach ($data as $index => $jenislab) {
             $result[] = [
                 'index' => $start + $index + 1,
-                'name' => $jenislab->name,
-                'slug' => $jenislab->slug,
-                'description' => $jenislab->description,
+                'name_jenis_lab' => $jenislab->name_jenis_lab,
+                'slug_jenis_lab' => $jenislab->slug_jenis_lab,
+                'description_jenis_lab' => $jenislab->description_jenis_lab,
             ];
         }
 
@@ -73,14 +73,19 @@ class JenisLabController extends Controller
         DB::beginTransaction();
         try {
 
-            Jenislab::create($Request->all());
+            $data = $Request->validated();
+
+            Jenislab::create([
+                'name_jenis_lab' => $data['name_jenis_lab_store'],
+                'description_jenis_lab' => $data['description_jenis_lab_store']
+            ]);
 
             DB::commit();
 
             return redirect()->route('laboran.laboratorium')->with('success', 'Jenis Laboratorium Berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('laboran.laboratorium')->with('error', 'Jenis Laboratorium Gagal ditambahkan');
+            return redirect()->route('laboran.laboratorium')->with('error', 'Jenis Laboratorium Gagal ditambahkan <br>'. $e->getMessage());
         }
     }
 
@@ -89,7 +94,12 @@ class JenisLabController extends Controller
 
         DB::beginTransaction();
         try {
-            $Jenislab->update($Request->all());
+            $data = $Request->validated();
+
+            $Jenislab->update([
+                'name_jenis_lab' => $data['name_jenis_lab_update'],
+                'description_jenis_lab' => $data['description_jenis_lab_update']
+            ]);
 
             DB::commit();
 

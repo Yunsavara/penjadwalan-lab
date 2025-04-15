@@ -24,21 +24,4 @@
             </div>
         </div>
     @endif
-
-    {{-- Validation Errors --}}
-    @if ($errors->any())
-        <div class="toast bg-white border-0 show mb-2" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header bg-danger text-white">
-                <strong class="me-auto d-flex align-items-center"> <i data-feather="alert-octagon" width="20" class="me-1"></i> Gagal</strong>
-                <button type="button" class="btn-close btn-close-white ms-2 mb-1" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{!! $error !!}</li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-    @endif
 </div>

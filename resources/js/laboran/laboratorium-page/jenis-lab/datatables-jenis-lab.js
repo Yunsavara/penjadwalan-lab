@@ -26,12 +26,12 @@ export function initJenisLabDatatable() {
             },
             {
                 title: "Nama Jenis Lab",
-                data: "name",
+                data: "name_jenis_lab",
                 className: "min-mobile"
             },
             {
                 title: "Deskripsi",
-                data: "description",
+                data: "description_jenis_lab",
             },
             {
                 title: "Aksi",

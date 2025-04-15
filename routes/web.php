@@ -71,7 +71,7 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
 
     // Jenis Laboratorium Store, Update & Soft Delete
     Route::post('/laboran/tambah-jenis-laboratorium', [JenisLabController::class, 'store'])->name('laboran.jenis-lab.store');
-    Route::put('/laboran/ubah-jenis-laboratorium/{Jenislab:slug}', [JenisLabController::class, 'update']);
+    Route::put('/laboran/ubah-jenis-laboratorium/{Jenislab:slug_jenis_lab}', [JenisLabController::class, 'update']);
 
     // Booking atau Pengajuan
     Route::get('/laboran/jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.pengajuan');

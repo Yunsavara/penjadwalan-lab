@@ -15,7 +15,7 @@ class LaboratoriumUnpamController extends Controller
 {
 
     public function index(){
-        $Jenislab = Jenislab::select(['id', 'name'])->get();
+        $Jenislab = Jenislab::select(['id', 'name_jenis_lab'])->get();
         $Lokasi = Lokasi::select(['id', 'name'])->get();
 
         return view("laboran.laboratorium-page.laboratorium", [

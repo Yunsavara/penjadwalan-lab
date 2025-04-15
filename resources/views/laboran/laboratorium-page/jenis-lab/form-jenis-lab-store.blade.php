@@ -19,7 +19,12 @@
                         <span class="input-group-text">
                             <i data-feather="pocket" width="20"></i>
                         </span>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="namaJenisLab" placeholder="Komputer" autocomplete="off" value="{{ old('name', $JenisLaboratorium->name) }}">
+                        <input type="text" name="name_jenis_lab_store" class="form-control @error('name_jenis_lab_store') is-invalid @enderror" id="namaJenisLab" placeholder="Komputer" autocomplete="off" value="{{ old('name_jenis_lab_store', $JenisLaboratorium->name) }}">
+                        @error('name_jenis_lab_store')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
 
@@ -29,7 +34,12 @@
                         <span class="input-group-text">
                             <i data-feather="pocket" width="20"></i>
                         </span>
-                        <textarea class="form-control" name="description" id="deskripsiJenisLab" placeholder="Merupakan Jenis Laboratorium..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;">{{ old('description', $JenisLaboratorium->description) }}</textarea>
+                        <textarea class="form-control" name="description_jenis_lab_store" id="deskripsiJenisLab" placeholder="Merupakan Jenis Laboratorium..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;">{{ old('description_jenis_lab_store', $JenisLaboratorium->description) }}</textarea>
+                        @error('description_jenis_lab')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
             </div>

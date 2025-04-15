@@ -11,16 +11,16 @@ class Jenislab extends Model
     use HasSlug;
 
     protected $fillable = [
-        'name',
-        'slug',
-        'description'
+        'name_jenis_lab',
+        'slug_jenis_lab',
+        'description_jenis_lab'
     ];
 
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
+            ->generateSlugsFrom('name_jenis_lab')
+            ->saveSlugsTo('slug_jenis_lab');
     }
 
     public function LaboratoriumUnpams()

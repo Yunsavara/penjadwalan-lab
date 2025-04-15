@@ -24,21 +24,23 @@ class JenisLabUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/|unique:jenislabs,name,' . $this->Jenislab->slug . ',slug',
-            'description' => 'nullable|string'
+            'name_jenis_lab_update' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/|unique:jenislabs,name_jenis_lab,' . $this->slug_jenis_lab_update . ',slug_jenis_lab',
+            'description_jenis_lab_update' => 'nullable|string'
         ];
     }
+
+    // JenisLab->slug_jenis_lab_update
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama Jenis Lab Harus Terisi',
-            'name.string' => 'Nama Jenis Lab harus berupa string',
-            'name.max' => 'Nama Jenis Lab tidak boleh melebihi 100 Kata',
-            'name.regex' => 'Nama Jenis Lab tidak boleh berupa simbol',
-            'name.unique' => 'Nama Jenis Lab sudah terpakai',
+            'name_jenis_lab_update.required' => 'Nama Jenis Lab Harus Terisi',
+            'name_jenis_lab_update.string' => 'Nama Jenis Lab harus berupa string',
+            'name_jenis_lab_update.max' => 'Nama Jenis Lab tidak boleh melebihi 100 Kata',
+            'name_jenis_lab_update.regex' => 'Nama Jenis Lab tidak boleh berupa simbol',
+            'name_jenis_lab_update.unique' => 'Nama Jenis Lab sudah terpakai',
 
-            'description.string' => 'Deskripsi harus berupa string'
+            'description_jenis_lab_update.string' => 'Deskripsi harus berupa string'
         ];
     }
 
