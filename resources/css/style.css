@@ -1,0 +1,287 @@
+.select2 {
+    width:100%!important;
+}
+
+
+a {
+    text-decoration: none !important;
+    color: black !important;
+}
+
+/* Profile */
+.profile-container {
+    position: relative;
+}
+
+.profile-container .dropdown-menu-profile {
+    right: 0;
+    padding: 0;
+    opacity: 0;
+    top: 1.65rem;
+    transform: translateY(-10px);
+    pointer-events: none;
+    position: absolute;
+    background-color: white;
+    border-radius: 5px;
+    list-style-type: none;
+    transition: all 0.3s ease;
+    box-shadow: 0px 0px 5px black;
+}
+
+.profile-container .dropdown-menu-profile.show {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.profile-item .profile-link {
+    gap: 5px;
+    display: flex;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.9rem;
+}
+
+.profile-item .profile-icon {
+    width: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.profile-item .profile-link:hover .profile-icon {
+    animation: spin 0.3s linear 1;
+}
+/* /Profile */
+
+/* Search */
+.hidden-container {
+    position: relative;
+    flex-grow: 1;
+}
+
+.hidden-container .search-container {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    top: 0.3rem;
+    width: 100%;
+    position: absolute;
+    background-color: white;
+    box-shadow: 0px 0px 5px black;
+    padding: 0.5rem;
+    border-radius: 5px;
+    border-bottom: 1px solid black;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.hidden-container .search-container.show {
+    opacity: 1 ;
+    pointer-events: all;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.hidden-container .search-container .search-box {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid black;
+}
+
+.hidden-container .search-container .search-box .search-input {
+    padding: 0.2rem 0.5rem;
+    width: 100%;
+}
+
+.search-box .search-input:focus {
+    outline: 0;
+}
+
+.result-search {
+    padding-top: 0.5rem;
+}
+
+.result-search .result-container {
+    list-style-type: none;
+    padding: 0rem 0.2rem;
+    background-color: white;
+    z-index: 2;
+}
+/* /Search */
+
+/* Notif */
+.notification-icon-container {
+    position: relative;
+}
+
+.notification-icon-container #notifCounter {
+    position: absolute;
+    right: 0rem;
+    border-radius: 30px;
+    background-color: red;
+    padding: 0.2rem;
+    font-size: 0.5rem;
+    font-weight: bold;
+    color: white;
+    padding: 0.1rem 0.3rem;
+    text-align: center;
+}
+
+
+.hidden-container .notif-container {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    transform: translateY(-10px);
+    background-color: white;
+    top: 0.3rem;
+    gap: 0;
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px black;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.hidden-container .notif-container.show {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.notif-container .notif-list-container {
+    list-style-type: none;
+    padding: 0rem;
+    margin: 0rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 8rem;
+}
+
+.notif-list-container .notif-item {
+    background-color: #F5F5F5;
+}
+
+.notif-list-container .notif-item.active {
+    background-color: #BDBDBD;
+}
+
+.notif-list-container .notif-item:hover {
+    background-color: #9E9E9E;
+}
+
+.notif-list-container .notif-item .notif-link {
+    display: flex;
+    align-items: center;
+    transform: translateY(-1px);
+    padding: 0.5rem 0.8rem;
+    border-top: 1px solid black;
+}
+
+.notif-link .notif-name-message {
+    padding: 0rem 0.8rem;
+    overflow: hidden;
+}
+
+.notif-name-message .name {
+    margin: 0;
+    font-weight: bold;
+}
+
+.notif-name-message .message {
+    margin: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+/* /Notif */
+
+/* Sidebar */
+.wrapper .sidebar {
+    /* background-color: white !important; */
+    position: fixed !important;
+    width: 250px !important;
+    min-height: 100vh !important;
+    transition: all 0.3s ease !important;
+    z-index: 2;
+}
+
+@media (min-width: 769px) {
+    .wrapper .sidebar.hidden {
+        transform: translateX(-100%) !important;
+    }
+
+    /* Kalau ada sidebar maka kasih ml pada content */
+    .sidebar ~ .content {
+        margin-left: 250px !important;
+        transition: margin-left 1s ease !important;
+    }
+
+    /* Kalau sidebar tersembunyi maka contentnya jadi ml 0 */
+    .sidebar.hidden ~ .content {
+        margin-left: 0 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .wrapper .sidebar {
+        transform: translateX(-100%);
+        left: 0;
+    }
+
+    .wrapper .sidebar.active {
+        transform: translateX(0);
+    }
+
+    /* Biar gk ada background biru atau highlight pas di click di mobile */
+    .profile-menu-item, .profile-menu-link, .sidebar-item, .sidebar-link, .dropdown-icon {
+        -webkit-tap-highlight-color: transparent;
+     }
+}
+
+.sidebar .sidebar-item {
+    padding-top: 0.8rem !important;
+}
+
+.sidebar .sidebar-item:hover > .sidebar-link {
+    font-weight: bold;
+}
+
+.sidebar .sidebar-item.active > .sidebar-link {
+    font-weight: bold;
+}
+
+.sidebar-link .sidebar-icon-link {
+    margin-right:0.5rem !important;
+}
+
+.sidebar-link .dropdown-icon {
+    width: 1rem !important;
+    margin-left: auto !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Rotate kalau Aktif Dropdown Menu */
+.sidebar-link:not(.collapsed) .dropdown-icon {
+    transform: rotate(90deg);
+    transition: transform 0.3s ease;
+}
+
+.dropdown-menu-vanilla {
+    border-left: 2px solid black;
+    margin-left: 0.7rem;
+    padding-left: 1.25rem !important;
+}
+
+.wrapper .content {
+    flex-grow: 1;
+    padding: 0.2rem 1rem;
+    transition: all 0.3s ease;
+}
+
+/* /Sidebar */

@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* General Style */
+html{
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Work Sans' !important;
+}
+
+.mysite-title {
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.mytext-shadowed {
+    text-shadow: 4px 4px 10px #000000;
+}
+
+.mytext-white {
+    color: white;
+}
+
+.mytext-brown {
+    color: rgba(111, 78, 55, 1);
+}
+
+/* Background */
+.bg-white {
+    background-color: rgba(241, 241, 241, 1);
+}
+
+.bg-brown100 {
+    background-color: rgba(255, 234, 197, 1);
+}
+.bg-brown200 {
+    background-color: rgba(255, 219, 181, 1);
+}
+
+.bg-darken {
+    filter: brightness(50%);
+}
+
+.bg-dark30 {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+.bg-brown {
+    background-color: rgba(166, 123, 91, 1);
+}
+
+.bg-darkBrown {
+    background-color: rgba(108, 78, 49, 1);
+}
+
+.bg-darkerBrown {
+    background-color: rgba(96, 63, 38, 1);
+}
+/* End Background */
+
+.mydivider {
+    width: 100px;
+    border-width: 2px;
+}
+
+.bolor-brown {
+    border-color:rgba(111, 78, 55, 1);
+}
+
+.bolor-white {
+    border-color: white;
+}
+
+.mycard {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.mycard-md {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 30vw;
+    min-width: 300px;
+}
+
+.myspacer-10 {
+    width: 10vw;
+    height: 10vh;
+}
+/* General Style End */
+
+/* Welcome Page Style */
+.myicons-feature {
+    width: 50px;
+}
+
+.myfacility-icons{
+    height: 100px;
+}
+
+/* Login Page Style */
+.bg-fullscreen{
+    background-image: url("../images/lab-mobile.jpg");
+    background-position: center;
+}
+
+.myinput{
+    background-color: rgba(255, 255, 255, 0.3);
+    width: 100%;
+    min-width: 150;
+    border-radius: 10px;
+    height: 50px;
+    border: none;
+    padding: 10px;
+    color: white;
+}
+
+.mybutton{
+    background-color: #A67B5B;
+    border-radius: 10px;
+    border: none;
+    padding: 20px;
+    color: black;
+    font-weight: 500;
+    width: 100%;
+}
