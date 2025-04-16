@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\roles;
+use App\Models\Lokasi;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class UsersController extends Controller
 {
     public function index()
     {
-        return view("laboran.pengguna-page.pengguna", [
+        $Lokasi = Lokasi::select(['id', 'nama_lokasi'])->get();
+
+        return view("admin.pengguna-page.pengguna", [
+            'Lokasi' => new Lokasi(),
             'page_meta' => [
                 'page'=> 'Pengguna',
-                'description' => 'Halaman untuk manajemen pengguna dan peran.'
+                'description' => 'Halaman untuk manajemen pengguna, peran dan lokasi.'
             ]
         ]);
     }

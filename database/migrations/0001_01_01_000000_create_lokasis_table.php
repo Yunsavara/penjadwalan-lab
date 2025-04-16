@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('lokasis', function (Blueprint $table) {
             $table->id();
             $table->string('nama_lokasi')->unique();
+            $table->text('deskripsi_lokasi');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

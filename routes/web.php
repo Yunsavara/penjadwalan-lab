@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\BarangController;
+use App\Http\Controllers\Admin\LokasiController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AllRole\JadwalController;
 use App\Http\Controllers\Auth\DashboardController;
@@ -41,10 +42,17 @@ Route::group(['middleware' => ['role:admin']], function() {
     // Dashboard
     Route::get('/admin/dashboard', [DashboardController::class,'admin'])->name('admin.dashboard');
 
-    // Manajemen - Pengguna
+    // Pengguna Page
     Route::get('/admin/pengguna', [UsersController::class, 'index'])->name('admin.pengguna');
-    Route::get('/admin/api/data-peran', [UsersController::class, 'getApiRoles']);
+    Route::get('/admin/api/data-peran', [UsersController::class, 'getApiPeran']);
 
+    // Lokasi Datatables
+    Route::get('/admin/api/data-lokasi', [LokasiController::class, 'getApiLokasi']);
+
+    // Lokasi Store, Update & Soft Delete
+    Route::post('/admin/tambah-lokasi', [LokasiController::class, 'store'])->name('admin.lokasi.store');
+    Route::put('/admin/ubah-lokasi/{Lokasi:id}', [LokasiController::class, 'update']);
+    Route::delete('/admin/hapus-lokasi/{Lokasi:id}', [LokasiController::class, 'softDelete']);
     // Barang
     Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');
     Route::get('/admin/tambah-barang', [BarangController::class, 'create'])->name('admin.barang.create');
@@ -54,10 +62,6 @@ Route::group(['middleware' => ['role:admin']], function() {
 
 Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::get('/laboran/dashboard', [DashboardController::class,'laboran'])->name('laboran.dashboard');
-
-    // Manajemen - Pengguna
-    Route::get('/laboran/pengguna', [UsersController::class, 'index'])->name('laboran.pengguna');
-    Route::get('/laboran/api/data-peran', [UsersController::class, 'getApiRoles']);
 
     // Laboratorium Page
     Route::get('/laboran/laboratorium', [LaboratoriumUnpamController::class, 'index'])->name('laboran.laboratorium');

@@ -1,26 +1,26 @@
-<div class="modal fade" id="formJenisLabStore" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="formLokasiStore" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
         <div class="modal-header bg-primary text-white">
             <h5 class="modal-title d-flex align-items-center flex-wrap" id="modalTambahLabel">
-                <i data-feather="plus-square" class="me-2"></i>Tambah Jenis Laboratorium
+                <i data-feather="plus-square" class="me-2"></i>Tambah Lokasi
             </h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button>
         </div>
 
         <div class="modal-body">
-            <form action="{{ route('laboran.jenis-lab.store') }}" method="POST">
+            <form action="{{ route('admin.lokasi.store') }}" method="POST">
                 @csrf
 
                 <div class="mb-3">
-                    <label for="namaJenisLab" class="form-label">Nama Jenis Lab</label>
+                    <label for="namaLokasi" class="form-label">Nama Lokasi</label>
                     <div class="input-group">
                         <span class="input-group-text">
                             <i data-feather="pocket" width="20"></i>
                         </span>
-                        <input type="text" name="nama_jenis_lab_store" class="form-control @error('nama_jenis_lab_store') is-invalid @enderror" id="namaJenisLab" placeholder="Komputer" autocomplete="off" value="{{ old('nama_jenis_lab_store', $JenisLaboratorium->nama_jenis_lab) }}">
-                        @error('nama_jenis_lab_store')
+                        <input type="text" name="nama_lokasi_store" class="form-control @error('nama_lokasi_store') is-invalid @enderror" id="namaLokasi" placeholder="Pamulang" autocomplete="off" value="{{ old('nama_lokasi_store', $Lokasi->nama_lokasi) }}">
+                        @error('nama_lokasi_store')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
@@ -29,13 +29,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="deskripsiJenisLab" class="form-label">Deskripsi</label>
+                    <label for="deskripsiLokasi" class="form-label">Deskripsi</label>
                     <div class="input-group">
                         <span class="input-group-text">
                             <i data-feather="pocket" width="20"></i>
                         </span>
-                        <textarea class="form-control @error('deskripsi_jenis_lab_store') is-invalid @enderror" name="deskripsi_jenis_lab_store" id="deskripsiJenisLab" placeholder="Merupakan Jenis Laboratorium..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;">{{ old('deskripsi_jenis_lab_store', $JenisLaboratorium->deskripsi_jenis_lab) }}</textarea>
-                        @error('deskripsi_jenis_lab_store')
+                        <textarea class="form-control @error('deskripsi_lokasi_store') is-invalid @enderror" name="deskripsi_lokasi_store" id="deskripsiLokasi" placeholder="Untuk Pengguna Peran..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;">{{ old('deskripsi_lokasi_store', $Lokasi->deskripsi_lokasi) }}</textarea>
+                        @error('deskripsi_lokasi_store')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
@@ -55,5 +55,5 @@
 </div>
 
 {{-- Datanya nanti ditangkep jika input gagal, dibuat gini supaya bisa if else di javascript --}}
-<div id="formDataJenisLabStore" class="d-none" data-errors="{{ json_encode($errors->any()) }}" data-session="{{ session('form') }}">
+<div id="formDataLokasiStore" class="d-none" data-errors="{{ json_encode($errors->any()) }}" data-session="{{ session('form') }}">
 </div>

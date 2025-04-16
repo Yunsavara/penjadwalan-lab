@@ -13,7 +13,7 @@ export function initSoftDeleteJenisLabModal() {
             form.setAttribute('action', `/laboran/hapus-jenis-laboratorium/${row.id_jenis_lab}`);
 
             // Set pesan konfirmasi
-            const message = `Apakah Anda yakin ingin menghapus Jenis Lab <strong>${row.name_jenis_lab}</strong> ?`;
+            const message = `Apakah Anda yakin ingin menghapus Jenis Lab <strong>${row.nama_jenis_lab}</strong> ?`;
             document.getElementById('deleteJenisLabMessage').innerHTML = message;
 
             // Tampilkan modal
