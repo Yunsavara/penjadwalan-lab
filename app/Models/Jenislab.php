@@ -11,9 +11,8 @@ class Jenislab extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name_jenis_lab',
-        'slug_jenis_lab',
-        'description_jenis_lab'
+        'nama_jenis_lab',
+        'deskripsi_jenis_lab'
     ];
 
 

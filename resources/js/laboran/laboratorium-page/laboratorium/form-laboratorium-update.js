@@ -28,11 +28,12 @@ export function initDatatablesValueToModalUpdateLab() {
 
             // Set Data ke input
             document.getElementById('edit-idLaboratorium').value = data.id_laboratorium;
-            document.getElementById('edit-namaLaboratorium').value = data.name_laboratorium;
+            document.getElementById('edit-namaLaboratorium').value = data.nama_laboratorium;
             document.getElementById('edit-jenisLaboratorium').value = data.jenislab_id;
             document.getElementById('edit-lokasiLaboratorium').value = data.lokasi_id;
             document.getElementById('edit-kapasitasLaboratorium').value = data.kapasitas_laboratorium;
             document.getElementById('edit-statusLaboratorium').value = data.status_laboratorium;
+            document.getElementById('edit-deskripsiLaboratorium').value = data.deskripsi_laboratorium;
 
             const form = document.getElementById('formEditLaboratorium');
             form.setAttribute('action', `/laboran/ubah-laboratorium/${data.id_laboratorium}`);
@@ -59,12 +60,13 @@ export function errorUpdateModalLaboratorium(){
         const modal = new Modal(document.getElementById('formLaboratoriumUpdate'));
 
         // Isi field dari old input
-        document.getElementById('edit-idLaboratorium').value = old.id_laboratorium_update || '';
-        document.getElementById('edit-namaLaboratorium').value = old.name_laboratorium_update || '';
-        document.getElementById('edit-jenisLaboratorium').value = old.jenislab_id_update || '';
+        document.getElementById('edit-idLaboratorium').value = old.id_laboratorium_update;
+        document.getElementById('edit-namaLaboratorium').value = old.nama_laboratorium_update;
+        document.getElementById('edit-jenisLaboratorium').value = old.jenislab_id_update;
         document.getElementById('edit-lokasiLaboratorium').value = old.lokasi_id_update;
         document.getElementById('edit-kapasitasLaboratorium').value = old.kapasitas_laboratorium_update;
         document.getElementById('edit-statusLaboratorium').value = old.status_laboratorium_update;
+        document.getElementById('edit-deskripsiLaboratorium').value = old.deskripsi_laboratorium_update;
 
         // // Set judul modal
         // const message = `<i data-feather="edit" class="me-2"></i>Ubah Laboratorium ${old.name} dari Lokasi ${old.lokasi_name}`;

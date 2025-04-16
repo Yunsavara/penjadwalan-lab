@@ -16,28 +16,28 @@ class RolesSeeder extends Seeder
         // Makin Kecil makin tinggi prioritasnya
 
         roles::create([
-            'name' => 'admin',
-            'priority' => 1
+            'nama_peran' => 'admin',
+            'prioritas_peran' => 1
         ]);
 
         roles::create([
-            'name' => 'laboran',
-            'priority' => 2
+            'nama_peran' => 'laboran',
+            'prioritas_peran' => 2
         ]);
 
         roles::create([
-            'name' => 'lembaga',
-            'priority' => 3
+            'nama_peran' => 'lembaga',
+            'prioritas_peran' => 3
         ]);
 
         roles::create([
-            'name' => 'prodi',
-            'priority' => 4
+            'nama_peran' => 'prodi',
+            'prioritas_peran' => 4
         ]);
 
         roles::create([
-            'name' => 'user',
-            'priority' => 5
+            'nama_peran' => 'user',
+            'prioritas_peran' => 5
         ]);
     }
 }

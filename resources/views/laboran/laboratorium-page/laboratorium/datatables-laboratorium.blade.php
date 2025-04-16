@@ -1,8 +1,8 @@
 <div class="col-12 p-2 d-flex flex-wrap align-items-center justify-content-between">
-    <div class="col-12 col-md-auto mb-2">
-        <span class="bg-info text-white rounded p-2"><b>Daftar Laboratorium</b></span>
+    <div class="col-12 col-md-auto mb-2 bg-info rounded p-2 text-center text-white">
+        <span><b>Daftar Laboratorium</b></span>
     </div>
-    <div class="col-12 col-md-auto mb-2">
+    <div class="col-12 col-md-auto mb-2 text-end">
         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#formLaboratoriumStore">
             <i data-feather="plus"></i>
         </button>
@@ -15,7 +15,7 @@
 </div>
 
 <div class="table-responsive px-2" id="tableLaboratoriumContainer">
-    <table class="table text-nowrap" id="tableLaboratorium" style="width: 100%;">
+    <table class="table bg-white table-hover table-bordered" id="tableLaboratorium" style="width: 100%;">
     </table>
 </div>
 

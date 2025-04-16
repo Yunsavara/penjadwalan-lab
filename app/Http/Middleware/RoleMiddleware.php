@@ -24,7 +24,7 @@ class RoleMiddleware
 
         //  Auth::logout();
 
-         $userRole = Auth::user()->role->name;
+         $userRole = Auth::user()->role->nama_peran;
 
          // Cek apakah role user ada dalam daftar yang diizinkan
          if (!in_array($userRole, $roles)) {

@@ -1,7 +1,3 @@
-import 'datatables.net-responsive';
-import 'datatables.net-responsive-bs5';
-import "datatables.net-fixedheader";
-import 'datatables.net-select';
 import DataTable from 'datatables.net';
 
 export function initPeranDatatable() {
@@ -9,8 +5,9 @@ export function initPeranDatatable() {
         serverSide: true,
         processing: true,
         responsive: true,
+        fixedHeader: true,
         ajax: {
-            url: "/laboran/api/data-peran",
+            url: "/admin/api/data-peran",
             method: "GET"
         },
         columns: [
@@ -31,13 +28,34 @@ export function initPeranDatatable() {
             },
             {
                 title: "Prioritas",
-                data: "priority"
+                data: "priority",
+                className: "text-start"
+            },
+            {
+                title: "Aksi",
+                data: null,
+                orderable: false,
+                searchable: false,
+                className: 'min-tablet',
+                render: function (data, type, row) {
+                    return `
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-success border dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Aksi
+                            </button>
+                            <ul class="dropdown-menu p-0">
+                                <li><button class="dropdown-item btn-edit-peran" data-row='${JSON.stringify(row)}'>Ubah</button></li>
+                                <li><button class="dropdown-item text-danger btn-delete-peran" data-row='${JSON.stringify(row)}'>Hapus</button></li>
+                            </ul>
+                        </div>
+                    `;
+                }
             }
         ],
         // fixedColumns: {
         //     start: 3
         // },
-        order: [[2, 'asc']],
+        order: [[2, 'desc']],
         select: {
             style: "multi+shift",
             selector: "td:first-child"
@@ -50,6 +68,7 @@ export function initPeranDatatable() {
         }
     });
 }
+
 
 function moveToolsPeran() {
     const wrapper = document.getElementById("tablePeran").closest("#tablePeran_wrapper");

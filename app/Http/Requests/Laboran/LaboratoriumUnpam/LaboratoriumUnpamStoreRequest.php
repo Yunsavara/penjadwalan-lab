@@ -25,28 +25,29 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name_laboratorium_store' => [
+            'nama_laboratorium_store' => [
                 'required',
                 'string',
                 'max:15',
-                Rule::unique('laboratorium_unpams', 'name_laboratorium')->where(function ($query) {
+                Rule::unique('laboratorium_unpams', 'nama_laboratorium')->where(function ($query) {
                     return $query->where('lokasi_id', request()->lokasi_id_store);
                 })
             ],
             'jenislab_id_store' => 'required|string|exists:jenislabs,id',
             'lokasi_id_store' => 'required|string|exists:lokasis,id',
             'kapasitas_laboratorium_store' => 'required|integer',
-            'status_laboratorium_store' => 'required|string|in:tersedia,tidak tersedia'
+            'status_laboratorium_store' => 'required|string|in:tersedia,tidak tersedia',
+            'deskripsi_laboratorium_store' => 'nullable|string|max:50'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name_laboratorium_store.required' => 'Nama laboratorium wajib diisi.',
-            'name_laboratorium_store.string' => 'Nama laboratorium harus berupa teks.',
-            'name_laboratorium_store.max' => 'Nama laboratorium tidak boleh lebih dari 15 karakter.',
-            'name_laboratorium_store.unique' => 'Nama laboratorium sudah ada di lokasi yang dipilih.',
+            'nama_laboratorium_store.required' => 'Nama laboratorium wajib diisi.',
+            'nama_laboratorium_store.string' => 'Nama laboratorium harus berupa teks.',
+            'nama_laboratorium_store.max' => 'Nama laboratorium tidak boleh lebih dari 15 karakter.',
+            'nama_laboratorium_store.unique' => 'Nama laboratorium sudah ada di lokasi yang dipilih.',
 
             'jenislab_id_store.required' => 'Jenis lab wajib dipilih.',
             'jenislab_id_store.string' => 'Jenis lab harus berupa teks.',
@@ -62,6 +63,10 @@ class LaboratoriumUnpamStoreRequest extends FormRequest
             'status_laboratorium_store.required' => 'Status laboratorium wajib diisi.',
             'status_laboratorium_store.string' => 'Status harus berupa teks.',
             'status_laboratorium_store.in' => 'Status yang dipilih tidak valid. Pilih antara: tersedia atau tidak tersedia.',
+
+            'deskripsi_laboratorium_store.max' => 'Deskripsi laboratorium tidak boleh lebih dari 50 karakter.',
+            'deskripsi_laboratorium_store.string' => 'Deskripsi laboratorium harus berupa teks.',
+
         ];
     }
 

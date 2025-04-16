@@ -17,67 +17,76 @@ class UserSeeder extends Seeder
     {
 
         User::create([
-            'name' => 'Admin',
+            'nama_pengguna' => 'Admin',
             'email' => 'admin@example.com',
-            'slug' => Str::slug('Admin'),
             'password' => Hash::make('password'),
-            'lokasi' => 'fleksible',
+            'lokasi_id' => 1,
             'role_id' => 1,
         ]);
 
 
         User::create([
-            'name' => 'Dosen Prodi 1',
+            'nama_pengguna' => 'Dosen Prodi 1',
             'email' => 'dosen1@example.com',
-            'slug' => Str::slug('Dosen Prodi 1'),
             'password' => Hash::make('password'),
-            'lokasi' => 'fleksible',
+            'lokasi_id' => 1,
             'role_id' => 4,
         ]);
 
         User::create([
-            'name' => 'Dosen Prodi 2',
+            'nama_pengguna' => 'Dosen Prodi 2',
             'email' => 'dosen2@example.com',
-            'slug' => Str::slug('Dosen Prodi 2'),
             'password' => Hash::make('password'),
-            'lokasi' => 'fleksible',
+            'lokasi_id' => 1,
             'role_id' => 4,
         ]);
 
         User::create([
-            'name' => 'Dosen Prodi 3',
+            'nama_pengguna' => 'Dosen Prodi 3',
             'email' => 'dosen3@example.com',
-            'slug' => Str::slug('Dosen Prodi 3'),
             'password' => Hash::make('password'),
-            'lokasi' => 'fleksible',
+            'lokasi_id' => 1,
             'role_id' => 4,
         ]);
 
 
         User::create([
-            'name' => 'Mahasiswa',
+            'nama_pengguna' => 'Mahasiswa',
             'email' => 'mahasiswa@example.com',
-            'slug' => Str::slug('Mahasiswa'),
             'password' => Hash::make('password'),
-            'lokasi' => 'fleksible',
+            'lokasi_id' => 1,
             'role_id' => 5,
         ]);
 
         User::create([
-            'name' => 'Laboran',
+            'nama_pengguna' => 'Laboran',
             'email' => 'laboran@example.com',
-            'slug' => Str::slug('Laboran'),
             'password' => Hash::make('password'),
-            'lokasi' => 'viktor',
+            'lokasi_id' => 2,
             'role_id' => 2,
         ]);
 
         User::create([
-            'name' => 'Lembaga',
-            'email' => 'lembaga@example.com',
-            'slug' => Str::slug('Lembaga'),
+            'nama_pengguna' => 'Laboran 2',
+            'email' => 'laboran2@example.com',
             'password' => Hash::make('password'),
-            'lokasi' => 'fleksible',
+            'lokasi_id' => 3,
+            'role_id' => 2,
+        ]);
+
+        User::create([
+            'nama_pengguna' => 'Laboran 3',
+            'email' => 'laboran3@example.com',
+            'password' => Hash::make('password'),
+            'lokasi_id' => 4,
+            'role_id' => 2,
+        ]);
+
+        User::create([
+            'nama_pengguna' => 'Lembaga',
+            'email' => 'lembaga@example.com',
+            'password' => Hash::make('password'),
+            'lokasi_id' => 1,
             'role_id' => 3,
         ]);
     }

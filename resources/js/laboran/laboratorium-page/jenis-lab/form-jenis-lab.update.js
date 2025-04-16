@@ -11,8 +11,8 @@ export function initDatatablesValueToModalUpdateJenisLab() {
 
             // set pesan yang sedang di-ubah
             document.getElementById('edit-idJenisLab').value = data.id_jenis_lab;
-            document.getElementById('edit-namaJenisLab').value = data.name_jenis_lab;
-            document.getElementById('edit-deskripsiJenisLab').value = data.description_jenis_lab;
+            document.getElementById('edit-namaJenisLab').value = data.nama_jenis_lab;
+            document.getElementById('edit-deskripsiJenisLab').value = data.deskripsi_jenis_lab;
 
             // form action
             const form = document.getElementById('formEditJenisLab');
@@ -40,9 +40,9 @@ export function errorUpdateModalJenisLab(){
         const modal = new Modal(document.getElementById('formJenisLabUpdate'));
 
         // Isi field dari old input
-        document.getElementById('edit-idJenisLab').value = old.id_jenis_lab_update || '';
-        document.getElementById('edit-namaJenisLab').value = old.name_jenis_lab_update || '';
-        document.getElementById('edit-deskripsiJenisLab').value = old.description_jenis_lab_update || '';
+        document.getElementById('edit-idJenisLab').value = old.id_jenis_lab_update;
+        document.getElementById('edit-namaJenisLab').value = old.nama_jenis_lab_update;
+        document.getElementById('edit-deskripsiJenisLab').value = old.deskripsi_jenis_lab_update;
 
         // // Set judul modal
         // const message = `<i data-feather="edit" class="me-2"></i>Ubah Jenis Laboratorium ${old.name || ''}`;

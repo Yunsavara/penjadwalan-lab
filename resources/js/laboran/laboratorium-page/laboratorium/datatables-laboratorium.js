@@ -16,20 +16,32 @@ export function initLaboratoriumDatatable() {
                 render: DataTable.render.select(),
                 orderable: false,
                 data: null,
+                className: "min-mobile text-nowrap"
             },
             {
                 title: "No",
-                data: "index",
-                orderable: false
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                },
+                className: "min-mobile text-center align-middle",
+                orderable: false,
+                width: "1rem"
+            },
+            {
+                title: "No",
+                data: "id_laboratorium",
+                visible: false,
             },
             {
                 title: "Ruang Lab",
-                data: "name_laboratorium"
+                data: "nama_laboratorium",
+                className: "min-mobile text-nowrap align-middle"
             },
             {
                 title: "Kapasitas",
                 data: "kapasitas_laboratorium",
-                className: "text-start"
+                className: "text-start text-nowrap align-middle"
             },
             {
                 title: "Status",
@@ -37,22 +49,31 @@ export function initLaboratoriumDatatable() {
                 render: function (data) {
                     if (!data) return '';
                     return data.charAt(0).toUpperCase() + data.slice(1);
-                }
+                },
+                className: "text-nowrap align-middle"
             },
             {
                 title: "Lokasi",
-                data: "lokasi_name"
+                data: "nama_lokasi",
+                className: "text-nowrap align-middle"
             },
             {
                 title: "Jenis",
-                data: "jenislab_name"
+                data: "nama_jenislab",
+                className: "text-nowrap align-middle"
             },
+            {
+                title: "Deskripsi",
+                data: "deskripsi_laboratorium",
+                className: "text-wrap align-middle"
+            }
+            ,
             {
                 title: "Aksi",
                 data: null,
                 orderable: false,
                 searchable: false,
-                className: 'min-tablet',
+                className: 'min-tablet text-md-center align-middle',
                 render: function (data, type, row) {
                     return `
                         <div class="dropdown">
@@ -76,11 +97,14 @@ export function initLaboratoriumDatatable() {
             style: "multi+shift",
             selector: "td:first-child"
         },
-        columnDefs: [
-            { targets: 0, width: "1%" }
-        ],
         initComplete: function () {
             moveToolsLaboratorium();
+        },
+        drawCallback: function (settings) {
+            const thElements = document.querySelectorAll('#tableLaboratorium th');
+            thElements.forEach(th => {
+                th.classList.add('table-white', 'text-nowrap', 'text-center');
+            });
         }
     });
 }

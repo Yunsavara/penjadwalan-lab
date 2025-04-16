@@ -21,8 +21,8 @@
               <label for="edit-namaJenisLab" class="form-label">Nama Jenis Lab</label>
               <div class="input-group">
                 <span class="input-group-text"><i data-feather="trello" width="20"></i></span>
-                <input type="text" name="name_jenis_lab_update" id="edit-namaJenisLab" class="form-control @error('name_jenis_lab_update') is-invalid @enderror" autocomplete="off">
-                @error('name_jenis_lab_update')
+                <input type="text" name="nama_jenis_lab_update" id="edit-namaJenisLab" class="form-control @error('nama_jenis_lab_update') is-invalid @enderror" autocomplete="off">
+                @error('nama_jenis_lab_update')
                     <div class="invalid-feedback">
                         {{ $message }}
                     </div>
@@ -36,8 +36,8 @@
                     <span class="input-group-text">
                         <i data-feather="pocket" width="20"></i>
                     </span>
-                    <textarea class="form-control @error('description_jenis_lab_update') is-invalid @enderror" name="description_jenis_lab_update" id="edit-deskripsiJenisLab" placeholder="Merupakan Jenis Laboratorium..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;"></textarea>
-                    @error('description_jenis_lab_update')
+                    <textarea class="form-control @error('deskripsi_jenis_lab_update') is-invalid @enderror" name="deskripsi_jenis_lab_update" id="edit-deskripsiJenisLab" placeholder="Merupakan Jenis Laboratorium..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;"></textarea>
+                    @error('deskripsi_jenis_lab_update')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>

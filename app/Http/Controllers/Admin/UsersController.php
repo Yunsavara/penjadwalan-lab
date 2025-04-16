@@ -10,7 +10,7 @@ class UsersController extends Controller
 {
     public function index()
     {
-        return view("laboran.pengguna-page.index", [
+        return view("laboran.pengguna-page.pengguna", [
             'page_meta' => [
                 'page'=> 'Pengguna',
                 'description' => 'Halaman untuk manajemen pengguna dan peran.'

@@ -2,7 +2,7 @@
     <div class="container-fluid d-flex justify-content">
         <div class="menu-role d-flex gap-2">
             <i data-feather="menu" id="toggleSidebar"></i>
-            <span class="fw-bold text-uppercase" style="letter-spacing: 2px;">{{ Auth::user()->role->name }}</span>
+            <span class="fw-bold text-uppercase" style="letter-spacing: 2px;">{{ Auth::user()->role->nama_peran }}</span>
         </div>
         <div class="tools-container d-flex justify-content gap-3">
 

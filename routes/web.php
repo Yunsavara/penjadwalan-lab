@@ -41,6 +41,10 @@ Route::group(['middleware' => ['role:admin']], function() {
     // Dashboard
     Route::get('/admin/dashboard', [DashboardController::class,'admin'])->name('admin.dashboard');
 
+    // Manajemen - Pengguna
+    Route::get('/admin/pengguna', [UsersController::class, 'index'])->name('admin.pengguna');
+    Route::get('/admin/api/data-peran', [UsersController::class, 'getApiRoles']);
+
     // Barang
     Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');
     Route::get('/admin/tambah-barang', [BarangController::class, 'create'])->name('admin.barang.create');

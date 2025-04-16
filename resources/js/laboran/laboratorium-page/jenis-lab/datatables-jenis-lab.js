@@ -5,7 +5,7 @@ export function initJenisLabDatatable() {
         serverSide: true,
         processing: true,
         responsive: true,
-        fixedHeader: true,
+        fixedHeader: false,
         ajax: {
             url: "/laboran/api/data-jenis-laboratorium",
             method: "GET"
@@ -16,29 +16,39 @@ export function initJenisLabDatatable() {
                 render: DataTable.render.select(),
                 orderable: false,
                 data: null,
-                className: "min-mobile"
+                className: "min-mobile text-nowrap"
             },
             {
                 title: "No",
-                data: "index",
+                data: null,
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                },
+                className: "min-mobile text-center align-middle",
                 orderable: false,
-                className: "min-mobile"
+                width: "1rem"
+            },
+            {
+                title: "No",
+                data: "id_jenis_lab",
+                visible: false,
             },
             {
                 title: "Nama Jenis Lab",
-                data: "name_jenis_lab",
-                className: "min-mobile"
+                data: "nama_jenis_lab",
+                className: "min-mobile text-nowrap align-middle"
             },
             {
                 title: "Deskripsi",
-                data: "description_jenis_lab",
+                data: "deskripsi_jenis_lab",
+                className: "text-wrap align-middle",
             },
             {
                 title: "Aksi",
                 data: null,
                 orderable: false,
                 searchable: false,
-                className: 'min-tablet',
+                className: 'min-tablet text-md-center',
                 render: function (data, type, row) {
                     return `
                         <div class="dropdown">
@@ -57,16 +67,19 @@ export function initJenisLabDatatable() {
         // fixedColumns: {
         //     start: 3
         // },
-        order: [[2, 'desc']],
+        order: [[2, 'desc']], // Ini bukan dari index kolom javascript tapi dari backend
         select: {
             style: "multi+shift",
             selector: "td:first-child"
         },
-        columnDefs: [
-            { targets: 0, width: "1%" }
-        ],
         initComplete: function () {
             moveToolsJenisLab();
+        },
+        drawCallback: function (settings) {
+            const thElements = document.querySelectorAll('#tableJenisLab th');
+            thElements.forEach(th => {
+                th.classList.add('table-white', 'text-nowrap', 'text-center');
+            });
         }
     });
 }

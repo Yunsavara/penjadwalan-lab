@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('laboratorium_unpams', function (Blueprint $table) {
             $table->id();
-            $table->string('name_laboratorium');
+            $table->string('nama_laboratorium');
             $table->integer('kapasitas_laboratorium');
             $table->enum('status_laboratorium', ['tersedia', 'tidak tersedia'])->default('tersedia');
 
@@ -26,6 +26,8 @@ return new class extends Migration
             $table->foreign('jenislab_id')
               ->references('id')
               ->on('jenislabs');
+
+            $table->text('deskripsi_laboratorium')->nullable();
 
             $table->timestamps();
 

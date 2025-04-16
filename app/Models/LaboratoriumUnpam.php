@@ -11,11 +11,12 @@ class LaboratoriumUnpam extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name_laboratorium',
+        'nama_laboratorium',
         'lokasi_id',
         'kapasitas_laboratorium',
         'status_laboratorium',
-        'jenislab_id'
+        'jenislab_id',
+        'deskripsi_laboratorium'
     ];
 
     // Relasi buat ke jenis lab

@@ -26,28 +26,29 @@ class LaboratoriumUnpamUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name_laboratorium_update' => [
+            'nama_laboratorium_update' => [
                 'required',
                 'string',
                 'max:15',
-                Rule::unique('laboratorium_unpams', 'name_laboratorium')->where(function ($query) {
+                Rule::unique('laboratorium_unpams', 'nama_laboratorium')->where(function ($query) {
                     return $query->where('lokasi_id', $this->lokasi_id_update);
                 })->ignore(Crypt::decryptString($this->id_laboratorium_update))
             ],
             'jenislab_id_update' => 'required|string|exists:jenislabs,id',
             'lokasi_id_update' => 'required|string|exists:lokasis,id',
             'kapasitas_laboratorium_update' => 'required|integer',
-            'status_laboratorium_update' => 'required|string|in:tersedia,tidak tersedia'
+            'status_laboratorium_update' => 'required|string|in:tersedia,tidak tersedia',
+            'deskripsi_laboratorium_update' => 'nullable|string|max:50'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name_laboratorium_update.required' => 'Nama laboratorium wajib diisi.',
-            'name_laboratorium_update.string' => 'Nama laboratorium harus berupa teks.',
-            'name_laboratorium_update.max' => 'Nama laboratorium tidak boleh lebih dari 15 karakter.',
-            'name_laboratorium_update.unique' => 'Nama laboratorium sudah ada di lokasi yang dipilih.',
+            'nama_laboratorium_update.required' => 'Nama laboratorium wajib diisi.',
+            'nama_laboratorium_update.string' => 'Nama laboratorium harus berupa teks.',
+            'nama_laboratorium_update.max' => 'Nama laboratorium tidak boleh lebih dari 15 karakter.',
+            'nama_laboratorium_update.unique' => 'Nama laboratorium sudah ada di lokasi yang dipilih.',
 
             'jenislab_id_update.required' => 'Jenis lab wajib dipilih.',
             'jenislab_id_update.string' => 'Jenis lab harus berupa teks.',
@@ -63,6 +64,9 @@ class LaboratoriumUnpamUpdateRequest extends FormRequest
             'status_laboratorium_update.required' => 'Status laboratorium wajib diisi.',
             'status_laboratorium_update.string' => 'Status harus berupa teks.',
             'status_laboratorium_update.in' => 'Status yang dipilih tidak valid. Pilih antara: tersedia atau tidak tersedia.',
+
+            'deskripsi_laboratorium_update.max' => 'Deskripsi laboratorium tidak boleh lebih dari 50 karakter.',
+            'deskripsi_laboratorium_update.string' => 'Deskripsi laboratorium harus berupa teks.',
         ];
     }
 

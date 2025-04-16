@@ -19,8 +19,8 @@
                         <span class="input-group-text">
                         <i data-feather="trello" width="20"></i>
                         </span>
-                        <input type="text" name="name_laboratorium_store" class="form-control @error('name_laboratorium_store') is-invalid @enderror" id="namaLaboratorium" placeholder="CBT-01" autocomplete="off" value="{{ old('name_laboratorium_store', $Laboratorium->name_laboratorium_store) }}">
-                        @error('name_laboratorium_store')
+                        <input type="text" name="nama_laboratorium_store" class="form-control @error('nama_laboratorium_store') is-invalid @enderror" id="namaLaboratorium" placeholder="CBT 01" autocomplete="off" value="{{ old('nama_laboratorium_store', $Laboratorium->nama_laboratorium) }}">
+                        @error('nama_laboratorium_store')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
@@ -39,7 +39,7 @@
                             @foreach ($Jenislab as $jenis)
                                 <option value="{{ $jenis->id }}"
                                     {{ old('jenislab_id_store', $Laboratorium->jenislab_id) == $jenis->id ? 'selected' : '' }}>
-                                    {{ $jenis->name_jenis_lab }}
+                                    {{ $jenis->nama_jenis_lab }}
                                 </option>
                             @endforeach
                         </select>
@@ -62,7 +62,7 @@
                             @foreach ($Lokasi as $lok)
                             <option value="{{ $lok->id }}"
                                 {{ old('lokasi_id_store', $Laboratorium->lokasi_id) == $lok->id ? 'selected' : '' }}>
-                                {{ $lok->name }}
+                                {{ $lok->nama_lokasi }}
                             </option>
                             @endforeach
                         </select>
@@ -80,7 +80,7 @@
                         <span class="input-group-text">
                             <i data-feather="grid" width="20"></i>
                         </span>
-                        <input type="text" name="kapasitas_laboratorium_store" class="form-control @error('kapasitas_laboratorium_store') is-invalid @enderror" id="kapasitasLaboratorium" placeholder="30" autocomplete="off" value="{{ old('kapasitas_laboratorium_store', $Laboratorium->kapasitas_laboratorium_store) }}">
+                        <input type="text" name="kapasitas_laboratorium_store" class="form-control @error('kapasitas_laboratorium_store') is-invalid @enderror" id="kapasitasLaboratorium" placeholder="30" autocomplete="off" value="{{ old('kapasitas_laboratorium_store', $Laboratorium->kapasitas_laboratorium) }}">
                         @error('kapasitas_laboratorium_store')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -96,8 +96,8 @@
                             <i data-feather="bar-chart-2" width="20"></i>
                         </span>
                         <select name="status_laboratorium_store" id="statusLaboratorium" class="form-select @error('status_laboratorium_store') is-invalid @enderror">
-                            <option value="tersedia" {{ old('status_laboratorium_store', $Laboratorium->status_laboratorium_store) === 'tersedia' ? 'selected' : '' }}>Tersedia</option>
-                            <option value="tidak tersedia" {{ old('status_laboratorium_store', $Laboratorium->status_laboratorium_store) === 'tidak tersedia' ? 'selected' : '' }}>Tidak Tersedia</option>
+                            <option value="tersedia" {{ old('status_laboratorium_store', $Laboratorium->status_laboratorium) === 'tersedia' ? 'selected' : '' }}>Tersedia</option>
+                            <option value="tidak tersedia" {{ old('status_laboratorium_store', $Laboratorium->status_laboratorium) === 'tidak tersedia' ? 'selected' : '' }}>Tidak Tersedia</option>
                         </select>
                         @error('status_laboratorium_store')
                             <div class="invalid-feedback">
@@ -106,6 +106,26 @@
                         @enderror
                     </div>
                 </div>
+
+                <div class="mb-3">
+                    <label for="deskripsiLaboratorium" class="form-label">Deskripsi Laboratorium</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i data-feather="align-right" width="20"></i>
+                        </span>
+                        <textarea name="deskripsi_laboratorium_store"
+                                  class="form-control @error('deskripsi_laboratorium_store') is-invalid @enderror"
+                                  id="deskripsiLaboratorium"
+                                  placeholder="Tuliskan deskripsi laboratorium..."
+                                  rows="3" style="min-height: 100px; max-height:100px; resize:none;">{{ old('deskripsi_laboratorium_store', $Laboratorium->deskripsi_laboratorium) }}</textarea>
+                        @error('deskripsi_laboratorium_store')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                </div>
+
             </div>
 
             <div class="modal-footer">

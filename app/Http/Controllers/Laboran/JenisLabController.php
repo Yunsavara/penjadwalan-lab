@@ -16,14 +16,14 @@ class JenisLabController extends Controller
     // Index Nya ada di LaboratoriumUnpamController, karena pakai modal untuk formnya jadi gk pindah halaman
 
     public function getApiJenisLaboratorium(Request $request) {
-        $query = Jenislab::select(['id','name_jenis_lab', 'description_jenis_lab']);
+        $query = Jenislab::select(['id','nama_jenis_lab', 'deskripsi_jenis_lab']);
 
         // Pencarian
         if ($request->has('search') && !empty($request->search['value'])) {
             $search = $request->search['value'];
             $query->where(function ($q) use ($search) {
-                $q->where('name_jenis_lab', 'like', "%{$search}%")
-                    ->orWhere('description_jenis_lab', 'like', "%{$search}%");
+                $q->where('nama_jenis_lab', 'like', "%{$search}%")
+                    ->orWhere('deskripsi_jenis_lab', 'like', "%{$search}%");
             });
         }
 
@@ -32,18 +32,18 @@ class JenisLabController extends Controller
 
         // Sorting
         $orderColumnIndex = $request->input('order.0.column');
-        $orderDirection = $request->input('order.0.dir') ?? 'asc';
+        $orderDirection = $request->input('order.0.dir') ?? 'desc';
 
-        $columns = ['index', 'id', 'name_jenis_lab', 'description_jenis_lab'];
-        $orderColumnName = $columns[$orderColumnIndex] ?? 'name_jenis_lab';
+        $columns = [null, 'nama_jenis_lab','id', 'deskripsi_jenis_lab'];
+        $orderColumnName = $columns[$orderColumnIndex] ?? 'id';
 
-        if (in_array($orderColumnName, ['name_jenis_lab', 'description_jenis_lab'])) {
+        if (in_array($orderColumnName, ['id','nama_jenis_lab', 'deskripsi_jenis_lab'])) {
             $query->orderBy($orderColumnName, $orderDirection);
         } else {
-            $query->orderBy('name_jenis_lab', 'asc');
+            $query->orderBy('id', 'desc');
         }
 
-        // Pagination
+        // Pagination (limit data yang tampil per page)
         $start = $request->start ?? 0;
         $length = $request->length ?? 10;
 
@@ -52,12 +52,10 @@ class JenisLabController extends Controller
         $result = [];
         foreach ($data as $index => $jenislab) {
             $result[] = [
-                'index' => $start + $index + 1,
                 // 'id' => $jenislab->id,
                 'id_jenis_lab' => Crypt::encryptString($jenislab->id),
-                'name_jenis_lab' => $jenislab->name_jenis_lab,
-                'slug_jenis_lab' => $jenislab->slug_jenis_lab,
-                'description_jenis_lab' => $jenislab->description_jenis_lab,
+                'nama_jenis_lab' => $jenislab->nama_jenis_lab,
+                'deskripsi_jenis_lab' => $jenislab->deskripsi_jenis_lab,
             ];
         }
 
@@ -78,8 +76,8 @@ class JenisLabController extends Controller
             $data = $Request->validated();
 
             Jenislab::create([
-                'name_jenis_lab' => $data['name_jenis_lab_store'],
-                'description_jenis_lab' => $data['description_jenis_lab_store']
+                'nama_jenis_lab' => $data['nama_jenis_lab_store'],
+                'deskripsi_jenis_lab' => $data['deskripsi_jenis_lab_store']
             ]);
 
             DB::commit();
@@ -101,8 +99,8 @@ class JenisLabController extends Controller
             $Jenislab = Jenislab::findOrFail(Crypt::decryptString($id));
 
             $Jenislab->update([
-                'name_jenis_lab' => $data['name_jenis_lab_update'],
-                'description_jenis_lab' => $data['description_jenis_lab_update']
+                'nama_jenis_lab' => $data['nama_jenis_lab_update'],
+                'deskripsi_jenis_lab' => $data['deskripsi_jenis_lab_update']
             ]);
 
             DB::commit();

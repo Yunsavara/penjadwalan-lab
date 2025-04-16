@@ -294,3 +294,14 @@ a {
     border: none !important;
     box-shadow: none !important;
 }
+
+/* Hapus Tampilan Scroll textarea */
+
+textarea {
+    overflow-y: scroll; /* tetap scrollable */
+    scrollbar-width: none; /* Firefox */
+}
+
+textarea::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}

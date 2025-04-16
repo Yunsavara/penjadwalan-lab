@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Lokasi extends Model
 {
     protected $fillable = [
-        'name'
+        'nama_lokasi'
     ];
 
     public function waktuOperasional()
@@ -18,5 +18,10 @@ class Lokasi extends Model
     public function laboratoriumUnpam()
     {
         return $this->hasMany(LaboratoriumUnpam::class, 'lokasi_id');
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
     }
 }
