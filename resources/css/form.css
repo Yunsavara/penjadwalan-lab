@@ -1,0 +1,34 @@
+/* Modal Bootstrap */
+
+.btn-close {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+
+/* Form */
+
+/* Hapus Tampilan Scroll textarea */
+textarea {
+    overflow-y: scroll; /* tetap scrollable */
+    scrollbar-width: none; /* Firefox */
+}
+
+textarea::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
+
+
+/* Untuk Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Untuk Firefox */
+input[type=number] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}

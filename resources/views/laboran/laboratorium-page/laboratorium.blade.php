@@ -13,6 +13,7 @@
     {{-- Jenis Laboratorium --}}
     @include('laboran.laboratorium-page.jenis-lab.form-jenis-lab-store')
     @include('laboran.laboratorium-page.jenis-lab.form-jenis-lab-update')
+    @include('laboran.laboratorium-page.jenis-lab.form-jenis-lab-soft-delete')
 
     <div class="col-12 px-3 py-4">
         <h2>{{ $page_meta['page'] }}</h2>

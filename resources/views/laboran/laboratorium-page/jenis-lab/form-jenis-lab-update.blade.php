@@ -15,13 +15,18 @@
             @csrf
             @method('PUT')
 
-            <input type="hidden" name="slug" id="edit-slugJenisLab">
+            <input type="hidden" name="id_jenis_lab_update" id="edit-idJenisLab">
 
             <div class="mb-3">
               <label for="edit-namaJenisLab" class="form-label">Nama Jenis Lab</label>
               <div class="input-group">
                 <span class="input-group-text"><i data-feather="trello" width="20"></i></span>
-                <input type="text" name="name" id="edit-namaJenisLab" class="form-control" autocomplete="off">
+                <input type="text" name="nama_jenis_lab_update" id="edit-namaJenisLab" class="form-control @error('nama_jenis_lab_update') is-invalid @enderror" autocomplete="off">
+                @error('nama_jenis_lab_update')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
               </div>
             </div>
 
@@ -29,9 +34,14 @@
                 <label for="edit-deskripsiJenisLab">Deskripsi</label>
                 <div class="input-group">
                     <span class="input-group-text">
-                        <i data-feather="pocket" width="20"></i>
+                        <i data-feather="align-right" width="20"></i>
                     </span>
-                    <textarea class="form-control" name="description" id="edit-deskripsiJenisLab" placeholder="Merupakan Jenis Laboratorium..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;"></textarea>
+                    <textarea class="form-control @error('deskripsi_jenis_lab_update') is-invalid @enderror" name="deskripsi_jenis_lab_update" id="edit-deskripsiJenisLab" placeholder="Merupakan Jenis Laboratorium..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;"></textarea>
+                    @error('deskripsi_jenis_lab_update')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
                 </div>
             </div>
           </div>

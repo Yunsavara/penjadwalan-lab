@@ -19,7 +19,12 @@
                         <span class="input-group-text">
                             <i data-feather="pocket" width="20"></i>
                         </span>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="namaJenisLab" placeholder="Komputer" autocomplete="off" value="{{ old('name', $JenisLaboratorium->name) }}">
+                        <input type="text" name="nama_jenis_lab_store" class="form-control @error('nama_jenis_lab_store') is-invalid @enderror" id="namaJenisLab" placeholder="Komputer" autocomplete="off" value="{{ old('nama_jenis_lab_store', $JenisLaboratorium->nama_jenis_lab) }}">
+                        @error('nama_jenis_lab_store')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
 
@@ -27,9 +32,14 @@
                     <label for="deskripsiJenisLab" class="form-label">Deskripsi</label>
                     <div class="input-group">
                         <span class="input-group-text">
-                            <i data-feather="pocket" width="20"></i>
+                            <i data-feather="align-right" width="20"></i>
                         </span>
-                        <textarea class="form-control" name="description" id="deskripsiJenisLab" placeholder="Merupakan Jenis Laboratorium..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;">{{ old('description', $JenisLaboratorium->description) }}</textarea>
+                        <textarea class="form-control @error('deskripsi_jenis_lab_store') is-invalid @enderror" name="deskripsi_jenis_lab_store" id="deskripsiJenisLab" placeholder="Merupakan Jenis Laboratorium..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;">{{ old('deskripsi_jenis_lab_store', $JenisLaboratorium->deskripsi_jenis_lab) }}</textarea>
+                        @error('deskripsi_jenis_lab_store')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                 </div>
             </div>

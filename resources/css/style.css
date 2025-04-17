@@ -287,10 +287,3 @@ a {
 /* /Sidebar */
 
 
-/* Modal Bootstrap */
-
-.btn-close {
-    outline: none !important;
-    border: none !important;
-    box-shadow: none !important;
-}

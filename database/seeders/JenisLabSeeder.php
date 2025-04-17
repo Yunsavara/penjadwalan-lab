@@ -14,12 +14,11 @@ class JenisLabSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ['name' => 'Pemrograman', 'slug' => Str::slug('Pemrograman'), 'description' => 'Lab untuk pengembangan perangkat lunak'],
-            ['name' => 'Jaringan', 'slug' => Str::slug('Jaringan'), 'description' => 'Lab untuk konfigurasi dan manajemen jaringan'],
-            ['name' => 'Elektro', 'slug' => Str::slug('Elektro'), 'description' => 'Lab untuk eksperimen elektronika dan listrik'],
-            ['name' => 'Multimedia', 'slug' => Str::slug('Multimedia'), 'description' => 'Lab untuk pengembangan design multimedia'],
+            ['nama_jenis_lab' => 'Pemrograman', 'deskripsi_jenis_lab' => 'Lab untuk pengembangan perangkat lunak'],
+            ['nama_jenis_lab' => 'Jaringan', 'deskripsi_jenis_lab' => 'Lab untuk konfigurasi dan manajemen jaringan'],
+            ['nama_jenis_lab' => 'Elektro', 'deskripsi_jenis_lab' => 'Lab untuk eksperimen elektronika dan listrik'],
+            ['nama_jenis_lab' => 'Multimedia', 'deskripsi_jenis_lab' => 'Lab untuk pengembangan design multimedia'],
         ];
-        
 
         DB::table('jenislabs')->insert($data);
     }

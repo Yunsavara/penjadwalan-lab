@@ -24,21 +24,21 @@ class JenisLabStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/|unique:jenislabs,name',
-            'description' => 'nullable|string'
+            'nama_jenis_lab_store' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/|unique:jenislabs,nama_jenis_lab',
+            'deskripsi_jenis_lab_store' => 'nullable|string'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama Jenis Lab Harus Terisi',
-            'name.string' => 'Nama Jenis Lab harus berupa string',
-            'name.max' => 'Nama Jenis Lab tidak boleh melebihi 100 Kata',
-            'name.regex' => 'Nama Jenis Lab tidak boleh berupa simbol',
-            'name.unique' => 'Nama Jenis Lab sudah terpakai',
+            'nama_jenis_lab_store.required' => 'Nama Jenis Lab Harus Terisi',
+            'nama_jenis_lab_store.string' => 'Nama Jenis Lab harus berupa string',
+            'nama_jenis_lab_store.max' => 'Nama Jenis Lab tidak boleh melebihi 100 Kata',
+            'nama_jenis_lab_store.regex' => 'Nama Jenis Lab tidak boleh berupa simbol',
+            'nama_jenis_lab_store.unique' => 'Nama Jenis Lab sudah terpakai',
 
-            'description.string' => 'Deskripsi harus berupa string'
+            'deskripsi_jenis_lab_store.string' => 'Deskripsi harus berupa string'
         ];
     }
 

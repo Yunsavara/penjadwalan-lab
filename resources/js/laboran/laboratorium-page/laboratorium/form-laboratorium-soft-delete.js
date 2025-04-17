@@ -10,10 +10,10 @@ export function initSoftDeleteLaboratoriumModal() {
 
             // Set form action
             const form = document.getElementById('formDeleteLab');
-            form.setAttribute('action', `/laboran/hapus-laboratorium/${row.slug}`);
+            form.setAttribute('action', `/laboran/hapus-laboratorium/${row.id_laboratorium}`);
 
             // Set pesan konfirmasi
-            const message = `Apakah Anda yakin ingin menghapus Laboratorium <strong>${row.name}</strong> dari Lokasi <strong>${row.lokasi_name}</strong> ?`;
+            const message = `Apakah Anda yakin ingin menghapus Laboratorium <strong>${row.nama_laboratorium}</strong> dari Lokasi <strong>${row.nama_lokasi}</strong> ?`;
             document.getElementById('deleteLabMessage').innerHTML = message;
 
             // Tampilkan modal
