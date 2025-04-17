@@ -24,7 +24,7 @@
         @if(auth()->user()->role->nama_peran === "admin" || auth()->user()->role->nama_peran === "laboran")
             <li class="sidebar-item @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif">
                 <a href="" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#manajemenDropdown">
-                    <i data-feather="database" class="sidebar-icon-link"></i>Manajemen
+                    <i data-feather="command" class="sidebar-icon-link"></i>Manajemen
                     <i data-feather="chevron-right" class="dropdown-icon @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif"></i>
                 </a>
 

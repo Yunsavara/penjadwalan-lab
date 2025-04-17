@@ -17,7 +17,7 @@
                     <label for="namaLokasi" class="form-label">Nama Lokasi</label>
                     <div class="input-group">
                         <span class="input-group-text">
-                            <i data-feather="pocket" width="20"></i>
+                            <i data-feather="map" width="20"></i>
                         </span>
                         <input type="text" name="nama_lokasi_store" class="form-control @error('nama_lokasi_store') is-invalid @enderror" id="namaLokasi" placeholder="Pamulang" autocomplete="off" value="{{ old('nama_lokasi_store', $Lokasi->nama_lokasi) }}">
                         @error('nama_lokasi_store')
@@ -32,7 +32,7 @@
                     <label for="deskripsiLokasi" class="form-label">Deskripsi</label>
                     <div class="input-group">
                         <span class="input-group-text">
-                            <i data-feather="pocket" width="20"></i>
+                            <i data-feather="align-right" width="20"></i>
                         </span>
                         <textarea class="form-control @error('deskripsi_lokasi_store') is-invalid @enderror" name="deskripsi_lokasi_store" id="deskripsiLokasi" placeholder="Untuk Pengguna Peran..." autocomplete="off" style="min-height: 100px; max-height:100px; resize:none;">{{ old('deskripsi_lokasi_store', $Lokasi->deskripsi_lokasi) }}</textarea>
                         @error('deskripsi_lokasi_store')

@@ -46,7 +46,7 @@
         role="tabpanel"
         aria-labelledby="nav-peran-tab"
         tabindex="0">
-        <!-- Konten Peran -->
+        @include('admin.pengguna-page.peran.datatables-peran')
     </div>
     <div class="tab-pane fade border-0 pt-2"
         id="nav-lokasi"

@@ -14,17 +14,14 @@ use App\Http\Controllers\AllRole\PengajuanController;
 use App\Http\Controllers\AllRole\GenerateJadwalController;
 use App\Http\Controllers\Laboran\LaboranPengajuanController;
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
-use App\Http\Controllers\Laboran\LaboranLogPengajuanController;
 use App\Http\Controllers\Laboran\LaboranGenerateJadwalController;
 use App\Http\Controllers\Laboran\LaboranBookingLogPengajuanController;
-use App\Models\LaboratoriumUnpam;
 
 Route::group(['middleware' => 'guest'], function() {
     // Home
     Route::get('/', [LoginController::class, 'home'])->name('home');
 
     // Registrasi Route
-
     Route::get('/register', [RegisterController::class,'index'])->name('register');
     Route::post('/register', [RegisterController::class,'store']);
 
@@ -44,7 +41,14 @@ Route::group(['middleware' => ['role:admin']], function() {
 
     // Pengguna Page
     Route::get('/admin/pengguna', [UsersController::class, 'index'])->name('admin.pengguna');
-    Route::get('/admin/api/data-peran', [UsersController::class, 'getApiPeran']);
+
+    // Peran Datatables
+    Route::get('/admin/api/data-peran', [RolesController::class, 'getApiPeran']);
+
+    // Peran Store, Update $ Soft Delete
+    Route::post('/admin/tambah-peran', [RolesController::class, 'store'])->name('admin.peran.store');
+    Route::put('/admin/ubah-peran/{id}', [RolesController::class, 'update']);
+    Route::delete('/admin/hapus-peran/{id}', [RolesController::class, 'softDelete']);
 
     // Lokasi Datatables
     Route::get('/admin/api/data-lokasi', [LokasiController::class, 'getApiLokasi']);
@@ -53,6 +57,9 @@ Route::group(['middleware' => ['role:admin']], function() {
     Route::post('/admin/tambah-lokasi', [LokasiController::class, 'store'])->name('admin.lokasi.store');
     Route::put('/admin/ubah-lokasi/{Lokasi:id}', [LokasiController::class, 'update']);
     Route::delete('/admin/hapus-lokasi/{Lokasi:id}', [LokasiController::class, 'softDelete']);
+
+
+
     // Barang
     Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');
     Route::get('/admin/tambah-barang', [BarangController::class, 'create'])->name('admin.barang.create');
