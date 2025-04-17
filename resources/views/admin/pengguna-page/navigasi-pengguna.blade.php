@@ -39,7 +39,7 @@
         role="tabpanel"
         aria-labelledby="nav-pengguna-tab"
         tabindex="0">
-        <!-- Konten Pengguna -->
+        @include('admin.pengguna-page.pengguna.datatables-pengguna')
     </div>
     <div class="tab-pane fade border-0 pt-2"
         id="nav-peran"
