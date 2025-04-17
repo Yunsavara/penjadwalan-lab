@@ -6,6 +6,7 @@
 
     <!-- CSS and JS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
@@ -14,26 +15,31 @@
 
     <title>@yield('title', 'Penjadwalan Lab')</title>
 
+
 </head>
-<body>
+<body class="pt-4">
 
     {{-- Header atau Navbar --}}
     @include('layouts.header')
 
-    <div class="wrapper d-flex">
+    <div class="wrapper d-flex bg-body-tertiary vh-100">
 
         {{-- Sidebar --}}
         @include('layouts.sidebar')
 
         {{-- Content --}}
-        <div class="content flex-grow">
+        <div class="content flex-grow pt-3">
 
             <div class="hidden-container">
                 <!-- Search Box Disini Biar Lebarnya Sesuai Dengan Content -->
                 @include('layouts.search-box')
                 @include('layouts.notif')
-                @yield('content')
             </div>
+
+            {{-- Error Toast --}}
+            <x-validation></x-validation>
+
+            @yield('content')
         </div>
 
     </div>
@@ -42,7 +48,6 @@
     <script>
         feather.replace();
     </script>
-
 
 </body>
 </html>

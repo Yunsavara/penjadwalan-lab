@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string("name")->unique();
-            $table->tinyInteger("priority")->default(1);
+            $table->string("nama_peran")->unique();
+            $table->tinyInteger("prioritas_peran")->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

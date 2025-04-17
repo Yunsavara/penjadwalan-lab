@@ -6,98 +6,125 @@ use App\Models\Jenislab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Crypt;
 use App\Http\Requests\Laboran\JenisLab\JenisLabStoreRequest;
 use App\Http\Requests\Laboran\JenisLab\JenisLabUpdateRequest;
 
 class JenisLabController extends Controller
 {
-    public function index(){
-        return view("laboran.jenis-lab.jenis-lab", [
-            'page_meta' => [
-                'page' => 'Jenis Lab'
-            ]
-        ]);
-    }
 
-    public function getData(Request $request)
-    {
-        // Menyaring data berdasarkan pencarian jika ada
-        $query = Jenislab::query()->select(['id','name','slug','description']);
+    // Index Nya ada di LaboratoriumUnpamController, karena pakai modal untuk formnya jadi gk pindah halaman
 
-        if ($search = $request->input('search.value')) {
-            $query->where('name', 'like', "%$search%")
-                  ->orWhere('description', 'like', "%$search%");
+    public function getApiJenisLaboratorium(Request $request) {
+        $query = Jenislab::select(['id','nama_jenis_lab', 'deskripsi_jenis_lab']);
+
+        // Pencarian
+        if ($request->has('search') && !empty($request->search['value'])) {
+            $search = $request->search['value'];
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_jenis_lab', 'like', "%{$search}%")
+                    ->orWhere('deskripsi_jenis_lab', 'like', "%{$search}%");
+            });
         }
 
-        // Pagination
-        $data = $query->paginate($request->input('length'));
+        $totalData = Jenislab::count();
+        $totalFiltered = $query->count();
 
-        // Total record untuk pagination
-        $recordsTotal = Jenislab::count();
-        $recordsFiltered = $query->count();
+        // Sorting
+        $orderColumnIndex = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir') ?? 'desc';
+
+        $columns = [null, 'nama_jenis_lab','id', 'deskripsi_jenis_lab'];
+        $orderColumnName = $columns[$orderColumnIndex] ?? 'id';
+
+        if (in_array($orderColumnName, ['id','nama_jenis_lab', 'deskripsi_jenis_lab'])) {
+            $query->orderBy($orderColumnName, $orderDirection);
+        } else {
+            $query->orderBy('id', 'desc');
+        }
+
+        // Pagination (limit data yang tampil per page)
+        $start = $request->start ?? 0;
+        $length = $request->length ?? 10;
+
+        $data = $query->skip($start)->take($length)->get();
+
+        $result = [];
+        foreach ($data as $index => $jenislab) {
+            $result[] = [
+                // 'id' => $jenislab->id,
+                'id_jenis_lab' => Crypt::encryptString($jenislab->id),
+                'nama_jenis_lab' => $jenislab->nama_jenis_lab,
+                'deskripsi_jenis_lab' => $jenislab->deskripsi_jenis_lab,
+            ];
+        }
 
         return response()->json([
-            'draw' => intval($request->input('draw')),
-            'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $recordsFiltered,
-            'data' => $data->items(),
-        ]);
-    }
-
-    public function create(){
-        return view("laboran.jenis-lab.form-jenis-lab", [
-            'Jenislab' => new Jenislab(),
-            'page_meta' => [
-                'page' => "Tambah Jenis Lab",
-                'method' => 'POST',
-                'url' => route('laboran.jenis-lab.create'),
-                'button_text' => 'Tambah Jenis Lab'
-            ]
+            'draw' => intval($request->draw),
+            'recordsTotal' => $totalData,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $result
         ]);
     }
 
     public function store(JenisLabStoreRequest $Request){
-        //dd($Request->all());
-
-        DB::beginTransaction();
-        try {
-
-            Jenislab::create($Request->all());
-
-            DB::commit();
-
-            return redirect()->route('laboran.jenis-lab')->with('success', 'Jenis Lab Berhasil ditambahkan');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->route('laboran.jenis-lab.create')->with('error', 'Jenis Lab Gagal ditambahkan');
-        }
-    }
-
-    public function edit(Jenislab $Jenislab){
-        return view("laboran.jenis-lab.form-jenis-lab", [
-            'Jenislab' => $Jenislab,
-            'page_meta' => [
-                'page' => "Ubah Jenis Lab",
-                'method' => 'PUT',
-                'url' => route('laboran.jenis-lab.edit', $Jenislab),
-                'button_text' => 'Ubah Jenis Lab'
-            ]
-        ]);
-    }
-
-    public function update(JenisLabUpdateRequest $Request, Jenislab $Jenislab){
         // dd($Request->all());
 
         DB::beginTransaction();
         try {
-            $Jenislab->update($Request->all());
+
+            $data = $Request->validated();
+
+            Jenislab::create([
+                'nama_jenis_lab' => $data['nama_jenis_lab_store'],
+                'deskripsi_jenis_lab' => $data['deskripsi_jenis_lab_store']
+            ]);
 
             DB::commit();
 
-            return redirect()->route('laboran.jenis-lab')->with('success', 'Jenis Lab Berhasil di-ubah');
+            return redirect()->route('laboran.laboratorium')->with('success', 'Jenis Laboratorium Berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('laboran.jenis-lab.edit')->with('error', 'Jenis Lab Gagal di-ubah');
+            return redirect()->route('laboran.laboratorium')->with('error', 'Jenis Laboratorium Gagal ditambahkan <br>'. $e->getMessage());
+        }
+    }
+
+    public function update(JenisLabUpdateRequest $Request, $id){
+        // dd($Request->all());
+
+        DB::beginTransaction();
+        try {
+            $data = $Request->validated();
+
+            $Jenislab = Jenislab::findOrFail(Crypt::decryptString($id));
+
+            $Jenislab->update([
+                'nama_jenis_lab' => $data['nama_jenis_lab_update'],
+                'deskripsi_jenis_lab' => $data['deskripsi_jenis_lab_update']
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('laboran.laboratorium')->with('success', 'Jenis Lab Berhasil di-ubah');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('laboran.laboratorium')->with('error', 'Jenis Lab Gagal di-ubah');
+        }
+    }
+
+    public function softDelete($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $lab = Jenislab::where('id', Crypt::decryptString($id))->firstOrFail();
+            $lab->delete(); // ini akan soft delete
+
+            DB::commit();
+            return redirect()->route('laboran.laboratorium')->with('success', 'Jenis Lab Berhasil di-hapus');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('laboran.laboratorium')->with('error', 'Jenis Lab Gagal di-hapus');
         }
     }
 }

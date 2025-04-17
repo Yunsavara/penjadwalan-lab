@@ -14,15 +14,23 @@ class LokasiSeeder extends Seeder
     public function run(): void
     {
         Lokasi::create([
-            'name' => 'Pusat',
+            'nama_lokasi' => 'fleksible',
+            'deskripsi_lokasi' => 'untuk pengguna selain peran laboran'
         ]);
 
         Lokasi::create([
-            'name' => 'Viktor',
+            'nama_lokasi' => 'Pusat',
+            'deskripsi_lokasi' => 'untuk pengguna peran laboran'
         ]);
 
         Lokasi::create([
-            'name' => 'Serang',
+            'nama_lokasi' => 'Viktor',
+            'deskripsi_lokasi' => 'untuk pengguna peran laboran'
+        ]);
+
+        Lokasi::create([
+            'nama_lokasi' => 'Serang',
+            'deskripsi_lokasi' => 'untuk pengguna peran laboran'
         ]);
     }
 }

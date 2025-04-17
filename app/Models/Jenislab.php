@@ -2,26 +2,19 @@
 
 namespace App\Models;
 
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Jenislab extends Model
 {
-    use HasSlug;
+
+    use SoftDeletes;
 
     protected $fillable = [
-        'name',
-        'slug',
-        'description'
+        'nama_jenis_lab',
+        'deskripsi_jenis_lab'
     ];
 
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
 
     public function LaboratoriumUnpams()
     {

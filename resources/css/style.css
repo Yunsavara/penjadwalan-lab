@@ -1,7 +1,6 @@
 .select2 {
-    width:100%!important;
+    flex-grow:1 !important;
 }
-
 
 a {
     text-decoration: none !important;
@@ -282,6 +281,9 @@ a {
     flex-grow: 1;
     padding: 0.2rem 1rem;
     transition: all 0.3s ease;
+    min-width: 0;
 }
 
 /* /Sidebar */
+
+

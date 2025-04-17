@@ -18,7 +18,7 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            $role = Auth::user()->role->name;
+            $role = Auth::user()->role->nama_peran;
 
             // Admin dan Laboran diarahkan ke dashboard masing-masing
             if ($role === 'admin') {

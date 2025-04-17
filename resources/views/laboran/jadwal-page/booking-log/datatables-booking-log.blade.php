@@ -2,7 +2,7 @@
 
     <div class="col-12">
         <h5><strong>Table Log</strong></h5>
-        <p>Merupakan Daftar Jadwal atau Booking Log.</p>
+        <p>Merupakan Daftar Booking Log.</p>
     </div>
 
     <div class="col-12 py-2 d-flex flex-wrap align-items-center justify-content-between">

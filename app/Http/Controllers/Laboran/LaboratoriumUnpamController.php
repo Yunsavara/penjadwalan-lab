@@ -2,40 +2,92 @@
 
 namespace App\Http\Controllers\Laboran;
 
+use App\Models\Lokasi;
 use App\Models\Jenislab;
 use Illuminate\Http\Request;
 use App\Models\LaboratoriumUnpam;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Crypt;
 use App\Http\Requests\Laboran\LaboratoriumUnpam\LaboratoriumUnpamStoreRequest;
 use App\Http\Requests\Laboran\LaboratoriumUnpam\LaboratoriumUnpamUpdateRequest;
-use App\Models\Lokasi;
 
 class LaboratoriumUnpamController extends Controller
 {
+
     public function index(){
-        return view("laboran.laboratorium.laboratorium", [
+        $Jenislab = Jenislab::select(['id', 'nama_jenis_lab'])->get();
+        $Lokasi = Lokasi::select(['id', 'nama_lokasi'])->whereNot('nama_lokasi', 'fleksible')->get();
+
+        return view("laboran.laboratorium-page.laboratorium", [
+            'Laboratorium' => new LaboratoriumUnpam(),
+            'JenisLaboratorium' => new Jenislab(),
+            'Jenislab' => $Jenislab,
+            'Lokasi' => $Lokasi,
             'page_meta' => [
-                'page' => 'Laboratorium'
+                'page' => 'Laboratorium',
+                'description' => 'Halaman untuk manajemen laboratorium dan jenis laboratorium.'
             ]
         ]);
     }
 
-    public function create(){
+    public function getApiLaboratorium(Request $request) {
+        $query = LaboratoriumUnpam::select(['id', 'nama_laboratorium', 'kapasitas_laboratorium', 'status_laboratorium', 'lokasi_id', 'jenislab_id', 'deskripsi_laboratorium']);
 
-        $Jenislab = Jenislab::select(['id', 'name'])->get();
-        $Lokasi = Lokasi::select(['id', 'name'])->get();
+        // Pencarian
+        if ($request->has('search') && !empty($request->search['value'])) {
+            $search = $request->search['value'];
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_laboratorium', 'like', "%{$search}%")
+                    ->orWhere('kapasitas_laboratorium', 'like', "%{$search}%")
+                    ->orWhere('status_laboratorium', 'like', "%{$search}%");
+            });
+        }
 
-        return view("laboran.laboratorium.form-laboratorium", [
-            'Laboratorium' => new LaboratoriumUnpam(),
-            'Jenislab' => $Jenislab,
-            'Lokasi' => $Lokasi,
-            'page_meta' => [
-                'page' => "Tambah Laboratorium",
-                'method' => 'POST',
-                'url' => route('laboran.laboratorium.create'),
-                'button_text' => 'Tambah Laboratorium'
-            ]
+        $totalData = LaboratoriumUnpam::count();
+        $totalFiltered = $query->count();
+
+        // Sorting
+        $orderColumnIndex = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir') ?? 'desc';
+
+        $columns = [null,'nama_laboratorium', 'id', 'kapasitas_laboratorium', 'status_laboratorium', 'deskripsi_laboratorium'];
+        $orderColumnName = $columns[$orderColumnIndex] ?? 'id';
+
+        // Hanya izinkan kolom DB untuk di-sort
+        if (in_array($orderColumnName, ['id', 'nama_laboratorium', 'kapasitas_laboratorium', 'status_laboratorium', 'deskripsi_laboratorium'])) {
+            $query->orderBy($orderColumnName, $orderDirection);
+        } else {
+            // Kolom tidak valid, bisa fallback atau diabaikan
+            $query->orderBy('id', 'desc');
+        }
+
+        // Pagination
+        $start = $request->start ?? 0;
+        $length = $request->length ?? 10;
+
+        $data = $query->skip($start)->take($length)->get();
+
+        $result = [];
+        foreach ($data as $index => $laboratorium) {
+            $result[] = [
+                'id_laboratorium' => Crypt::encryptString($laboratorium->id),
+                'nama_laboratorium' => $laboratorium->nama_laboratorium,
+                'kapasitas_laboratorium' => $laboratorium->kapasitas_laboratorium,
+                'status_laboratorium' => $laboratorium->status_laboratorium,
+                'jenislab_id' => $laboratorium->jenislab->id,
+                'lokasi_id' => $laboratorium->lokasi->id,
+                'deskripsi_laboratorium' => $laboratorium->deskripsi_laboratorium,
+                'nama_jenislab' => $laboratorium->jenislab->nama_jenis_lab,
+                'nama_lokasi' => $laboratorium->lokasi->nama_lokasi,
+            ];
+        }
+
+        return response()->json([
+            'draw' => intval($request->draw),
+            'recordsTotal' => $totalData,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $result
         ]);
     }
 
@@ -45,86 +97,67 @@ class LaboratoriumUnpamController extends Controller
         DB::beginTransaction();
         try {
 
-            LaboratoriumUnpam::create($Request->all());
+            $data = $Request->validated();
+
+            LaboratoriumUnpam::create([
+                'nama_laboratorium' => $data['nama_laboratorium_store'],
+                'kapasitas_laboratorium' => $data['kapasitas_laboratorium_store'],
+                'status_laboratorium' => $data['status_laboratorium_store'],
+                'lokasi_id' => $data['lokasi_id_store'],
+                'jenislab_id' => $data['jenislab_id_store'],
+                'deskripsi_laboratorium' => $data['deskripsi_laboratorium_store']
+            ]);
 
             DB::commit();
 
             return redirect()->route('laboran.laboratorium')->with('success', 'Laboratorium Berhasil ditambahkan');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('laboran.laboratorium.create')->with('error', 'Laboratorium Gagal ditambahkan');
+            return redirect()->route('laboran.laboratorium')->with('error', 'Laboratorium Gagal ditambahkan <br>' . $e->getMessage());
         }
     }
 
-    // Untuk Datatables
-    public function getData(Request $request)
-    {
-        // Query dengan join ke tabel jenislabs dan lokasis
-        $query = LaboratoriumUnpam::query()
-            ->select([
-                'laboratorium_unpams.id',
-                'laboratorium_unpams.name',
-                'laboratorium_unpams.slug as slug',
-                'jenislabs.name as jenislab_name',
-                'lokasis.name as lokasi',
-                'laboratorium_unpams.kapasitas',
-                'laboratorium_unpams.status'
-            ])
-            ->leftJoin('jenislabs', 'laboratorium_unpams.jenislab_id', '=', 'jenislabs.id')
-            ->leftJoin('lokasis', 'laboratorium_unpams.lokasi_id', '=', 'lokasis.id'); // Join ke lokasis
-
-        // Filter berdasarkan pencarian
-        if ($search = $request->input('search.value')) {
-            $query->where('laboratorium_unpams.name', 'like', "%$search%")
-                ->orWhere('lokasis.name', 'like', "%$search%") // Cari berdasarkan nama lokasi
-                ->orWhere('jenislabs.name', 'like', "%$search%");
-        }
-
-        // Pagination
-        $data = $query->paginate($request->input('length'));
-        $recordsTotal = LaboratoriumUnpam::count();
-        $recordsFiltered = $query->count();
-
-        return response()->json([
-            'draw' => intval($request->input('draw')),
-            'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $recordsFiltered,
-            'data' => $data->items(),
-        ]);
-    }
-
-
-    public function edit(LaboratoriumUnpam $Laboratorium){
-
-        $Jenislab = Jenislab::select(['id', 'name'])->get();
-        $Lokasi = Lokasi::select(['id', 'name'])->get();
-
-        return view("laboran.laboratorium.form-laboratorium", [
-            'Laboratorium' => $Laboratorium,
-            'Jenislab' => $Jenislab,
-            'Lokasi' => $Lokasi,
-            'page_meta' => [
-                'page' => "Ubah Laboratorium",
-                'method' => 'PUT',
-                'url' => route('laboran.laboratorium.edit', $Laboratorium),
-                'button_text' => 'Ubah Laboratorium'
-            ]
-        ]);
-    }
-
-    public function update(LaboratoriumUnpamUpdateRequest $Request, LaboratoriumUnpam $Laboratorium){
+    public function update(LaboratoriumUnpamUpdateRequest $Request, $id){
         // dd($Request->all());
 
         DB::beginTransaction();
         try {
-            $Laboratorium->update($Request->all());
+
+            $data = $Request->validated();
+
+            $Laboratorium = LaboratoriumUnpam::findOrFail(Crypt::decryptString($id));
+
+            $Laboratorium->update([
+                'nama_laboratorium' => $data['nama_laboratorium_update'],
+                'jenislab_id' => $data['jenislab_id_update'],
+                'lokasi_id' => $data['lokasi_id_update'],
+                'kapasitas_laboratorium' => $data['kapasitas_laboratorium_update'],
+                'status_laboratorium' => $data['status_laboratorium_update'],
+                'deskripsi_laboratorium' => $data['deskripsi_laboratorium_update']
+            ]);
 
             DB::commit();
 
             return redirect()->route('laboran.laboratorium')->with('success', 'Laboratorium Berhasil di-ubah');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('laboran.laboratorium.edit')->with('error', 'Laboratorium Gagal di-ubah');
+            return redirect()->route('laboran.laboratorium')->with('error', 'Laboratorium Gagal di-ubah');
+        }
+    }
+
+    public function softDelete($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $lab = LaboratoriumUnpam::where('id', Crypt::decryptString($id))->firstOrFail();
+            $lab->delete(); // ini akan soft delete
+
+            DB::commit();
+            return redirect()->route('laboran.laboratorium')->with('success', 'Laboratorium Berhasil di-hapus');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('laboran.laboratorium')->with('error', 'Laboratorium Gagal di-hapus');
         }
     }
 }

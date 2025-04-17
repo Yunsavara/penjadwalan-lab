@@ -3,13 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class roles extends Model
 {
-    //
+    use SoftDeletes;
 
     protected $fillable = [
-        'name','priority'
+        'nama_peran',
+        'prioritas_peran'
     ];
 
     public function user(){

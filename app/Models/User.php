@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasSlug;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -20,19 +20,12 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nama_pengguna',
         'email',
         'password',
-        'slug',
-        'role_id'
+        'role_id',
+        'lokasi_id'
     ];
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
 
     public function role()
     {
@@ -42,6 +35,11 @@ class User extends Authenticatable
     public function hasRole($roleName)
     {
         return $this->role && $this->role->name === $roleName;
+    }
+
+    public function lokasi()
+    {
+        return $this->belongsTo(Lokasi::class);
     }
 
     // Relasi ke Booking (User yang mengajukan jadwal)

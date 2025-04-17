@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('nama_pengguna');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('slug');
             $table->string('password');
-            $table->string('lokasi')->default('flesksible');
+
+            $table->foreignId('lokasi_id')->constrained('lokasis');
+
             // Default Role level adalah User
             $table->foreignId('role_id')->default(5)->constrained('roles');
             $table->rememberToken();
