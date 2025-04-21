@@ -27,6 +27,7 @@ class PenggunaStoreRequest extends FormRequest
             'nama_pengguna_store' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/',
             'email_pengguna_store' => 'required|email|max:150|unique:users,email',
             'password_pengguna_store' => 'required|min:8|max:16',
+            'password_konfirmasi_pengguna_store' => 'required|same:password_pengguna_store',
             'lokasi_id_store' => 'required|integer|exists:lokasis,id',
             'peran_id_store' => 'required|integer|exists:roles,id'
         ];
@@ -49,6 +50,9 @@ class PenggunaStoreRequest extends FormRequest
             'password_pengguna_store.min' => 'Password tidak boleh kurang dari 8 karakter.',
             'password_pengguna_store.max' => 'Password tidak boleh lebih dari 16 karakter.',
 
+            'password_konfirmasi_pengguna_store.required' => 'Konfirmasi password wajib diisi.',
+            'password_konfirmasi_pengguna_store.same' => 'Konfirmasi password harus sama dengan password.',
+
             'lokasi_id_store.required' => 'Lokasi wajib dipilih.',
             'lokasi_id_store.integer' => 'ID lokasi tidak valid.',
             'lokasi_id_store.exists' => 'Lokasi tidak ditemukan.',
@@ -58,6 +62,7 @@ class PenggunaStoreRequest extends FormRequest
             'peran_id_store.exists' => 'Peran tidak ditemukan.',
         ];
     }
+
 
     protected function failedValidation(Validator $validator)
     {

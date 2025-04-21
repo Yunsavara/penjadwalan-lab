@@ -27,6 +27,8 @@ class PenggunaUpdateRequest extends FormRequest
         return [
             'nama_pengguna_update' => 'required|string|max:100|regex:/^[a-zA-Z\s]+$/',
             'email_pengguna_update' => 'required|email|max:150|unique:users,email,' . Crypt::decryptString($this->id_pengguna_update),
+            'password_pengguna_update' => 'nullable|min:8|max:16',
+            'password_konfirmasi_pengguna_update' => 'nullable|same:password_pengguna_update',
             'lokasi_id_update' => 'required|integer|exists:lokasis,id',
             'peran_id_update' => 'required|integer|exists:roles,id'
         ];
@@ -44,6 +46,11 @@ class PenggunaUpdateRequest extends FormRequest
             'email_pengguna_update.email' => 'Format email tidak valid.',
             'email_pengguna_update.max' => 'Email maksimal 150 karakter.',
             'email_pengguna_update.unique' => 'Email sudah digunakan oleh pengguna lain.',
+
+            'password_pengguna_update.min' => 'Password minimal 8 karakter.',
+            'password_pengguna_update.max' => 'Password maksimal 16 karakter.',
+
+            'password_konfirmasi_pengguna_update.same' => 'Konfirmasi password tidak cocok dengan password.',
 
             'lokasi_id_update.required' => 'Lokasi wajib dipilih.',
             'lokasi_id_update.integer' => 'ID lokasi tidak valid.',

@@ -23,9 +23,12 @@ return new class extends Migration
             $table->date('tanggal');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
-            $table->enum('status', ['pending', 'diterima', 'digunakan', 'selesai', 'ditolak', 'dibatalkan', 'digantikan'])->default('pending');
+            $table->enum('status', ['pending', 'diterima', 'digunakan', 'selesai', 'ditolak', 'dibatalkan', 'digantikan'])->default('pending'); // langsung kebooking
             $table->text('keperluan');
             $table->timestamps();
+
+            // buat table baru => Pengajuan_Booking, Booking, Booking_log, Pengajuan_Log
+
         });
     }
 

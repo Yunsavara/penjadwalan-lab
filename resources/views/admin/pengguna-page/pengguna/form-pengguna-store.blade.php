@@ -50,10 +50,28 @@
                             <i data-feather="key" width="20"></i>
                         </span>
                         <input type="password" name="password_pengguna_store" class="form-control @error('password_pengguna_store') is-invalid @enderror" id="passwordPengguna" placeholder="Masukkan Password Pengguna" autocomplete="off" value="{{ old('password_pengguna_store', $Pengguna->password) }}">
-                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                            <i data-feather="eye" id="iconPassword"></i>
+                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#passwordPengguna" tabindex="-1">
+                            <i class="toggle-icon" data-feather="eye"></i>
                         </button>
                         @error('password_pengguna_store')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="passwordKonfirmasiPengguna" class="form-label">Konfirmasi Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i data-feather="key" width="20"></i>
+                        </span>
+                        <input type="password" name="password_konfirmasi_pengguna_store" class="form-control" id="passwordKonfirmasiPengguna" placeholder="Ulangi Password Pengguna"  value="{{ old('password_konfirmasi_pengguna_store') }}">
+                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#passwordKonfirmasiPengguna" tabindex="-1">
+                            <i class="toggle-icon" data-feather="eye"></i>
+                        </button>
+                        @error('password_konfirmasi_pengguna_store')
                             <div class="invalid-feedback d-block">
                                 {{ $message }}
                             </div>
@@ -88,9 +106,9 @@
                     <label for="lokasiPengguna" class="form-label">
                         Lokasi Pengguna
                         <i
-                            data-feather="alert-circle"
-                            class="text-danger"
+                            data-feather="help-circle"
                             width="15"
+                            tabindex="-1"
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
                             title="Pilih Lokasi Tugas untuk Pengguna Ber-Peran Laboran, atau 'Fleksible' jika bukan Laboran.">

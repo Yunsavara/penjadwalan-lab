@@ -120,6 +120,36 @@ class UsersController extends Controller
     }
 
     public function update(PenggunaUpdateRequest $Request, $id) {
-        dd($Request->validated());
+        // dd($Request->validated());
+
+        DB::beginTransaction();
+
+        try {
+
+            $data = $Request->validated();
+
+            $Pengguna = User::findOrFail(Crypt::decryptString($id));
+
+            $updateData = [
+                'nama_penguna' => $data['nama_pengguna_update'],
+                'email' => $data['email_pengguna_update'],
+                'lokasi_id' => $data['lokasi_id_update'],
+                'role_id' => $data['peran_id_update'],
+            ];
+
+            // Update password hanya jika diisi
+            if (!empty($data['password_pengguna_update'])) {
+                $updateData['password'] = Hash::make($data['password_pengguna_update']);
+            }
+
+            $Pengguna->update($updateData);
+
+            DB::commit();
+
+            return redirect()->route('admin.pengguna')->with('success', 'Pengguna Berhasil di-ubah');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('admin.pengguna')->with('error', 'Pengguna Gagal di-ubah');
+        }
     }
 }

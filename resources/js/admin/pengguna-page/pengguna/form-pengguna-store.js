@@ -28,21 +28,30 @@ export function errorStoreModalPengguna(){
     }
 }
 
-formPasswordView();
+export function formPasswordViewStore() {
+    document.querySelectorAll('.toggle-password').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const inputs = [
+                document.querySelector('#passwordPengguna'),
+                document.querySelector('#passwordKonfirmasiPengguna')
+            ];
 
-function formPasswordView() {
-    document.getElementById('togglePassword').addEventListener('click', function () {
-        const input = document.getElementById('passwordPengguna');
-        const icon = document.getElementById('iconPassword');
+            // Cek status saat ini dari salah satu input
+            const isPassword = inputs[0].type === 'password';
 
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.setAttribute('data-feather', 'eye-off');
-        } else {
-            input.type = 'password';
-            icon.setAttribute('data-feather', 'eye');
-        }
+            // Toggle type semua input
+            inputs.forEach(input => {
+                input.type = isPassword ? 'text' : 'password';
+            });
 
-        feather.replace();
+            // Update semua icon toggle
+            document.querySelectorAll('.toggle-password .toggle-icon').forEach(icon => {
+                icon.outerHTML = isPassword
+                    ? `<i class="toggle-icon" data-feather="eye-off"></i>`
+                    : `<i class="toggle-icon" data-feather="eye"></i>`;
+            });
+
+            feather.replace();
+        });
     });
 }

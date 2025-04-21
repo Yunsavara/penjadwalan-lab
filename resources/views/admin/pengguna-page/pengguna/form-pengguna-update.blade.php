@@ -14,7 +14,7 @@
                 @csrf
                 @method('PUT')
 
-                <input type="text" name="id_pengguna_update" id="edit-idPengguna">
+                <input type="hidden" name="id_pengguna_update" id="edit-idPengguna">
 
                 <div class="mb-3">
                     <label for="edit-namaPengguna" class="form-label">Nama Pengguna</label>
@@ -53,6 +53,7 @@
                             data-feather="alert-circle"
                             class="text-danger"
                             width="15"
+                            tabindex="-1"
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
                             title="Kosongkan password jika tidak ada perubahan password.">
@@ -62,11 +63,31 @@
                         <span class="input-group-text">
                             <i data-feather="key" width="20"></i>
                         </span>
-                        <input type="password" name="password_pengguna_update" class="form-control @error('password_pengguna_update') is-invalid @enderror" id="edit-passwordPengguna" autocomplete="off">
-                        <button class="btn btn-outline-secondary" type="button" id="edit-togglePassword">
-                            <i data-feather="eye" id="edit-iconPassword"></i>
+                        <input type="password" name="password_pengguna_update" class="form-control @error('password_pengguna_update') is-invalid @enderror" id="edit-passwordPengguna" autocomplete="off" placeholder="Masukkan Password Pengguna">
+                        <button class="btn btn-outline-secondary edit-toggle-password" type="button" id="edit-togglePassword" data-target="#edit-passwordKonfirmasi" tabindex="-1">
+                            <i class="toggle-icon" data-feather="eye"></i>
                         </button>
                         @error('password_pengguna_update')
+                            <div class="invalid-feedback d-block">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="edit-passwordKonfirmasiPengguna" class="form-label">
+                        Konfirmasi Password
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i data-feather="key" width="20"></i>
+                        </span>
+                        <input type="password" name="password_konfirmasi_pengguna_update" class="form-control @error('password_konfirmasi_pengguna_update') is-invalid @enderror" id="edit-passwordKonfirmasiPengguna" autocomplete="off" placeholder="Ulangi Password Pengguna">
+                        <button class="btn btn-outline-secondary edit-toggle-password" type="button" id="edit-togglePassword" data-target="#edit-passwordKonfirmasiPengguna" tabindex="-1">
+                            <i class="toggle-icon" data-feather="eye"></i>
+                        </button>
+                        @error('password_konfirmasi_pengguna_update')
                             <div class="invalid-feedback d-block">
                                 {{ $message }}
                             </div>
@@ -98,9 +119,9 @@
                     <label for="edit-lokasiPengguna" class="form-label">
                         Lokasi Pengguna
                         <i
-                            data-feather="alert-circle"
-                            class="text-danger"
+                            data-feather="help-circle"
                             width="15"
+                            tabindex="-1"
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
                             title="Pilih Lokasi Tugas untuk Pengguna Ber-Peran Laboran, atau 'Fleksible' jika bukan Laboran.">
@@ -137,5 +158,5 @@
 </div>
 
 {{-- Datanya nanti ditangkep jika input gagal, dibuat gini supaya bisa if else di javascript --}}
-<div id="formDataPenggunaUpdate" class="d-none" data-errors="{{ json_encode($errors->any()) }}" data-session="{{ session('form') }}">
+<div id="formDataPenggunaUpdate" class="d-none" data-errors="{{ json_encode($errors->any()) }}" data-session="{{ session('form') }}" data-old='@json(old())'>
 </div>

@@ -33,7 +33,7 @@
     </div>
 </nav>
 
-<div class="tab-content bg-white border-0 shadow-sm rounded" id="nav-tabContent">
+<div class="tab-content bg-white border-0 shadow-sm" id="nav-tabContent">
     <div class="tab-pane fade show active border-0 pt-2"
         id="nav-pengguna"
         role="tabpanel"

@@ -46,7 +46,9 @@
 
 
     <script>
-        feather.replace();
+        document.addEventListener("DOMContentLoaded", () => {
+            feather.replace();
+        })
     </script>
 
 </body>

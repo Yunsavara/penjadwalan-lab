@@ -49,7 +49,7 @@ export function errorUpdateModalPengguna(){
     const errors = JSON.parse(formData.dataset.errors);
     const sessionForm = formData.dataset.session;
 
-    // console.log(errors, sessionForm);
+    console.log(errors, sessionForm);
 
     const old = JSON.parse(formData.dataset.old || '{}');
 
@@ -60,6 +60,7 @@ export function errorUpdateModalPengguna(){
         document.getElementById('edit-idPengguna').value = old.id_pengguna_update;
         document.getElementById('edit-namaPengguna').value = old.nama_pengguna_update;
         document.getElementById('edit-emailPengguna').value = old.email_pengguna_update;
+        document.getElementById('edit-passwordPengguna').value = old.password_pengguna_update;
         document.getElementById('edit-lokasiPengguna').value = old.lokasi_id_update;
         document.getElementById('edit-peranPengguna').value = old.peran_id_update;
 
@@ -70,29 +71,43 @@ export function errorUpdateModalPengguna(){
 
         // Set action form
         const form = document.getElementById('formEditPengguna');
-        form.setAttribute('action', `/admin/ubah-penngguna/${old.id_pengguna_update}`);
+        form.setAttribute('action', `/admin/ubah-pengguna/${old.id_pengguna_update}`);
 
         // Show modal
         modal.show();
     }
 }
 
+export function formPasswordViewUpdate() {
+    document.querySelectorAll('.edit-toggle-password').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const inputs = [
+                document.querySelector('#edit-passwordPengguna'),
+                document.querySelector('#edit-passwordKonfirmasiPengguna')
+            ];
 
-formPasswordView();
+            const isPassword = inputs[0].type === 'password';
 
-function formPasswordView() {
-    document.getElementById('edit-togglePassword').addEventListener('click', function () {
-        const input = document.getElementById('edit-passwordPengguna');
-        const icon = document.getElementById('edit-iconPassword');
+            // Toggle semua input
+            inputs.forEach(input => {
+                input.type = isPassword ? 'text' : 'password';
+            });
 
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.setAttribute('data-feather', 'eye-off');
-        } else {
-            input.type = 'password';
-            icon.setAttribute('data-feather', 'eye');
-        }
+            // Ganti semua icon toggle yang terkait
+            document.querySelectorAll('.edit-toggle-password .toggle-icon').forEach(icon => {
+                icon.outerHTML = isPassword
+                    ? `<i class="toggle-icon" data-feather="eye-off"></i>`
+                    : `<i class="toggle-icon" data-feather="eye"></i>`;
+            });
 
-        feather.replace();
+            feather.replace();
+        });
     });
 }
+
+// Hapus Password kalau buka aksi edit di baris lain
+
+document.getElementById('formPenggunaUpdate').addEventListener('hidden.bs.modal', function () {
+    document.getElementById('edit-passwordPengguna').value = '';
+    document.getElementById('edit-passwordKonfirmasiPengguna').value = '';
+});
