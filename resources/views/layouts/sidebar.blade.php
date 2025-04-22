@@ -6,10 +6,14 @@
     <hr>
 
     <ul class="menu-container list-unstyled">
+
         <span class="divider" style="font-size:0.75rem;">MENU</span>
-        {{-- Kalau selain admin dan laboran akan diarahkan ke dashboard umum --}}
-        <li class="sidebar-item {{ Route::is(in_array(auth()->user()->role->nama_peran, ['admin', 'laboran']) ? auth()->user()->role->nama_peran . '.dashboard' : 'dashboard') ? 'active' : '' }}">
-            <a href="{{ route(in_array(auth()->user()->role->nama_peran, ['admin', 'laboran']) ? auth()->user()->role->nama_peran . '.dashboard' : 'dashboard') }}" class="sidebar-link">
+        @php
+            $userRole = auth()->user()->role->nama_peran;
+            $dashboardRoute = in_array($userRole, ['admin', 'laboran']) ? $userRole . '.dashboard' : 'dashboard';
+        @endphp
+        <li class="sidebar-item {{ Route::is($dashboardRoute) ? 'active' : '' }}">
+            <a href="{{ route($dashboardRoute) }}" class="sidebar-link">
                 <i data-feather="layers" class="sidebar-icon-link"></i>Beranda
             </a>
         </li>
@@ -17,57 +21,55 @@
         <span class="divider" style="font-size:0.75rem;">TOOLS</span>
 
         @php
-            // List route buat ke dropdown menu manajemen
             $manajemenRoutes = ['admin.pengguna', 'laboran.laboratorium', 'admin.barang'];
+            $isManajemenActive = in_array(Route::currentRouteName(), $manajemenRoutes);
         @endphp
 
-        @if(auth()->user()->role->nama_peran === "admin" || auth()->user()->role->nama_peran === "laboran")
-            <li class="sidebar-item @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif">
-                <a href="" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#manajemenDropdown">
+        @if(in_array($userRole, ['admin', 'laboran']))
+            <li class="sidebar-item {{ $isManajemenActive ? 'active' : '' }}">
+                <a href="#" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#manajemenDropdown">
                     <i data-feather="command" class="sidebar-icon-link"></i>Manajemen
-                    <i data-feather="chevron-right" class="dropdown-icon @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif"></i>
+                    <i data-feather="chevron-right" class="dropdown-icon {{ $isManajemenActive ? 'active' : '' }}"></i>
                 </a>
 
-                <ul class="collapse list-unstyled dropdown-menu-vanilla @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif" id="manajemenDropdown">
-                    @if(auth()->user()->role->nama_peran === "admin")
-                        <li class="sidebar-item @if (Route::currentRouteName() == 'admin.pengguna') active @endif">
+                <ul class="collapse list-unstyled dropdown-menu-vanilla {{ $isManajemenActive ? 'active' : '' }}" id="manajemenDropdown">
+                    @if($userRole === 'admin')
+                        <li class="sidebar-item {{ Route::is('admin.pengguna') ? 'active' : '' }}">
                             <a href="{{ route('admin.pengguna') }}" class="sidebar-link">Pengguna</a>
                         </li>
                     @endif
-                        <li class="sidebar-item @if (Route::currentRouteName() == 'laboran.laboratorium') active @endif">
-                            <a href="{{ route('laboran.laboratorium') }}" class="sidebar-link">Laboratorium</a>
-                        </li>
-                        <li class="sidebar-item @if (Route::currentRouteName() == 'admin.barang') active @endif">
-                            <a href="{{ route('admin.barang') }}" class="sidebar-link">Barang</a>
-                        </li>
+                    <li class="sidebar-item {{ Route::is('laboran.laboratorium') ? 'active' : '' }}">
+                        <a href="{{ route('laboran.laboratorium') }}" class="sidebar-link">Laboratorium</a>
+                    </li>
+                    <li class="sidebar-item {{ Route::is('admin.barang') ? 'active' : '' }}">
+                        <a href="{{ route('admin.barang') }}" class="sidebar-link">Barang</a>
+                    </li>
                 </ul>
             </li>
         @endif
 
         @php
-            $BookingRoutes = [''];
+            $bookingRoutes = ['pengajuan', 'jadwal'];
+            $isBookingActive = in_array(Route::currentRouteName(), $bookingRoutes);
         @endphp
 
-        <li class="sidebar-item @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif">
-            <a href="" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#manajemenDropdown">
+        <li class="sidebar-item {{ $isBookingActive ? 'active' : '' }}">
+            <a href="#" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#bookingDropdown">
                 <i data-feather="calendar" class="sidebar-icon-link"></i>Booking
-                <i data-feather="chevron-right" class="dropdown-icon @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif"></i>
+                <i data-feather="chevron-right" class="dropdown-icon {{ $isBookingActive ? 'active' : '' }}"></i>
             </a>
 
-            <ul class="collapse list-unstyled dropdown-menu-vanilla @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif" id="manajemenDropdown">
-                    <li class="sidebar-item @if (Route::currentRouteName() == 'admin.pengguna') active @endif">
-                        <a href="{{ route('admin.pengguna') }}" class="sidebar-link">Pengajuan</a>
-                    </li>
-                    <li class="sidebar-item @if (Route::currentRouteName() == 'laboran.laboratorium') active @endif">
-                        <a href="{{ route('laboran.laboratorium') }}" class="sidebar-link">Laboratorium</a>
-                    </li>
-                    <li class="sidebar-item @if (Route::currentRouteName() == 'admin.barang') active @endif">
-                        <a href="{{ route('admin.barang') }}" class="sidebar-link">Barang</a>
-                    </li>
+            <ul class="collapse list-unstyled dropdown-menu-vanilla {{ $isBookingActive ? 'active' : '' }}" id="bookingDropdown">
+
+                {{-- Proses Pengajuan Belum (laboran) --}}
+                <li class="sidebar-item {{ Route::is('pengajuan') ? 'active' : '' }}">
+                    <a href="{{ route('pengajuan') }}" class="sidebar-link">Pengajuan</a>
+                </li>
+                <li class="sidebar-item {{ Route::is('jadwal') ? 'active' : '' }}">
+                    <a href="{{ route('jadwal') }}" class="sidebar-link">Jadwal</a>
+                </li>
             </ul>
         </li>
 
-
     </ul>
-
 </div>

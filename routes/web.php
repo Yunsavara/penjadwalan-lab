@@ -16,6 +16,8 @@ use App\Http\Controllers\Laboran\LaboranPengajuanController;
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
 use App\Http\Controllers\Laboran\LaboranGenerateJadwalController;
 use App\Http\Controllers\Laboran\LaboranBookingLogPengajuanController;
+use App\Http\Controllers\Pengguna\JadwalBookingController;
+use App\Http\Controllers\Pengguna\PengajuanBookingController;
 
 Route::group(['middleware' => 'guest'], function() {
     // Home
@@ -102,5 +104,10 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
 Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
     Route::get('/dashboard', [DashboardController::class,'dashboardPengguna'])->name('dashboard');
 
+    // Pengajuan Page
+    Route::get('/pengajuan', [PengajuanBookingController::class, 'index'])->name('pengajuan');
 
+
+    // Jadwal Page
+    Route::get('/jadwal', [JadwalBookingController::class, 'index'])->name('jadwal');
 });
