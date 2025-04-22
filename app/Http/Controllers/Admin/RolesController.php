@@ -122,7 +122,7 @@ class RolesController extends Controller
 
         try {
 
-            $Peran = roles::where('id', Crypt::decryptString($id));
+            $Peran = roles::findOrFail(Crypt::decryptString($id));
             $Peran->delete();
 
             DB::commit();

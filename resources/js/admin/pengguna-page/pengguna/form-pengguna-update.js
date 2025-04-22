@@ -49,8 +49,6 @@ export function errorUpdateModalPengguna(){
     const errors = JSON.parse(formData.dataset.errors);
     const sessionForm = formData.dataset.session;
 
-    console.log(errors, sessionForm);
-
     const old = JSON.parse(formData.dataset.old || '{}');
 
     if (errors && sessionForm === 'editPengguna') {

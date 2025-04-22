@@ -152,4 +152,23 @@ class UsersController extends Controller
             return redirect()->route('admin.pengguna')->with('error', 'Pengguna Gagal di-ubah');
         }
     }
+
+    public function softDelete($id){
+
+        DB::beginTransaction();
+
+        try {
+
+            $Pengguna = User::findOrFail(Crypt::decryptString($id));
+            $Pengguna->delete();
+
+            DB::commit();
+
+            return redirect()->route('admin.pengguna')->with('success', 'Pengguna Berhasil di-hapus');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('admin.pengguna')->with('error', 'Pengguan Gagal di-hapus');
+        }
+    }
+
 }
