@@ -5,6 +5,13 @@ import 'datatables.net-select';
 import select2 from 'select2';
 select2();
 
+<<<<<<< Updated upstream
+=======
+// Pengguna
+import { initPenggunaDatatable } from './pengguna/datatables-pengguna';
+import { errorStoreModalPengguna, formPasswordViewStore, initSelect2Store } from './pengguna/form-pengguna-store';
+import { initSoftDeletePenggunaModal } from './pengguna/form-pengguna-soft-delete';
+>>>>>>> Stashed changes
 
 // Peran
 import { initPeranDatatable } from './peran/datatables-peran';
@@ -21,6 +28,17 @@ import { errorStoreModalPeran } from './peran/form-peran-store';
 
 document.addEventListener("DOMContentLoaded", () => {
 
+<<<<<<< Updated upstream
+=======
+    // Pengguna
+    initPenggunaDatatable();
+    initSelect2Store();
+    initDatatablesValueToModalUpdatePengguna();
+    formPasswordViewStore();
+    formPasswordViewUpdate();
+    initSoftDeletePenggunaModal();
+
+>>>>>>> Stashed changes
     // Peran
     initPeranDatatable();
     initDatatablesValueToModalUpdatePeran();

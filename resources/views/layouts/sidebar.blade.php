@@ -18,7 +18,7 @@
 
         @php
             // List route buat ke dropdown menu manajemen
-            $manajemenRoutes = ['admin.pengguna', 'admin.barang', 'laboran.laboratorium'];
+            $manajemenRoutes = ['admin.pengguna', 'laboran.laboratorium', 'admin.barang'];
         @endphp
 
         @if(auth()->user()->role->nama_peran === "admin" || auth()->user()->role->nama_peran === "laboran")
@@ -44,23 +44,30 @@
             </li>
         @endif
 
-                            {{-- <li class="sidebar-item @if (Route::currentRouteName() == 'admin.roles') active @endif">
-                        <a href="{{ route('admin.roles') }}" class="sidebar-link">Operasional</a>
-                    </li> --}}
+        @php
+            $BookingRoutes = [''];
+        @endphp
+
+        <li class="sidebar-item @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif">
+            <a href="" class="sidebar-link d-flex flex-grow collapsed" data-bs-toggle="collapse" data-bs-target="#manajemenDropdown">
+                <i data-feather="calendar" class="sidebar-icon-link"></i>Booking
+                <i data-feather="chevron-right" class="dropdown-icon @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif"></i>
+            </a>
+
+            <ul class="collapse list-unstyled dropdown-menu-vanilla @if (in_array(Route::currentRouteName(), $manajemenRoutes)) active @endif" id="manajemenDropdown">
+                    <li class="sidebar-item @if (Route::currentRouteName() == 'admin.pengguna') active @endif">
+                        <a href="{{ route('admin.pengguna') }}" class="sidebar-link">Pengajuan</a>
+                    </li>
+                    <li class="sidebar-item @if (Route::currentRouteName() == 'laboran.laboratorium') active @endif">
+                        <a href="{{ route('laboran.laboratorium') }}" class="sidebar-link">Laboratorium</a>
+                    </li>
+                    <li class="sidebar-item @if (Route::currentRouteName() == 'admin.barang') active @endif">
+                        <a href="{{ route('admin.barang') }}" class="sidebar-link">Barang</a>
+                    </li>
+            </ul>
+        </li>
 
 
-        {{-- Admin atau Laboran --}}
-        {{-- @if (auth()->user()->role->nama_peran == "admin" || auth()->user()->role->nama_peran == "laboran")
-            <li class="sidebar-item {{ Route::is('laboran.laboratorium') ? 'active' : '' }}">
-                <a href="{{ Route('laboran.laboratorium') }}" class="sidebar-link"><i data-feather="command" class="sidebar-icon-link"></i>Laboratorium</a>
-            </li>
-        @endif --}}
-
-        @if (auth()->user()->role->nama_peran !== "admin" && auth()->user()->role->nama_peran !== "laboran")
-            <li class="sidebar-item {{ Route::is('pengajuan*') ? 'active' : '' }}">
-                <a href="{{ Route('pengajuan') }}" class="sidebar-link"><i data-feather="calendar" class="sidebar-icon-link"></i>Jadwal</a>
-            </li>
-        @endif
     </ul>
 
 </div>

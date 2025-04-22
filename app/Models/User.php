@@ -42,17 +42,6 @@ class User extends Authenticatable
         return $this->belongsTo(Lokasi::class);
     }
 
-    // Relasi ke Booking (User yang mengajukan jadwal)
-    public function booking()
-    {
-        return $this->hasMany(Booking::class);
-    }
-
-    public function bookingLog()
-    {
-        return $this->hasMany(BookingLog::class);
-    }
-
 
     /**
      * The attributes that should be hidden for serialization.

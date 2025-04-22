@@ -42,6 +42,17 @@ Route::group(['middleware' => ['role:admin']], function() {
     // Pengguna Page
     Route::get('/admin/pengguna', [UsersController::class, 'index'])->name('admin.pengguna');
 
+<<<<<<< Updated upstream
+=======
+    // Pengguna Datatables
+    Route::get('/admin/api/data-pengguna', [UsersController::class, 'getApiPengguna']);
+
+    // Pengguna Store, Update & Soft Delete
+    Route::post('/admin/tambah-pengguna', [UsersController::class, 'store'])->name('admin.pengguna.store');
+    Route::put('/admin/ubah-pengguna/{id}', [UsersController::class, 'update']);
+    Route::delete('/admin/hapus-pengguna/{id}', [UsersController::class, 'softDelete']);
+
+>>>>>>> Stashed changes
     // Peran Datatables
     Route::get('/admin/api/data-peran', [RolesController::class, 'getApiPeran']);
 
@@ -89,40 +100,10 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::put('/laboran/ubah-jenis-laboratorium/{Jenislab:id}', [JenisLabController::class, 'update']);
     Route::delete('/laboran/hapus-jenis-laboratorium/{Jenislab:id}', [JenisLabController::class, 'softDelete']);
 
-    // Booking atau Pengajuan
-    Route::get('/laboran/jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.pengajuan');
-    Route::get('/laboran/jadwal/pengajuan-data', [LaboranPengajuanController::class, 'getDataBooking']);
-
-    Route::post('/laboran/pengajuan-diterima', [LaboranPengajuanController::class, 'terimaPengajuan'])->name('pengajuan.terima');
-    Route::post('/laboran/pengajuan-ditolak', [LaboranPengajuanController::class, 'tolakPengajuan'])->name('pengajuan.tolak');
-
-    // Jadwal Generate (Bikin Bisa batalin jadwal nanti)
-    Route::get('/laboran/jadwal/generate-jadwal', [LaboranGenerateJadwalController::class, 'generateJadwal'])->name('jadwal.generate');
-
-    // Booking Log
-    Route::get('/laboran/jadwal/booking-log', [LaboranBookingLogPengajuanController::class, 'getDataBookingLog']);
 });
 
+Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
+    Route::get('/dashboard', [DashboardController::class,'dashboardPengguna'])->name('dashboard');
 
-
-Route::group(['middleware' => ['role:lembaga,prodi,user']], function() {
-    Route::get('/dashboard', [DashboardController::class,'dashboardAllRole'])->name('dashboard');
-
-    // Booking atau Pengajuan
-    Route::get('/jadwal', [PengajuanController::class, 'index'])->name('pengajuan');
-    Route::post('/jadwal', [PengajuanController::class, 'store'])->name('pengajuan.store');
-    Route::get('/jadwal/pengajuan-data', [PengajuanController::class, 'getDataBooking']); //datatables
-    Route::get('/jadwal/pengajuan-detail/{kode_pengajuan}', [PengajuanController::class, 'getDetailBooking']); //detail
-    Route::get('/jadwal/pengajuan-update/{kode_pengajuan}', [PengajuanController::class, 'edit'])->name('pengajuan.update');
-    Route::put('/jadwal/pengajuan-update/{kode_pengajuan}', [PengajuanController::class, 'update']);
-    Route::post('/jadwal/pengajuan-batalkan', [PengajuanController::class, 'batalkanBooking'])->name('pengajuan.batalkan');
-
-    // Jadwal Yang Di Booking
-    Route::get('/jadwal/jadwal-data', [JadwalController::class, 'getDataJadwal']);
-    Route::get('/jadwal/jadwal-detail/{kode_pengajuan}', [JadwalController::class, 'getDetailJadwal']);
-    Route::post('/jadwal/jadwal-batalkan', [JadwalController::class, 'batalkanJadwal'])->name('jadwal.batalkan');
-
-    // Jadwal Generate
-    Route::get('/jadwal/generate-jadwal', [GenerateJadwalController::class, 'generateJadwal'])->name('jadwal.generate');
 
 });

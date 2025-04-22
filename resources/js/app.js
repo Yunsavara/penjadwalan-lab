@@ -9,6 +9,7 @@ window.jQuery = $;
 
 // Script vanilla
 import './script';
+<<<<<<< Updated upstream
 import './all-role/riwayat/pengajuan/form-pengajuan-store'
 import './all-role/riwayat/pengajuan/form-pengajuan-edit'
 import './all-role/riwayat/pengajuan/datatables-pengajuan'
@@ -20,6 +21,8 @@ import './all-role/generate-jadwal/datatables-generate-jadwal'
 import './laboran/generate-jadwal/datatables-generate-jadwal'
 import './laboran/pengajuan/datatables-pengajuan'
 import './laboran/booking-log/datatable-booking-log'
+=======
+>>>>>>> Stashed changes
 
 // Flatpickr
 import flatpickr from "flatpickr";
