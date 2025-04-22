@@ -54,4 +54,11 @@ document.addEventListener("DOMContentLoaded", () => {
     errorUpdateModalLokasi();
     errorStoreModalPeran();
     errorUpdateModalPeran();
+<<<<<<< Updated upstream
+=======
+    errorStoreModalPengguna();
+    errorUpdateModalPengguna();
+
+    // Test Stash
+>>>>>>> Stashed changes
 });
