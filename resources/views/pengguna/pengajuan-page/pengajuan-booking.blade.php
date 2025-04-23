@@ -3,7 +3,7 @@
 @section('title', 'Pengajuan')
 
 @section('content')
-{{-- @vite(['resources/js/admin/pengguna-page/pengguna']) --}}
+@vite(['resources/js/pengguna/pengguna'])
 
 @include('pengguna.pengajuan-page.forms.form-pengajuan-booking-store')
 
@@ -14,6 +14,10 @@
 
         <div id="tools-pengajuan-booking">
             @include('pengguna.pengajuan-page.tools-pengajuan-booking')
+        </div>
+
+        <div class="col-12 rounded p-2 mt-3 bg-white shadow-sm">
+            @include('pengguna.pengajuan-page.forms.form-test')
         </div>
 
         <div id="table-container">

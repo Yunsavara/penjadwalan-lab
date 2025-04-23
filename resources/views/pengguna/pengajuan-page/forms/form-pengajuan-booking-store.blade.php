@@ -17,35 +17,6 @@
 
                 </div>
 
-                {{-- <div class="mb-3">
-                    <label for="namaPeran" class="form-label">Nama Peran</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i data-feather="briefcase" width="20"></i>
-                        </span>
-                        <input type="text" name="nama_peran_store" class="form-control @error('nama_peran_store') is-invalid @enderror" id="namaPeran" placeholder="Laboran" autocomplete="off" value="{{ old('nama_peran_store', $Peran->nama_peran) }}">
-                        @error('nama_peran_store')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="prioritasPeran" class="form-label">Prioritas Peran</label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i data-feather="award" width="20"></i>
-                        </span>
-                        <input type="number" name="prioritas_peran_store" class="form-control @error('prioritas_peran_store') is-invalid @enderror" id="prioritasPeran" placeholder="1" autocomplete="off" value="{{ old('prioritas_peran_store', $Peran->prioritas_peran) }}">
-                        @error('prioritas_peran_store')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
-                </div> --}}
             </div>
 
             <div class="modal-footer">

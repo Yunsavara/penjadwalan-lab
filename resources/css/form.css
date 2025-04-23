@@ -32,3 +32,8 @@ input[type=number] {
     appearance: textfield;
     -moz-appearance: textfield;
 }
+
+
+.select2 {
+    width: 100% !important;
+}
