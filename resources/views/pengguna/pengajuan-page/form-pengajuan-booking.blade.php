@@ -11,9 +11,34 @@
         <hr>
 
         <div class="form-pengajuan-booking">
-            <div class="mb-3">
-                <label for="tanggalPengajuanBooking" class="form-label">Tanggal Pengajuan Booking</label>
-                <input type="text" id="tanggalPengajuanBooking" class="form-control" placeholder="Pilih Tanggal">
+            <div class="col-12 d-flex flex-wrap align-items-center justify-content-between">
+                <div class="col-12 col-md-5 mb-3 mb-md-0">
+                    <label for="tanggalMulaiBooking" class="form-label">Tanggal Mulai</label>
+                    <input type="text" id="tanggalMulaiBooking" class="form-control" placeholder="Pilih Tanggal Mulai">
+                </div>
+                <div class="col-12 col-md-5">
+                    <label for="tanggalSelesaiBooking" class="form-label">Tanggal Selesai</label>
+                    <input type="text" id="tanggalSelesaiBooking" class="form-control" placeholder="Pilih Tanggal Selesai">
+                </div>
+            </div>
+
+            <div class="col-12 pt-1 mb-3 text-start align-middle">
+                <label for="weekdays" class="form-check-label small me-1 me-md-2">
+                    <input type="checkbox" id="weekdays" class="form-check-input" checked> Hari Kerja
+                </label>
+                <label for="sabtu" class="form-check-label small me-1 me-md-2">
+                    <input type="checkbox" id="sabtu" class="form-check-input" checked> Sabtu
+                </label>
+                <label for="minggu" class="form-check-label small me-1 me-md-2">
+                    <input type="checkbox" id="minggu" class="form-check-input" checked> Minggu
+                </label>
+                <i  data-feather="help-circle"
+                    width="20"
+                    tabindex="-1"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Hanya Generate Tanggal Berdasarkan Hari yang di checklist.">
+                </i>
             </div>
 
             <div class="mb-3">

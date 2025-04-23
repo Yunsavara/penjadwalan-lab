@@ -1,4 +1,4 @@
-import { initializeAutoTimeSelect, initializeDatePicker, initializeSelect2 } from "./pengajuan-page/form-pengajuan-store";
+import { initializeAutoTimeSelect, initializeDatePicker, initializeSelect2 } from "./pengajuan-page/form-pengajuan-booking-store";
 
 document.addEventListener("DOMContentLoaded", () => {
     initializeDatePicker();
