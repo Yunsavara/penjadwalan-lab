@@ -9,7 +9,3 @@ window.jQuery = $;
 
 // Script vanilla
 import './script';
-
-// Flatpickr
-import flatpickr from "flatpickr";
-import "flatpickr/dist/flatpickr.min.css";

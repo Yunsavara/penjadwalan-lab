@@ -33,7 +33,7 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
-
+/* Select 2, Supaya responsive */
 .select2 {
     width: 100% !important;
 }

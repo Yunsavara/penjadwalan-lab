@@ -15,4 +15,13 @@ class PengajuanBookingController extends Controller
             ]
         ]);
     }
+
+    public function create(){
+        return view("pengguna.pengajuan-page.form-pengajuan-booking", [
+            'page_meta' => [
+                'page' => 'Buat Pengajuan Booking',
+                'description' => 'Halaman untuk input Data Pengajuan Booking'
+            ]
+        ]);
+    }
 }

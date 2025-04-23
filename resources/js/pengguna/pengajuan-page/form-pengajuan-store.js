@@ -1,7 +1,7 @@
 import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 import { Indonesian } from "flatpickr/dist/l10n/id.js";
 import select2 from "select2";
-
 select2();
 
 // Inisialisasi Flatpickr
@@ -11,7 +11,8 @@ export function initializeDatePicker() {
         altInput: true,
         altFormat: "d F Y",
         dateFormat: "Y-m-d",
-        locale: Indonesian
+        locale: Indonesian,
+        position: "below"
     });
 }
 

@@ -49,7 +49,7 @@
         @endif
 
         @php
-            $bookingRoutes = ['pengajuan', 'jadwal'];
+            $bookingRoutes = ['pengajuan.*', 'jadwal'];
             $isBookingActive = in_array(Route::currentRouteName(), $bookingRoutes);
         @endphp
 
@@ -62,7 +62,7 @@
             <ul class="collapse list-unstyled dropdown-menu-vanilla {{ $isBookingActive ? 'active' : '' }}" id="bookingDropdown">
 
                 {{-- Proses Pengajuan Belum (laboran) --}}
-                <li class="sidebar-item {{ Route::is('pengajuan') ? 'active' : '' }}">
+                <li class="sidebar-item {{ Route::is('pengajuan.*') ? 'active' : '' }}">
                     <a href="{{ route('pengajuan') }}" class="sidebar-link">Pengajuan</a>
                 </li>
                 <li class="sidebar-item {{ Route::is('jadwal') ? 'active' : '' }}">
