@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('kode_pengajuan')->unique();
             $table->enum('status_pengajuan_booking', ['menunggu', 'diterima', 'ditolak'])->default('menunggu');
-            $table->text('catatan_pengajuan_booking')->nullable();
+            $table->text('keperluan_pengajuan_booking');
+            $table->text('balasan_pengajuan_booking')->nullable();
 
             $table->foreignId('user_id')->constrained('users');
 

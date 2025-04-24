@@ -9,7 +9,8 @@ class PengajuanBooking extends Model
     protected $fillable = [
         'kode_pengajuan',
         'status_pengajuan_booking',
-        'catatan_pengajuan_booking',
+        'keperluan_pengajuan_booking',
+        'balasan_pengajuan_booking',
         'user_id'
     ];
 

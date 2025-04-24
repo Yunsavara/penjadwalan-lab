@@ -43,3 +43,11 @@ input[type=number] {
     outline: 0 !important;
     border: 0 !important;
 }
+
+
+.select2-selection--multiple .select2-selection__choice {
+    white-space: normal !important;
+    max-width: 100%;
+    width: 100%; /* optional, bisa dihilangkan kalau pengen auto-wrap aja */
+    word-break: break-word;
+}

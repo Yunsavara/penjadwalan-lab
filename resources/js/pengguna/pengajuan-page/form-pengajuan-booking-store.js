@@ -4,16 +4,16 @@ import { Indonesian } from "flatpickr/dist/l10n/id.js";
 import "flatpickr/dist/themes/airbnb.css";
 import select2 from "select2";
 
-// Inisialisasi Select2 (untuk mengaktifkan plugin)
+// Inisialisasi Select2 (aktifkan plugin)
 select2();
 
-// Inisialisasi date picker untuk input tanggal mulai dan selesai
+// Inisialisasi date picker
 export function initializeDatePicker() {
     const options = {
         mode: "single",
         altInput: true,
-        altFormat: "d F Y",
-        dateFormat: "Y-m-d",
+        altFormat: "d F Y",      // Tampilan user
+        dateFormat: "Y-m-d",     // Format yang dikirim
         locale: Indonesian,
         position: "below",
         theme: "airbnb"
@@ -23,34 +23,31 @@ export function initializeDatePicker() {
     flatpickr("#tanggalSelesaiBooking", options);
 }
 
-// Inisialisasi Select2 untuk pemilihan laboratorium
+// Inisialisasi Select2 untuk laboratorium
 export function initializeSelect2() {
     $('#labPengajuanBooking').select2({
         theme: "bootstrap-5",
         placeholder: "Pilih Laboratorium",
-        allowClear: true,
-        multiple: true
+        multiple: true,
     });
 }
 
-// Inisialisasi Select2 untuk pemilihan jam otomatis
+// Inisialisasi jam otomatis
 export function initializeAutoTimeSelect() {
     const $jamOtomatis = $('#jamOtomatis');
     $jamOtomatis.select2({
         theme: "bootstrap-5",
         placeholder: "Pilih Jam",
-        allowClear: true,
         width: '100%'
     });
 
-    // Tambahkan opsi jam dari 07:00 sampai 20:59
     for (let h = 7; h < 21; h++) {
         const label = `${h.toString().padStart(2, '0')}:00 - ${h.toString().padStart(2, '0')}:59`;
         $jamOtomatis.append(new Option(label, h));
     }
 }
 
-// Mengecek apakah checkbox hari tertentu diaktifkan
+// Mengecek checkbox hari yang aktif
 function isDayChecked(day, id) {
     return $(`#${id}`).prop('checked') && (
         (day === 0 && id === 'minggu') ||
@@ -59,32 +56,35 @@ function isDayChecked(day, id) {
     );
 }
 
-// Membuat checkbox jam booking untuk satu slot jam
+// Membuat checkbox untuk satu slot jam
 function createTimeSlotCheckbox(date, lab, hour, selectedHours = []) {
     const paddedHour = hour.toString().padStart(2, '0');
     const inputId = `${date}-${lab}-${hour}`;
-    const checked = selectedHours.includes(hour) ? 'checked' : '';
+    const isChecked = selectedHours.includes(hour) ? 'checked' : '';
 
     return `
         <label class="form-check-label">
             <input class="form-check-input me-1" type="checkbox"
                    id="${inputId}"
                    name="booking[${date}][${lab}][]"
-                   value="${hour}" ${checked}>
+                   value="${hour}" ${isChecked}>
             ${paddedHour}:00 - ${paddedHour}:59
         </label>
     `;
 }
 
-// Membuat satu kartu booking berisi slot jam untuk setiap laboratorium
-function generateBookingCard(date, labs, selectedHours = []) {
+// Kartu slot booking per tanggal dan lab
+function generateBookingCard(dateKey, dateLabel, labs, selectedHours = []) {
     const bodyContent = labs.map(lab => {
-        const labId = lab.replace(/\s+/g, '_');
-        const checkboxes = Array.from({ length: 14 }, (_, i) => createTimeSlotCheckbox(date, labId, i + 7, selectedHours)).join('');
+        const labId = lab.id.replace(/\s+/g, '_');
+        const checkboxes = Array.from({ length: 14 }, (_, i) =>
+            createTimeSlotCheckbox(dateKey, labId, i + 7, selectedHours)
+        ).join('');
 
         return `
             <div class="mb-3 border p-2 rounded">
-                <strong>${lab}</strong>
+                <strong>${lab.name}</strong><br>
+                <span class="text-muted">${lab.location}</span>
                 <div class="checkbox-group">${checkboxes}</div>
             </div>
         `;
@@ -93,17 +93,24 @@ function generateBookingCard(date, labs, selectedHours = []) {
     const card = document.createElement('div');
     card.className = 'card mb-3';
     card.innerHTML = `
-        <div class="card-header"><strong>${date}</strong></div>
+        <div class="card-header"><strong>${dateLabel}</strong></div>
         <div class="card-body">${bodyContent}</div>
     `;
     return card;
 }
 
-// Fungsi utama untuk menghasilkan form booking berdasarkan input pengguna
+// Generate form booking dinamis
 window.generateBookingForm = function () {
     const tanggalMulai = $('#tanggalMulaiBooking').val();
     const tanggalSelesai = $('#tanggalSelesaiBooking').val();
-    const labs = $('#labPengajuanBooking').val() || [];
+    const selectedLabs = $('#labPengajuanBooking').select2('data');
+
+    const labs = selectedLabs.map(item => ({
+        id: item.id,
+        name: item.text,
+        location: item.element.closest('optgroup').label
+    }));
+
     const modeJam = $('input[name="modeJam"]:checked').val();
     const selectedJam = $('#jamOtomatis').val()?.map(Number) || [];
 
@@ -117,26 +124,23 @@ window.generateBookingForm = function () {
     const startDate = new Date(tanggalMulai);
     const endDate = new Date(tanggalSelesai);
 
-    // Iterasi setiap hari antara tanggal mulai dan selesai
     for (let current = new Date(startDate); current <= endDate; current.setDate(current.getDate() + 1)) {
         const day = current.getDay();
-        const formatted = new Intl.DateTimeFormat('id-ID', {
+        const dateKey = current.toISOString().split('T')[0]; // Format untuk name input
+        const dateLabel = new Intl.DateTimeFormat('id-ID', {
             day: 'numeric',
             month: 'long',
             year: 'numeric'
-        }).format(current);
+        }).format(current); // Label untuk tampilan
 
-
-        // Cek apakah hari ini termasuk hari yang dipilih (minggu/sabtu/weekday)
         if (['minggu', 'sabtu', 'weekdays'].some(id => isDayChecked(day, id))) {
-            const card = generateBookingCard(formatted, labs, modeJam === 'otomatis' ? selectedJam : []);
+            const card = generateBookingCard(dateKey, dateLabel, labs, modeJam === 'otomatis' ? selectedJam : []);
             container.appendChild(card);
         }
     }
 
+    // Debug hasil checkbox yang dipilih
     const checkedBooking = {};
-
-    // Ambil data dari checkbox yang dipilih
     document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
         const { name, value } = checkbox;
         const parts = name.split('[');
@@ -149,10 +153,10 @@ window.generateBookingForm = function () {
         checkedBooking[date][lab].push(value);
     });
 
-    console.log(checkedBooking); // Debug hasil
+    console.log(checkedBooking);
 };
 
-// Tampilkan atau sembunyikan pilihan jam otomatis berdasarkan mode jam yang dipilih
+// Toggle input jam otomatis
 $('input[name="modeJam"]').on('change', function () {
     const isAuto = $(this).val() === 'otomatis';
     $('#autoJamContainer').toggleClass('d-none', !isAuto);

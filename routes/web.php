@@ -109,6 +109,7 @@ Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
 
     // Pengajuan Store
     Route::get('/pengajuan/buat-pengajuan-booking', [PengajuanBookingController::class, 'create'])->name('pengajuan.create');
+    Route::post('/pengajuan/tambah-pengajuan-booking', [PengajuanBookingController::class, 'store'])->name('pengajuan.store');
 
     // Jadwal Page
     Route::get('/jadwal', [JadwalBookingController::class, 'index'])->name('jadwal');
