@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('waktu_operasionals', function (Blueprint $table) {
+        Schema::create('pengajuan_bookings', function (Blueprint $table) {
             $table->id();
-            $table->json('hari_operasional');
-            $table->time('jam_mulai');
-            $table->time('jam_selesai');
+            $table->string('kode_pengajuan')->unique();
+            $table->enum('status_pengajuan_booking', ['menunggu', 'diterima', 'ditolak'])->default('menunggu');
+            $table->text('catatan_pengajuan_booking')->nullable();
 
-            $table->foreignId('lokasi_id')->constrained('lokasis');
+            $table->foreignId('user_id')->constrained('users');
 
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('waktu_operasionals');
+        Schema::dropIfExists('pengajuan_bookings');
     }
 };

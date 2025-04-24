@@ -30,4 +30,9 @@ class LaboratoriumUnpam extends Model
     {
         return $this->belongsTo(Lokasi::class, 'lokasi_id');
     }
+
+    public function jadwalBookings()
+    {
+        return $this->hasMany(JadwalBooking::class);
+    }
 }
