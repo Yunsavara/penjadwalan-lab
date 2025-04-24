@@ -49,8 +49,7 @@
         @endif
 
         @php
-            $bookingRoutes = ['pengajuan.*', 'jadwal'];
-            $isBookingActive = in_array(Route::currentRouteName(), $bookingRoutes);
+            $isBookingActive = Route::is('pengajuan*') || Route::is('jadwal'); // dibuat gini bukan array karena pakai wildcard
         @endphp
 
         <li class="sidebar-item {{ $isBookingActive ? 'active' : '' }}">
@@ -62,9 +61,12 @@
             <ul class="collapse list-unstyled dropdown-menu-vanilla {{ $isBookingActive ? 'active' : '' }}" id="bookingDropdown">
 
                 {{-- Proses Pengajuan Belum (laboran) --}}
-                <li class="sidebar-item {{ Route::is('pengajuan.*') ? 'active' : '' }}">
-                    <a href="{{ route('pengajuan') }}" class="sidebar-link">Pengajuan</a>
-                </li>
+                @if ($userRole !== "laboran" )
+                    <li class="sidebar-item {{ Route::is('pengajuan*') ? 'active' : '' }}">
+                        <a href="{{ route('pengajuan') }}" class="sidebar-link">Pengajuan</a>
+                    </li>
+                @endif
+
                 <li class="sidebar-item {{ Route::is('jadwal') ? 'active' : '' }}">
                     <a href="{{ route('jadwal') }}" class="sidebar-link">Jadwal</a>
                 </li>

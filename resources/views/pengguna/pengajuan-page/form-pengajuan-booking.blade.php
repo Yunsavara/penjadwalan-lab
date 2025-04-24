@@ -24,20 +24,20 @@
 
             <div class="col-12 pt-1 mb-3 text-start align-middle">
                 <label for="weekdays" class="form-check-label small me-1 me-md-2">
-                    <input type="checkbox" id="weekdays" class="form-check-input" checked> Hari Kerja
+                    <input type="checkbox" id="weekdays" class="form-check-input"> Hari Kerja
                 </label>
                 <label for="sabtu" class="form-check-label small me-1 me-md-2">
-                    <input type="checkbox" id="sabtu" class="form-check-input" checked> Sabtu
+                    <input type="checkbox" id="sabtu" class="form-check-input"> Sabtu
                 </label>
-                <label for="minggu" class="form-check-label small me-1 me-md-2">
-                    <input type="checkbox" id="minggu" class="form-check-input" checked> Minggu
+                <label for="minggu" class="form-check-label small me-1 me-md-1">
+                    <input type="checkbox" id="minggu" class="form-check-input"> Minggu
                 </label>
                 <i  data-feather="help-circle"
-                    width="20"
+                    width="15"
                     tabindex="-1"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
-                    title="Hanya Generate Tanggal Berdasarkan Hari yang di checklist.">
+                    title="Hanya Generate Tanggal Berdasarkan Hari yang di Centang.">
                 </i>
             </div>
 
@@ -55,12 +55,31 @@
                 <textarea id="keperluanPengajuanBooking" class="form-control" placeholder="Keperluan Mengajar Mata Kuliah..." style="min-height: 100px; max-height:100px; resize:none;"></textarea>
             </div>
 
-            <div class="mb-3">
-                <label for="modeJam" class="form-label">Mode Pilih Jam</label>
-                <select id="modeJam" class="form-select">
-                    <option value="manual" selected>Manual</option>
-                    <option value="otomatis">Otomatis</option>
-                </select>
+            <div class="mb-3 d-flex flex-wrap align-items-center justify-content-between">
+                <div>
+                    <label class="form-label">Mode Pilih Jam</label>
+                    <i  data-feather="help-circle"
+                        width="15"
+                        tabindex="-1"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Mode Otomatis akan Generate di Jam yang Sama untuk Semua Tanggal yang diplih.">
+                    </i>
+                </div>
+                <div class="d-flex gap-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="modeJam" id="manual" value="manual" checked>
+                        <label class="form-check-label small" for="manual">
+                            Manual
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="modeJam" id="otomatis" value="otomatis">
+                        <label class="form-check-label small" for="otomatis">
+                            Otomatis
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div class="mb-3 d-none" id="autoJamContainer">

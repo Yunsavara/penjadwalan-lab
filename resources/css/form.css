@@ -37,3 +37,9 @@ input[type=number] {
 .select2 {
     width: 100% !important;
 }
+
+/* Buat hilangin border sama outline kaya icon help, tapi ini untuk semua icon feather */
+.feather {
+    outline: 0 !important;
+    border: 0 !important;
+}
