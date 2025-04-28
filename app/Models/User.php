@@ -42,11 +42,6 @@ class User extends Authenticatable
         return $this->belongsTo(Lokasi::class);
     }
 
-    public function pengajuanBookings()
-    {
-        return $this->hasMany(PengajuanBooking::class);
-    }
-
     public function catatanAktivitas()
     {
         return $this->hasMany(CatatanAktivitas::class);

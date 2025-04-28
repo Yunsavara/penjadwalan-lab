@@ -1,23 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Admin\RolesController;
-use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Admin\LokasiController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\AllRole\JadwalController;
+use App\Http\Controllers\Admin\RolesController;
+use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Auth\DashboardController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Laboran\JenisLabController;
-use App\Http\Controllers\AllRole\PengajuanController;
-use App\Http\Controllers\AllRole\GenerateJadwalController;
-use App\Http\Controllers\Laboran\LaboranPengajuanController;
+
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
-use App\Http\Controllers\Laboran\LaboranGenerateJadwalController;
-use App\Http\Controllers\Laboran\LaboranBookingLogPengajuanController;
 use App\Http\Controllers\Pengguna\JadwalBookingController;
 use App\Http\Controllers\Pengguna\PengajuanBookingController;
+use Illuminate\Support\Facades\Route;
+
 
 Route::group(['middleware' => 'guest'], function() {
     // Home
