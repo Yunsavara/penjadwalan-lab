@@ -1,7 +1,8 @@
-import { initializeAutoTimeSelect, initializeDatePicker, initializeSelect2 } from "./pengajuan-page/form-pengajuan-booking-store";
+import { initFlatpickr, initGenerateFormPengajuan, initSelect2 } from "./pengajuan-page/form-pengajuan-booking-store";
+
 
 document.addEventListener("DOMContentLoaded", () => {
-    initializeDatePicker();
-    initializeSelect2();
-    initializeAutoTimeSelect();
+    initSelect2();
+    initFlatpickr();
+    initGenerateFormPengajuan();
 });
