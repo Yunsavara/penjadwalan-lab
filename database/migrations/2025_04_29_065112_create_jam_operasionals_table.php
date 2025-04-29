@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('waktu_operasionals', function (Blueprint $table) {
+        Schema::create('jam_operasionals', function (Blueprint $table) {
             $table->id();
-            $table->json('hari_operasional');
+            $table->foreignId('hari_operasional_id')->constrained('hari_operasionals'); // Relasi ke tabel waktu operasional
             $table->time('jam_mulai');
             $table->time('jam_selesai');
-
-            $table->foreignId('lokasi_id')->constrained('lokasis');
-
+            $table->boolean('is_disabled')->default(false);
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('waktu_operasionals');
+        Schema::dropIfExists('jam_operasionals');
     }
 };

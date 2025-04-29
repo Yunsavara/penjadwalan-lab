@@ -16,17 +16,16 @@
                 <label for="lokasi" class="form-label">Lokasi</label>
                 <select id="lokasi" class="form-select" required>
                   <option value="">-- Pilih Lokasi --</option>
-                  <option value="Viktor">Viktor</option>
-                  <option value="Serang">Serang</option>
+                  @foreach ($Lokasi as $lok)
+                    <option value="{{ $lok->id }}">{{ $lok->nama_lokasi }}</option>
+                  @endforeach
                 </select>
               </div>
         
               <div class="mb-3">
                 <label for="laboratorium" class="form-label">Laboratorium</label>
                 <select id="laboratorium" class="form-select" multiple required>
-                  <option value="1">Lab Komputer A</option>
-                  <option value="2">Lab Komputer B</option>
-                  <option value="3">Lab Multimedia</option>
+                  <option value="">-- Pilih Laboratorium --</option>
                 </select>
               </div>
         
@@ -41,17 +40,52 @@
               </div>
         
               <div class="mb-3">
-                <label for="hari_aktif" class="form-label">Hari Aktif</label>
-                <select id="hari_aktif" class="form-select" multiple required>
-                  <option value="1">Senin</option>
-                  <option value="2">Selasa</option>
-                  <option value="3">Rabu</option>
-                  <option value="4">Kamis</option>
-                  <option value="5">Jumat</option>
-                  <option value="6">Sabtu</option>
-                  <option value="7">Minggu</option>
-                </select>
-              </div>
+                <label class="form-label">Hari Booking</label>
+                <div class="row">
+                  <div class="col-6 col-md-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="hari_aktif[]" value="1" id="senin">
+                      <label class="form-check-label" for="senin">Senin</label>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="hari_aktif[]" value="2" id="selasa">
+                      <label class="form-check-label" for="selasa">Selasa</label>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="hari_aktif[]" value="3" id="rabu">
+                      <label class="form-check-label" for="rabu">Rabu</label>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="hari_aktif[]" value="4" id="kamis">
+                      <label class="form-check-label" for="kamis">Kamis</label>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="hari_aktif[]" value="5" id="jumat">
+                      <label class="form-check-label" for="jumat">Jumat</label>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="hari_aktif[]" value="6" id="sabtu">
+                      <label class="form-check-label" for="sabtu">Sabtu</label>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="hari_aktif[]" value="7" id="minggu">
+                      <label class="form-check-label" for="minggu">Minggu</label>
+                    </div>
+                  </div>
+                </div>
+              </div>              
         
               <div class="mb-3">
                 <label for="jam" class="form-label">Jam Booking</label>
@@ -76,7 +110,10 @@
          <!-- Hasil Generate -->
         <div id="hasilGenerate" class="d-none">
             <h4 class="mb-3">Pilih Slot Booking</h4>
-            <form id="generatedForm">
+            <form id="generatedForm" action="{{ route($page_meta['route_name']) }}" method="POST">
+              @csrf
+              @method($page_meta['method'])
+
                 <div class="accordion" id="accordionGenerated">
                     <!-- Isi Accordion di-generate pakai JS -->
                 </div>
@@ -89,3 +126,6 @@
         
     </div>
 @endsection
+
+
+{{-- Perlu setting berdasarkan lokasi, nanti tampil lab"nya --}}

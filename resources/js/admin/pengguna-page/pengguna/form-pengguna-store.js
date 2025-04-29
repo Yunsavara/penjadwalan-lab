@@ -7,7 +7,7 @@ export function initSelect2Store(){
             theme: "bootstrap-5",
             placeholder: "Pilih Lokasi Pengguna",
             allowClear: true,
-        });
+        }); 
         $('#peranPengguna').select2({
             dropdownParent: $('#formPenggunaStore'),
             theme: "bootstrap-5",

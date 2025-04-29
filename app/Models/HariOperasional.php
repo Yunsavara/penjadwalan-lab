@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WaktuOperasional extends Model
+class HariOperasional extends Model
 {
     protected $fillable = [
         'hari_operasional',
-        'jam_mulai',
-        'jam_selesai',
-        'lokasi_id'
+        'lokasi_id',
+        'is_disabled',
     ];
 
-    protected $casts = [
-        'hari_operasional' => 'array', // Otomatis decode JSON ke array PHP
-    ];
+    public function jamOperasionals()
+    {
+        return $this->hasMany(JamOperasional::class);
+    }
 
     public function lokasi()
     {
