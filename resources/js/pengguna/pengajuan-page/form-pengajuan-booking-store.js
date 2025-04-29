@@ -1,16 +1,14 @@
-// Import library dan style yang dibutuhkan
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { Indonesian } from "flatpickr/dist/l10n/id.js";
 import "flatpickr/dist/themes/airbnb.css";
+import { generateHariOperasionalCheckbox, updateLaboratoriumOptions } from "./fetch-form-pengajuan-booking";
 import select2 from "select2";
-import { updateLaboratoriumOptions } from "./fetch-form-pengajuan-booking";
 
-// Inisialisasi global Select2
 select2();
 
 export function initSelect2(){
-    $('#lokasi, #laboratorium, #jam').select2({
+    $('#lokasi').select2({
         theme: "bootstrap-5",
         placeholder: "Pilih Lokasi",
         allowClear: true,
@@ -22,14 +20,25 @@ export function initSelect2(){
         allowClear: true,
     }); 
 
-    $('#jam').select2({
+    $('#jamOperasional').select2({
         theme: "bootstrap-5",
         placeholder: "Pilih Jam",
         allowClear: true,
     }); 
 }
 
+export function initFlatpickrTanggal() {
+    flatpickr("#tanggal_mulai,#tanggal_selesai", {
+        locale: Indonesian,
+        altInput: true,
+        altFormat: "d F Y",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+    });
+}
+
 updateLaboratoriumOptions();
+generateHariOperasionalCheckbox();
 
 // Fungsi untuk inisialisasi event listener saat lokasi dipilih
 export function initLaboratoriumByLokasi() {
@@ -37,6 +46,7 @@ export function initLaboratoriumByLokasi() {
     $('#lokasi').on('select2:select', function (e) {
         const lokasiId = e.params.data.id;
         updateLaboratoriumOptions(lokasiId);
+        generateHariOperasionalCheckbox(lokasiId);
     });
 }
 

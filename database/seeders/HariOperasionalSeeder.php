@@ -14,11 +14,20 @@ class HariOperasionalSeeder extends Seeder
      */
     public function run(): void
     {
-        $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        // Definisikan hari operasional berdasarkan lokasi
+        $lokasiHari = [
+            'Pusat' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
+            'Viktor' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+            'Serang' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+        ];
 
+        // Ambil data lokasi yang bukan 'fleksible'
         $lokasis = Lokasi::whereNot('nama_lokasi', 'fleksible')->get();
 
         foreach ($lokasis as $lokasi) {
+            // Tentukan hari operasional untuk lokasi tertentu
+            $hariList = $lokasiHari[$lokasi->nama_lokasi] ?? ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+
             foreach ($hariList as $hari) {
                 HariOperasional::create([
                     'lokasi_id' => $lokasi->id,
@@ -27,6 +36,6 @@ class HariOperasionalSeeder extends Seeder
                 ]);
             }
         }
-
     }
+
 }

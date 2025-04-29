@@ -14,24 +14,39 @@ class JamOperasionalSeeder extends Seeder
      */
     public function run(): void
     {
+        $hariJamMap = [
+            'senin' => ['08:00:00', '17:00:00'],
+            'selasa' => ['08:00:00', '17:00:00'],
+            'rabu' => ['08:00:00', '17:00:00'],
+            'kamis' => ['08:00:00', '17:00:00'],
+            'jumat' => ['08:00:00', '17:00:00'],
+            'sabtu' => ['08:00:00', '12:00:00'],
+        ];
+
         $hariOperasionals = HariOperasional::all();
 
         foreach ($hariOperasionals as $hari) {
-            // Contoh sesi jam: 08:00 - 10:00, 10:00 - 12:00, 13:00 - 15:00
-            $sesiJam = [
-                ['08:00:00', '10:00:00'],
-                ['10:00:00', '12:00:00'],
-                ['13:00:00', '15:00:00'],
-            ];
+            $namaHari = strtolower($hari->hari_operasional);
 
-            foreach ($sesiJam as [$mulai, $selesai]) {
+            if (!isset($hariJamMap[$namaHari])) {
+                continue; // Lewati kalau tidak ada jam operasional (contoh: Minggu)
+            }
+
+            [$startTime, $endTime] = $hariJamMap[$namaHari];
+            $start = \Carbon\Carbon::createFromFormat('H:i:s', $startTime);
+            $end = \Carbon\Carbon::createFromFormat('H:i:s', $endTime);
+
+            while ($start->lt($end)) {
                 JamOperasional::create([
                     'hari_operasional_id' => $hari->id,
-                    'jam_mulai' => $mulai,
-                    'jam_selesai' => $selesai,
-                    'is_disabled' => false, // Default aktif semua
+                    'jam_mulai' => $start->format('H:i:s'),
+                    'jam_selesai' => $start->copy()->addHour()->format('H:i:s'),
+                    'is_disabled' => false,
                 ]);
+
+                $start->addHour();
             }
         }
     }
+
 }

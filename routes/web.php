@@ -103,8 +103,10 @@ Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
     // Pengajuan Page
     Route::get('/pengajuan', [PengajuanBookingController::class, 'index'])->name('pengajuan');
 
+    // Form Pengajuan
     Route::get('/pengajuan/api/data-laboratorium/{lokasi_id}', [PengajuanBookingController::class, 'getLaboratoriumByLokasi']);
-
+    Route::get('/pengajuan/api/data-hari-operasional/{lokasi_id}', [PengajuanBookingController::class, 'getHariOperasionalByLokasi']);
+    Route::get('/pengajuan/api/jam-operasional/{hariOperasionalId}', [PengajuanBookingController::class, 'getJamOperasional']);
     // Pengajuan Store
     Route::get('/pengajuan/buat-pengajuan-booking', [PengajuanBookingController::class, 'create'])->name('pengajuan.create');
     Route::post('/pengajuan/tambah-pengajuan-booking', [PengajuanBookingController::class, 'store'])->name('pengajuan.store');
