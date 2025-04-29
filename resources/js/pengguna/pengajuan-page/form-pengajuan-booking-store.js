@@ -2,29 +2,25 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { Indonesian } from "flatpickr/dist/l10n/id.js";
 import "flatpickr/dist/themes/airbnb.css";
-import { generateHariOperasionalCheckbox, updateLaboratoriumOptions } from "./fetch-form-pengajuan-booking";
 import select2 from "select2";
+import { generateHariOperasionalCheckbox, updateLaboratoriumOptions } from "./fetch-form-pengajuan-booking";
 
 select2();
 
-export function initSelect2(){
-    $('#lokasi').select2({
-        theme: "bootstrap-5",
-        placeholder: "Pilih Lokasi",
-        allowClear: true,
-    }); 
+export function initSelect2() {
+    const selectConfigs = [
+        { selector: '#lokasi', placeholder: 'Pilih Lokasi' },
+        { selector: '#laboratorium', placeholder: 'Pilih Laboratorium' },
+        { selector: '#jamOperasional', placeholder: 'Pilih Jam' }
+    ];
 
-    $('#laboratorium').select2({
-        theme: "bootstrap-5",
-        placeholder: "Pilih Laboratorium",
-        allowClear: true,
-    }); 
-
-    $('#jamOperasional').select2({
-        theme: "bootstrap-5",
-        placeholder: "Pilih Jam",
-        allowClear: true,
-    }); 
+    selectConfigs.forEach(({ selector, placeholder }) => {
+        $(selector).select2({
+            theme: "bootstrap-5",
+            placeholder,
+            allowClear: true,
+        });
+    });
 }
 
 export function initFlatpickrTanggal() {
@@ -37,17 +33,10 @@ export function initFlatpickrTanggal() {
     });
 }
 
-updateLaboratoriumOptions();
-generateHariOperasionalCheckbox();
-
-// Fungsi untuk inisialisasi event listener saat lokasi dipilih
 export function initLaboratoriumByLokasi() {
-    // Tambahkan event listener dengan Select2-specific event
-    $('#lokasi').on('select2:select', function (e) {
+    $('#lokasi').on('select2:select', async (e) => {
         const lokasiId = e.params.data.id;
-        updateLaboratoriumOptions(lokasiId);
-        generateHariOperasionalCheckbox(lokasiId);
+        await updateLaboratoriumOptions(lokasiId);
+        await generateHariOperasionalCheckbox(lokasiId);
     });
 }
-
-
