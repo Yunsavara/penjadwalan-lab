@@ -5,7 +5,7 @@
 @section('content')
 @vite(['resources/js/pengguna/pengguna'])
 
-    <div class="col-12 p-3 py-4 bg-body-tertiary">
+    <div class="col-12 p-3 py-4">
         <h2>{{ $page_meta['page'] }}</h2>
         <span>{{ $page_meta['description'] }}</span>
         <hr>
@@ -45,7 +45,7 @@
                 </div>
               </div>                      
         
-              <div class="mb-3">
+              <div class="mb-2">
                 <div id="jamOperasionalContainer">
                   <!-- Jam untuk hari yang dipilih akan di-generate di sini, berdasarkan harioperasional (dari db)  -->
                 </div>
@@ -64,7 +64,7 @@
               @csrf
               @method($page_meta['method'])
 
-                <div class="accordion" id="accordionGenerated">
+                <div class="accordion mb-3" id="accordionGenerated">
                     <!-- Isi Accordion di-generate pakai JS -->
                 </div>
 
@@ -74,7 +74,7 @@
               </div>
               
 
-                <div class="text-end mt-3">
+                <div class="text-end">
                     <button type="submit" class="col-12 btn btn-success">Submit Booking</button>
                 </div>
             </form>
