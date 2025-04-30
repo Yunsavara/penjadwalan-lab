@@ -1,6 +1,6 @@
+// Mengupdate pilihan laboratorium berdasarkan lokasi
 export async function updateLaboratoriumOptions(lokasiId) {
     const laboratoriumSelect = $('#laboratorium');
-
     laboratoriumSelect.empty().append('<option value="">-- Pilih Laboratorium --</option>');
 
     if (!lokasiId) return;
@@ -20,10 +20,10 @@ export async function updateLaboratoriumOptions(lokasiId) {
     }
 }
 
+// Generate checkbox hari operasional berdasarkan lokasi
 export async function generateHariOperasionalCheckbox(lokasiId) {
     const container = $('#hariOperasionalContainer');
     container.empty();
-
     $('#hariBookingLabel').remove();
 
     if (!lokasiId) return;
@@ -46,9 +46,9 @@ export async function generateHariOperasionalCheckbox(lokasiId) {
                     </div>
                 `;
                 container.append(checkboxHTML);
-            }); 
+            });
 
-            // Event generate jam operasional
+            // Pasang event change untuk generate jam operasional saat checkbox dipilih
             $('input[name="hari_aktif[]"]').on('change', generateJamOperasional);
         }
     } catch (error) {
@@ -56,11 +56,13 @@ export async function generateHariOperasionalCheckbox(lokasiId) {
     }
 }
 
+// Generate pilihan jam operasional berdasarkan hari yang dipilih
 export async function generateJamOperasional() {
     const selectedHariIds = $('input[name="hari_aktif[]"]:checked').map(function () {
         return $(this).val();
     }).get();
 
+    // Hapus jam yang tidak dipilih
     $('#jamOperasionalContainer > div').each(function() {
         const divId = $(this).attr('id'); 
         const hariId = divId.split('-')[1]; 
@@ -87,7 +89,7 @@ export async function generateJamOperasional() {
         jamSelect.select2({
             theme: "bootstrap-5",
             placeholder: "Pilih Jam",
-            allowClear: true,
+            allowClear: false,
         });
 
         try {

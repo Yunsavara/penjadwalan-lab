@@ -1,8 +1,9 @@
+// Inisialisasi tombol generate
 export function initGenerateButtonForm() {
     document.getElementById("generateBtn").addEventListener("click", async () => {
         const tanggalMulai = document.getElementById("tanggal_mulai").value;
         const tanggalSelesai = document.getElementById("tanggal_selesai").value;
-        const laboratoriumIds = $('#laboratorium').val(); // array
+        const laboratoriumIds = $('#laboratorium').val();
         const hariAktif = $('input[name="hari_aktif[]"]:checked').map(function () {
             return {
                 id: this.value,
@@ -10,8 +11,9 @@ export function initGenerateButtonForm() {
             };
         }).get();
 
+        // Validasi input wajib
         if (!tanggalMulai || !tanggalSelesai || laboratoriumIds.length === 0 || hariAktif.length === 0) {
-            alert("Lengkapi semua isian terlebih dahulu.");
+            alert("Lengkapi semua inputan terlebih dahulu.");
             return;
         }
 
@@ -20,25 +22,24 @@ export function initGenerateButtonForm() {
         const accordionContainer = $('#accordionGenerated');
         accordionContainer.empty();
 
-        // Ambil mapping nama laboratorium dari option
+        // Simpan nama lab dari option terpilih
         const laboratoriumLabels = {};
         $('#laboratorium option:selected').each(function () {
             laboratoriumLabels[$(this).val()] = $(this).text();
         });
 
+        // Loop semua tanggal dari mulai sampai selesai
         for (let d = new Date(tanggalAwal); d <= tanggalAkhir; d.setDate(d.getDate() + 1)) {
             const tanggalStr = d.toISOString().split('T')[0];
             const namaHari = d.toLocaleDateString('id-ID', { weekday: 'long' });
             const tanggalFull = d.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
+                day: 'numeric', month: 'long', year: 'numeric'
             });
 
             const hariDipilih = hariAktif.find(h => h.nama.toLowerCase() === namaHari.toLowerCase());
             if (!hariDipilih) continue;
 
-            // Fetch semua jam dari database untuk hari ini
+            // Ambil daftar jam dari server
             let jamList = [];
             try {
                 const response = await fetch(`/pengajuan/api/jam-operasional/${hariDipilih.id}`);
@@ -48,9 +49,10 @@ export function initGenerateButtonForm() {
                 continue;
             }
 
-            // Ambil jam yang dicentang user di setting awal
+            // Ambil jam yang dicentang user
             const jamTercentang = $(`#jam_${hariDipilih.id}`).val() || [];
 
+            // Generate HTML accordion per tanggal
             const itemId = `accordion-${tanggalStr}`;
             let accordionHTML = `
                 <div class="accordion-item">
@@ -64,6 +66,7 @@ export function initGenerateButtonForm() {
                             <button type="button" class="btn btn-sm btn-warning mb-3" onclick="hapusAccordionTanggal('${tanggalStr}')">Hapus Tanggal</button>
             `;
 
+            // Loop setiap lab
             laboratoriumIds.forEach(labId => {
                 const labName = laboratoriumLabels[labId] || `Laboratorium ${labId}`;
                 const labContainerId = `lab-${tanggalStr}-${labId}`;
@@ -81,16 +84,18 @@ export function initGenerateButtonForm() {
                     const checkboxName = `slot[${tanggalStr}][${labId}][]`;
                     const checkboxId = `slot-${tanggalStr}-${labId}-${jam.jam_mulai.replace(":", "")}`;
                     const isChecked = jamTercentang.includes(jam.jam_mulai) ? 'checked' : '';
-
+                    const value = `${jam.jam_mulai}|${jam.jam_selesai}`;  // Menggabungkan jam mulai dan selesai
+                
                     accordionHTML += `
                         <div class="col-6 col-md-4">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="${checkboxName}" value="${jam.jam_mulai}" id="${checkboxId}" ${isChecked}>
+                                <input class="form-check-input" type="checkbox" name="${checkboxName}" value="${value}" id="${checkboxId}" ${isChecked}>
                                 <label class="form-check-label" for="${checkboxId}">${jam.jam_mulai} - ${jam.jam_selesai}</label>
                             </div>
                         </div>
                     `;
                 });
+                
 
                 accordionHTML += `
                         </div>
@@ -107,6 +112,7 @@ export function initGenerateButtonForm() {
             accordionContainer.append(accordionHTML);
         }
 
+        // Tampilkan hasil jika ada
         if (accordionContainer.children().length > 0) {
             $('#hasilGenerate').removeClass('d-none');
             $('html, body').animate({
@@ -118,24 +124,23 @@ export function initGenerateButtonForm() {
     });
 }
 
-// Fungsi hapus lab dan hapus accordion jika semua lab habis
+// Fungsi hapus 1 lab dari dalam 1 tanggal
 export function hapusLab(labContainerId, tanggalStr) {
     const labElement = document.getElementById(labContainerId);
     if (labElement) {
         labElement.remove();
 
-        // Cek apakah masih ada lab di tanggal tersebut
         const accordionBody = document.querySelector(`#accordion-${tanggalStr} .accordion-body`);
         const sisaLab = accordionBody.querySelectorAll(`[id^="lab-${tanggalStr}-"]`);
 
         if (sisaLab.length === 0) {
-            // Hapus accordion tanggal jika tidak ada lab tersisa
             const accordionItem = document.querySelector(`#accordion-${tanggalStr}`).closest('.accordion-item');
             if (accordionItem) accordionItem.remove();
         }
     }
 }
 
+// Fungsi hapus semua lab dalam satu tanggal
 export function hapusAccordionTanggal(tanggalStr) {
     const accordionItem = document.querySelector(`#accordion-${tanggalStr}`).closest('.accordion-item');
     if (accordionItem) {

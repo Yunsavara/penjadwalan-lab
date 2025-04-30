@@ -32,7 +32,7 @@ class PengajuanBookingController extends Controller
             'nama_lokasi'
         ])->whereNot('nama_lokasi', 'fleksible')->get();
 
-        return view("pengguna.pengajuan-page.form-pengajuan-booking", [
+        return view("pengguna.pengajuan-page.form-pengajuan-booking-store", [
             'Lokasi' => $Lokasi,
             'page_meta' => [
                 'page' => 'Buat Pengajuan Booking',
@@ -86,6 +86,7 @@ class PengajuanBookingController extends Controller
 
     public function store(PengajuanBookingStoreRequest $Request)
     {
+        
         dd($Request->validated());
     }
 

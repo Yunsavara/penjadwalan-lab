@@ -22,30 +22,18 @@ class PengajuanBookingStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'slots' => ['required', 'array', 'min:1'],
-            'slots.*' => ['required', 'array', 'min:1'], // setiap tanggal harus array dan minimal 1 lab
-            'slots.*.*' => ['required', 'array', 'min:1'], // setiap lab harus array dan minimal 1 jam
-            'slots.*.*.*' => ['required', 'string'], // setiap jam harus string (contohnya "08:00-10:00")
+            // 'alasan' => ['required', 'string', 'max:255'],
+            'slot' => 'required|array',
         ];
     }
+
 
     public function messages(): array
     {
         return [
-            'slots.required' => 'Slot booking harus diisi.',
-            'slots.array' => 'Format slot booking harus berupa array.',
-            'slots.min' => 'Minimal pilih satu tanggal booking.',
-
-            'slots.*.required' => 'Tanggal booking harus diisi.',
-            'slots.*.array' => 'Format data per tanggal harus berupa array.',
-            'slots.*.min' => 'Minimal pilih satu laboratorium per tanggal.',
-
-            'slots.*.*.required' => 'Laboratorium harus dipilih.',
-            'slots.*.*.array' => 'Format data per laboratorium harus berupa array.',
-            'slots.*.*.min' => 'Minimal pilih satu jam booking per laboratorium.',
-
-            'slots.*.*.*.required' => 'Jam booking harus dipilih.',
-            'slots.*.*.*.string' => 'Format jam booking tidak valid.',
+            // 'alasan.required' => 'Alasan booking wajib diisi.',
+            'slot.required' => 'Anda harus memilih minimal satu slot booking.',
         ];
     }
+
 }

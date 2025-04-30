@@ -31,12 +31,12 @@
         
               <div class="col-md-6">
                 <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
-                <input type="date" id="tanggal_mulai" class="form-control" required>
+                <input type="text" id="tanggal_mulai" class="form-control" required>
               </div>
         
               <div class="col-md-6">
                 <label for="tanggal_selesai" class="form-label">Tanggal Selesai</label>
-                <input type="date" id="tanggal_selesai" class="form-control" required>
+                <input type="text" id="tanggal_selesai" class="form-control" required>
               </div>
         
               <div class="mb-3">
@@ -53,7 +53,7 @@
         
               <div class="mb-3">
                 <label for="alasan" class="form-label">Alasan Booking</label>
-                <textarea id="alasan" class="form-control" style="min-height: 100px; max-height:100px; resize:none;" required>Praktikum Mata Kuliah</textarea>
+                <textarea id="alasan" name="alasan" class="form-control" style="min-height: 100px; max-height:100px; resize:none;" required>Praktikum Mata Kuliah</textarea>
               </div>
         
               <div class="col-12">
@@ -64,7 +64,7 @@
 
          <!-- Hasil Generate -->
         <div id="hasilGenerate" class="d-none">
-            <h4 class="mb-3">Pilih Slot Booking</h4>
+            <h4 class="mb-3">Penyesuaian Pengajuan Booking</h4>
             <form id="generatedForm" action="{{ route($page_meta['route_name']) }}" method="POST">
               @csrf
               @method($page_meta['method'])
@@ -74,7 +74,7 @@
                 </div>
 
                 <div class="text-end mt-3">
-                    <button type="submit" class="btn btn-success">Submit Booking</button>
+                    <button type="submit" class="col-12 btn btn-success">Submit Booking</button>
                 </div>
             </form>
         </div>
