@@ -22,8 +22,7 @@ class PengajuanBookingStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'alasan' => ['required', 'string', 'max:255'],
-            'slot' => 'required|array',
+            'booking' => 'required|array',
         ];
     }
 
@@ -31,8 +30,6 @@ class PengajuanBookingStoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            // 'alasan.required' => 'Alasan booking wajib diisi.',
-            'slot.required' => 'Anda harus memilih minimal satu slot booking.',
         ];
     }
 

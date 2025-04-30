@@ -85,9 +85,18 @@ class PengajuanBookingController extends Controller
 
 
     public function store(PengajuanBookingStoreRequest $Request)
-    {
-        
-        dd($Request->validated());
+    {   
+        $cleaned = [];
+
+        foreach ($Request->booking as $tanggal => $labs) {
+            foreach ($labs as $labId => $slots) {
+                foreach ($slots as $slotJson) {
+                    $cleaned[$tanggal][$labId][] = json_decode($slotJson, true);
+                }
+            }
+        }
+
+        dd($cleaned);
     }
 
 }

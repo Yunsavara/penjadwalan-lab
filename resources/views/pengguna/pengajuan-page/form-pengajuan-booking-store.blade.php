@@ -5,7 +5,7 @@
 @section('content')
 @vite(['resources/js/pengguna/pengguna'])
 
-    <div class="col-12 p-3 py-4">
+    <div class="col-12 p-3 py-4 bg-body-tertiary">
         <h2>{{ $page_meta['page'] }}</h2>
         <span>{{ $page_meta['description'] }}</span>
         <hr>
@@ -40,20 +40,20 @@
               </div>
         
               <div class="mb-3">
-                <div id="hariOperasionalContainer" class="row">
-                    <!-- Checkbox hari operasional akan di-generate di sini -->
+                <div id="hariOperasionalContainer" class="row g-2">
+                    <!-- Checkbox hari operasional akan di-generate di sini, berdasarkan lokasi (dari db) -->
                 </div>
               </div>                      
         
               <div class="mb-3">
                 <div id="jamOperasionalContainer">
-                  <!-- Jam untuk hari yang dipilih akan di-generate di sini -->
+                  <!-- Jam untuk hari yang dipilih akan di-generate di sini, berdasarkan harioperasional (dari db)  -->
                 </div>
               </div>
         
               <div class="mb-3">
                 <label for="alasan" class="form-label">Alasan Booking</label>
-                <textarea id="alasan" name="alasan" class="form-control" style="min-height: 100px; max-height:100px; resize:none;" required>Praktikum Mata Kuliah</textarea>
+                <textarea id="alasan" class="form-control" style="min-height: 100px; max-height:100px; resize:none;" required>Praktikum Mata Kuliah</textarea>
               </div>
         
               <div class="col-12">
