@@ -28,6 +28,16 @@ export function initSelect2() {
     $('#lokasi').on('change', function () {
         const lokasiId = $(this).val();
 
+        // Reset semua field terkait lokasi sebelumnya
+        $('#laboratorium').val(null).trigger('change');
+        $('#hariOperasionalContainer').empty();
+        $('#jamOperasionalContainer').empty();
+        $('#accordionGenerated').empty();
+        $('#hasilGenerate').addClass('d-none');
+        $('#tanggal_mulai')[0]._flatpickr.clear();
+        $('#tanggal_selesai')[0]._flatpickr.clear();
+
+
         if (lokasiId) {
             $.ajax({
                 url: `/pengajuan/api/data-laboratorium/${lokasiId}`,
@@ -237,8 +247,13 @@ export function handleGenerateForm() {
                 }).join('');
 
                 innerLabHtml += `
-                    <div class="mb-4">
-                        <h6>${labName}</h6>
+                    <div class="mb-4 lab-block" data-lab-id="${labId}">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">${labName}</h6>
+                            <button type="button" class="btn btn-sm btn-danger btn-remove-lab" data-lab-id="${labId}">
+                                Hapus Lab
+                            </button>
+                        </div>
                         <div class="row">
                             ${checkboxHtml}
                         </div>
@@ -257,6 +272,11 @@ export function handleGenerateForm() {
                     <div id="collapse_${index}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading_${index}" data-bs-parent="#accordionGenerated">
                         <div class="accordion-body">
                             ${innerLabHtml}
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-remove-tanggal" data-tanggal="${tanggal}">
+                                    Hapus Tanggal Ini
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -288,3 +308,24 @@ $(document).on('change', '.multi-checkbox', function () {
     $(`#${hiddenId}`).prop('disabled', !$(this).is(':checked'));
 });
 
+$(document).on('click', '.btn-remove-lab', function () {
+    const $labBlock = $(this).closest('.lab-block');
+    const $accordionBody = $labBlock.closest('.accordion-body');
+    const $accordionItem = $labBlock.closest('.accordion-item');
+
+    // Hapus lab-block
+    $labBlock.remove();
+
+    // Cek apakah masih ada lab lainnya
+    if ($accordionBody.find('.lab-block').length === 0) {
+        $accordionItem.remove();
+    }
+});
+
+$(document).on('click', '.btn-remove-tanggal', function () {
+    const tanggal = $(this).data('tanggal');
+
+    // Temukan dan hapus seluruh accordion-item yang sesuai tanggal
+    const $accordionItem = $(this).closest('.accordion-item');
+    $accordionItem.remove();
+});
