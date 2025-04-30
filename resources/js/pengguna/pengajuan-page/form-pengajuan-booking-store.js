@@ -165,9 +165,8 @@ export function handleGenerateForm() {
         const tanggalMulai = $('#tanggal_mulai').val();
         const tanggalSelesai = $('#tanggal_selesai').val();
         const laboratoriumIds = $('#laboratorium').val();
-        const alasan = $('#alasan').val();
 
-        if (!tanggalMulai || !tanggalSelesai || !laboratoriumIds.length || !alasan) {
+        if (!tanggalMulai || !tanggalSelesai || !laboratoriumIds.length) {
             alert('Mohon lengkapi semua field sebelum generate.');
             return;
         }
@@ -329,3 +328,4 @@ $(document).on('click', '.btn-remove-tanggal', function () {
     const $accordionItem = $(this).closest('.accordion-item');
     $accordionItem.remove();
 });
+

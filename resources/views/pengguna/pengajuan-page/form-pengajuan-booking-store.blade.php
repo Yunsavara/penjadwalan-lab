@@ -50,12 +50,7 @@
                   <!-- Jam untuk hari yang dipilih akan di-generate di sini, berdasarkan harioperasional (dari db)  -->
                 </div>
               </div>
-        
-              <div class="mb-3">
-                <label for="alasan" class="form-label">Alasan Booking</label>
-                <textarea id="alasan" class="form-control" style="min-height: 100px; max-height:100px; resize:none;" required>Praktikum Mata Kuliah</textarea>
-              </div>
-        
+
               <div class="col-12">
                 <button type="button" class="btn btn-primary w-100" id="generateBtn">Generate Form</button>
               </div>
@@ -72,6 +67,12 @@
                 <div class="accordion" id="accordionGenerated">
                     <!-- Isi Accordion di-generate pakai JS -->
                 </div>
+
+                <div class="mb-3">
+                  <label for="alasan_generated" class="form-label">Alasan Booking</label>
+                  <textarea id="alasan_generated" name="alasan" class="form-control" style="min-height: 100px; max-height:100px; resize:none;" required>Praktikum Mata Kuliah</textarea>
+              </div>
+              
 
                 <div class="text-end mt-3">
                     <button type="submit" class="col-12 btn btn-success">Submit Booking</button>

@@ -23,6 +23,7 @@ class PengajuanBookingStoreRequest extends FormRequest
     {
         return [
             'booking' => 'required|array',
+            'alasan' => 'required|string',
         ];
     }
 
@@ -31,6 +32,23 @@ class PengajuanBookingStoreRequest extends FormRequest
     {
         return [
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $booking = $this->input('booking', []);
+
+        foreach ($booking as $tanggal => $labs) {
+            foreach ($labs as $labId => $slotJsonArray) {
+                foreach ($slotJsonArray as $index => $slotJson) {
+                    $booking[$tanggal][$labId][$index] = json_decode($slotJson, true);
+                }
+            }
+        }
+
+        $this->merge([
+            'booking' => $booking,
+        ]);
     }
 
 }
