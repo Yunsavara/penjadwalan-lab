@@ -194,20 +194,29 @@ export function handleGenerateForm() {
 
         tanggalRange.forEach((tanggal, index) => {
             const hari = new Date(tanggal).toLocaleDateString('id-ID', { weekday: 'long' });
+
+            // Format tanggal menjadi "Rabu, 23 Juni 2025"
+            const tanggalFormatted = new Date(tanggal).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });            
+
             const semuaJam = semuaJamPerHari[hari] || [];
             const jamDipilih = jamDipilihPerHari[hari] || [];
-        
+
             let innerLabHtml = '';
-        
+
             laboratoriumIds.forEach((labId) => {
                 const labName = $(`#laboratorium option[value="${labId}"]`).text();
-        
+
                 const checkboxHtml = semuaJam.map((jam, i) => {
                     const id = `chk_${tanggal}_${labId}_${i}`;
                     const isChecked = jamDipilih.includes(jam) ? 'checked' : '';
                     const [mulai, selesai] = jam.split(' - ');
                     const nilaiJson = JSON.stringify({ jam_mulai: mulai, jam_selesai: selesai });
-        
+
                     return `
                         <div class="col-6 col-md-4">
                             <div class="form-check">
@@ -215,18 +224,18 @@ export function handleGenerateForm() {
                                     type="checkbox"
                                     data-hidden-id="hidden_${id}"
                                     id="${id}" ${isChecked}>
-        
+
                                 <input type="hidden"
                                     name="booking[${tanggal}][${labId}][]"
                                     id="hidden_${id}"
                                     value='${nilaiJson}' ${isChecked ? '' : 'disabled'}>
-        
+
                                 <label class="form-check-label" for="${id}">${jam}</label>
                             </div>
                         </div>
                     `;
                 }).join('');
-        
+
                 innerLabHtml += `
                     <div class="mb-4">
                         <h6>${labName}</h6>
@@ -236,13 +245,13 @@ export function handleGenerateForm() {
                     </div>
                 `;
             });
-        
+
             accordionHtml += `
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading_${index}">
                         <button class="accordion-button ${index !== 0 ? 'collapsed' : ''}" type="button"
                             data-bs-toggle="collapse" data-bs-target="#collapse_${index}" aria-expanded="${index === 0}" aria-controls="collapse_${index}">
-                            ${tanggal}
+                            ${tanggalFormatted}
                         </button>
                     </h2>
                     <div id="collapse_${index}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading_${index}" data-bs-parent="#accordionGenerated">
@@ -253,7 +262,7 @@ export function handleGenerateForm() {
                 </div>
             `;
         });
-        
+
         $('#accordionGenerated').html(accordionHtml);
         $('#hasilGenerate').removeClass('d-none');
     });
