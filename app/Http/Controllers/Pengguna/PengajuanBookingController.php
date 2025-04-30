@@ -70,13 +70,19 @@ class PengajuanBookingController extends Controller
 
     public function getJamOperasional($hariOperasionalId)
     {
-        // Ambil data jam operasional berdasarkan hari operasional
         $jamOperasional = JamOperasional::where('hari_operasional_id', $hariOperasionalId)
-                                         ->where('is_disabled', false)
-                                         ->get(['jam_mulai', 'jam_selesai']);
+                                        ->where('is_disabled', false)
+                                        ->get(['jam_mulai', 'jam_selesai'])
+                                        ->map(function ($item) {
+                                            return [
+                                                'jam_mulai' => date('H:i', strtotime($item->jam_mulai)),
+                                                'jam_selesai' => date('H:i', strtotime($item->jam_selesai)),
+                                            ];
+                                        });
 
         return response()->json($jamOperasional);
     }
+
 
     public function store(PengajuanBookingStoreRequest $Request)
     {

@@ -11,7 +11,7 @@ export async function updateLaboratoriumOptions(lokasiId) {
 
         laboratoriumList.forEach(lab => {
             const option = new Option(lab.nama_laboratorium, lab.id);
-            laboratoriumSelect.append(option);
+            laboratoriumSelect.append(option); 
         });
 
         laboratoriumSelect.trigger('change');
@@ -24,7 +24,6 @@ export async function generateHariOperasionalCheckbox(lokasiId) {
     const container = $('#hariOperasionalContainer');
     container.empty();
 
-    // Hapus label jika sudah ada
     $('#hariBookingLabel').remove();
 
     if (!lokasiId) return;
@@ -47,7 +46,7 @@ export async function generateHariOperasionalCheckbox(lokasiId) {
                     </div>
                 `;
                 container.append(checkboxHTML);
-            });
+            }); 
 
             // Event generate jam operasional
             $('input[name="hari_aktif[]"]').on('change', generateJamOperasional);
@@ -63,8 +62,8 @@ export async function generateJamOperasional() {
     }).get();
 
     $('#jamOperasionalContainer > div').each(function() {
-        const divId = $(this).attr('id'); // contoh: "jam-5"
-        const hariId = divId.split('-')[1]; // ambil 5
+        const divId = $(this).attr('id'); 
+        const hariId = divId.split('-')[1]; 
         if (!selectedHariIds.includes(hariId)) {
             $(this).remove();
         }
