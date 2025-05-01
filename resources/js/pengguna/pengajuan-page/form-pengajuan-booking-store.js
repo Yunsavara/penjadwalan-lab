@@ -153,51 +153,60 @@ function updateJamOperasional() {
 }
 
 function renderTanggalCheckboxes() {
-  const container = $("#daftarTanggal").empty();
-  pagedTanggalBoxes = [];
-
-  if (!selectedDates || selectedDates.length < 2) return;
-
-  const [start, end] = selectedDates;
-  let current = new Date(start);
-
-  while (current <= end) {
-    const tanggalStr = current.toISOString().split("T")[0];
-    const hari = dayMap[current.getDay()];
-    const sesiHari = sesiPerHari[hari];
-    const selectedSesi = $(`#select-sesi-${hari}`).val() || [];
-    const formattedDate = current.toLocaleDateString("id-ID", {
-      weekday: "long", year: "numeric", month: "long", day: "numeric"
-    });
-
-    if (sesiHari?.length) {
-      const checkboxHtml = sesiHari.map(jam => {
-        const isChecked = selectedSesi.includes(jam);
-        return `
-          <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input sesi-tanggal"
-                   name="sesi_tanggal[${tanggalStr}][]" value="${jam}"
-                   id="tgl-${tanggalStr}-${jam}" ${isChecked ? "checked" : ""}>
-            <label class="form-check-label" for="tgl-${tanggalStr}-${jam}">${jam}</label>
+    const container = $("#daftarTanggal").empty();
+    pagedTanggalBoxes = [];
+  
+    if (!selectedDates || selectedDates.length < 2) return;
+  
+    const old = window.oldFormData || {};
+    const [start, end] = selectedDates;
+    let current = new Date(start);
+  
+    while (current <= end) {
+      const tanggalStr = current.toISOString().split("T")[0];
+      const hari = dayMap[current.getDay()];
+      let sesiHari = sesiPerHari[hari] || [];
+  
+      // Tambahkan jam tambahan dari old.sesi_tanggal
+      if (old?.sesi_tanggal?.[tanggalStr]) {
+        const tambahan = old.sesi_tanggal[tanggalStr].filter(jam => !sesiHari.includes(jam));
+        sesiHari = sesiHari.concat(tambahan);
+      }
+  
+      const selectedSesi = $(`#select-sesi-${hari}`).val() || [];
+      const formattedDate = current.toLocaleDateString("id-ID", {
+        weekday: "long", year: "numeric", month: "long", day: "numeric"
+      });
+  
+      if (sesiHari.length) {
+        const checkboxHtml = sesiHari.map(jam => {
+          const inputId = `tgl-${tanggalStr}-${jam}`;
+          const isChecked = old?.sesi_tanggal?.[tanggalStr]?.includes(jam) || selectedSesi.includes(jam);
+          return `
+            <div class="form-check form-check-inline">
+              <input type="checkbox" class="form-check-input sesi-tanggal"
+                     name="sesi_tanggal[${tanggalStr}][]" value="${jam}"
+                     id="${inputId}" ${isChecked ? "checked" : ""}>
+              <label class="form-check-label" for="${inputId}">${jam}</label>
+            </div>
+          `;
+        }).join("");
+  
+        pagedTanggalBoxes.push(`
+          <div class="tanggal-box mb-3">
+            <strong>${formattedDate}</strong><br>
+            ${checkboxHtml}
           </div>
-        `;
-      }).join("");
-
-      pagedTanggalBoxes.push(`
-        <div class="tanggal-box mb-3">
-          <strong>${formattedDate}</strong><br>
-          ${checkboxHtml}
-        </div>
-      `);
+        `);
+      }
+  
+      current.setDate(current.getDate() + 1);
     }
-
-    current.setDate(current.getDate() + 1);
+  
+    currentPage = 1;
+    showTanggalPage();
   }
-
-  currentPage = 1;
-  showTanggalPage();
-}
-
+  
 function showTanggalPage() {
   const container = $("#daftarTanggal").empty();
   const totalPages = Math.ceil(pagedTanggalBoxes.length / itemsPerPage);
