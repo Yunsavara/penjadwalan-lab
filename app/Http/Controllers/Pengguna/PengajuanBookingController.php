@@ -89,10 +89,33 @@ class PengajuanBookingController extends Controller
     }
 
 
+    public function toPivotData(): array
+    {
+        $pivotData = [];
+
+        foreach ($this->laboratorium as $labId) {
+            foreach ($this->sesi_tanggal as $tanggal => $jamList) {
+                foreach ($jamList as $jam) {
+                    [$mulai, $selesai] = explode(' - ', $jam);
+                    $pivotData[] = [
+                        'laboratorium_id' => $labId,
+                        'tanggal' => $tanggal,
+                        'jam_mulai' => $mulai,
+                        'jam_selesai' => $selesai,
+                    ];
+                }
+            }
+        }
+
+        return $pivotData;
+    }
+
+
     public function store(PengajuanBookingStoreRequest $Request)
     {   
+        $pivotData = $Request->toPivotData();
 
-        dd($Request->all());
+        dd($pivotData);
     }
 
 }

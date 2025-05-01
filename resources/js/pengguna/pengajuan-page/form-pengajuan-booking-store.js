@@ -82,7 +82,7 @@ export function updateLabOptions() {
   $.get(`/pengajuan/api/data-laboratorium/${lokasi}`, function (labs) {
     const labSelect = $("#labSelect").empty();
     labs.forEach(lab => {
-      labSelect.append(`<option value="${lab.nama_laboratorium}">${lab.nama_laboratorium}</option>`);
+      labSelect.append(`<option value="${lab.id}">${lab.nama_laboratorium}</option>`);
     });
     labSelect.trigger("change");
   });
