@@ -5,80 +5,73 @@
 @section('content')
 @vite(['resources/js/pengguna/pengguna'])
 
-    <div class="col-12 p-3 py-4">
-        <h2>{{ $page_meta['page'] }}</h2>
-        <span>{{ $page_meta['description'] }}</span>
-        <hr>
+<div class="col-12 p-3 py-4">
+    <h2>{{ $page_meta['page'] }}</h2>
+    <span>{{ $page_meta['description'] }}</span>
+    <hr>
 
-        <form id="settinganForm" class="mb-5">
-            <div class="row g-3">
-              <div class="mb-3">
-                <label for="lokasi" class="form-label">Lokasi</label>
-                <select id="lokasi" class="form-select" required>
-                  <option value=""></option>
-                  @foreach ($Lokasi as $lok)
+    {{-- Error Section (tidak mengisi kembali input) --}}
+    @if ($errors->any())
+      <div class="alert alert-danger mt-3">
+          <strong>Terjadi kesalahan:</strong>
+          <ul class="mb-0">
+              @foreach ($errors->all() as $e)
+                  <li>{{ $e }}</li>
+              @endforeach
+          </ul>
+      </div>
+    @endif
+
+    <form id="formPengajuanBookingStore" class="mb-5" method="POST" action="{{ route($page_meta['route_name']) }}">
+        @csrf
+        @method($page_meta['method'])
+
+        {{-- Pilih Lokasi --}}
+        <div class="mb-3">
+            <label for="lokasiSelect" class="form-label">Pilih Lokasi</label>
+            <select id="lokasiSelect" name="lokasi" class="form-select">
+                <option value=""></option>
+                @foreach ($lokasi as $lok)
                     <option value="{{ $lok->id }}">{{ $lok->nama_lokasi }}</option>
-                  @endforeach
-                </select>
-              </div>
-        
-              <div class="mb-3">
-                <label for="laboratorium" class="form-label">Laboratorium</label>
-                <select id="laboratorium" class="form-select" multiple required>
-                  <option value=""></option>
-                </select>
-              </div>
-        
-              <div class="col-md-6">
-                <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
-                <input type="text" id="tanggal_mulai" class="form-control" required>
-              </div>
-        
-              <div class="col-md-6">
-                <label for="tanggal_selesai" class="form-label">Tanggal Selesai</label>
-                <input type="text" id="tanggal_selesai" class="form-control" required>
-              </div>
-        
-              <div class="mb-3">
-                <div id="hariOperasionalContainer" class="row g-2">
-                    <!-- Checkbox hari operasional akan di-generate di sini, berdasarkan lokasi (dari db) -->
-                </div>
-              </div>                      
-        
-              <div class="mb-2">
-                <div id="jamOperasionalContainer">
-                  <!-- Jam untuk hari yang dipilih akan di-generate di sini, berdasarkan harioperasional (dari db)  -->
-                </div>
-              </div>
-
-              <div class="col-12">
-                <button type="button" class="btn btn-primary w-100" id="generateBtn">Generate Form</button>
-              </div>
-            </div>
-        </form>
-
-         <!-- Hasil Generate -->
-        <div id="hasilGenerate" class="d-none">
-            <h4 class="mb-3">Penyesuaian Pengajuan Booking</h4>
-            <form id="generatedForm" action="{{ route($page_meta['route_name']) }}" method="POST">
-              @csrf
-              @method($page_meta['method'])
-
-                <div class="accordion mb-3" id="accordionGenerated">
-                    <!-- Isi Accordion di-generate pakai JS -->
-                </div>
-
-                <div class="mb-3">
-                  <label for="alasan_generated" class="form-label">Alasan Booking</label>
-                  <textarea id="alasan_generated" name="alasan" class="form-control" style="min-height: 100px; max-height:100px; resize:none;" required>Praktikum Mata Kuliah</textarea>
-              </div>
-              
-
-                <div class="text-end">
-                    <button type="submit" class="col-12 btn btn-success">Submit Booking</button>
-                </div>
-            </form>
+                @endforeach
+            </select>
         </div>
-        
-    </div>
+
+        {{-- Pilih Lab --}}
+        <div class="mb-3">
+            <label for="labSelect" class="form-label">Pilih Laboratorium Utama</label>
+            <select id="labSelect" class="form-select" name="laboratorium[]" multiple></select>
+        </div>
+
+        {{-- Tanggal Range --}}
+        <div class="mb-3">
+            <label for="tanggalRange" class="form-label">Pilih Tanggal (Range)</label>
+            <input type="hidden" name="tanggalRange[0]" id="tanggalMulai">
+            <input type="hidden" name="tanggalRange[1]" id="tanggalSelesai">
+            <input type="text" id="tanggalRange" class="form-control" placeholder="Pilih tanggal">
+        </div>
+
+        {{-- Keperluan --}}
+        <div class="mb-3">
+            <label for="keperluanPengajuanBooking">Keperluan</label>
+            <textarea name="keperluan_pengajuan_booking" class="form-control" id="keperluanPengajuanBooking"></textarea>
+        </div>
+
+        {{-- Hari Operasional --}}
+        <div class="mb-3" id="hariOperasionalWrapper">
+            <div id="hariOperasional"></div>
+        </div>
+
+        {{-- Jam Operasional & Tanggal --}}
+        <div id="jamOperasionalContainer" class="mb-3"></div>
+        <div id="daftarTanggal"></div>
+
+        <button type="submit" class="btn btn-primary col-12 pt-3">Kirim</button>
+    </form>
+</div>
+
+<script>
+  window.oldFormData = @json(old());
+</script>
+
 @endsection

@@ -27,13 +27,18 @@ class PengajuanBookingController extends Controller
 
     public function create() {
 
-        $Lokasi = Lokasi::select([
+        $lokasi = Lokasi::select([
             'id',
             'nama_lokasi'
         ])->whereNot('nama_lokasi', 'fleksible')->get();
 
         return view("pengguna.pengajuan-page.form-pengajuan-booking-store", [
-            'Lokasi' => $Lokasi,
+            'old_sesi' => session('old_sesi', []),
+            'old_sesi_tanggal' => session('old_sesi_tanggal', []),
+            'old_hari' => session('old_hari', []),
+            'old_labs' => session('old_labs', []),
+            'old_range' => session('old_range', []),
+            'lokasi' => $lokasi,
             'page_meta' => [
                 'page' => 'Buat Pengajuan Booking',
                 'route_name' => 'pengajuan.store',
@@ -43,9 +48,9 @@ class PengajuanBookingController extends Controller
         ]);
     }
 
-    public function getLaboratoriumByLokasi($lokasi_id)
+    public function getLaboratoriumByLokasi($lokasiId)
     {
-        $laboratorium = LaboratoriumUnpam::where('lokasi_id', $lokasi_id)
+        $laboratorium = LaboratoriumUnpam::where('lokasi_id', $lokasiId)
                         ->where('status_laboratorium', 'tersedia')
                         ->select('id', 'nama_laboratorium')
                         ->get();
