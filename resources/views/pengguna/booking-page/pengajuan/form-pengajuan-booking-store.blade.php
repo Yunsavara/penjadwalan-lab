@@ -3,7 +3,7 @@
 @section('title', 'Buat Pengajuan')
 
 @section('content')
-@vite(['resources/js/pengguna/pengguna'])
+@vite(['resources/js/pengguna/booking-page/booking'])
 
 <div class="col-12 p-3 py-4">
     <h2>{{ $page_meta['page'] }}</h2>
@@ -54,7 +54,7 @@
         {{-- Keperluan --}}
         <div class="mb-3">
             <label for="keperluanPengajuanBooking">Keperluan</label>
-            <textarea name="keperluan_pengajuan_booking" class="form-control" id="keperluanPengajuanBooking"></textarea>
+            <textarea name="keperluan_pengajuan_booking" class="form-control" id="keperluanPengajuanBooking"  style="min-height: 100px; max-height:100px; resize:none;"></textarea>
         </div>
 
         {{-- Hari Operasional --}}

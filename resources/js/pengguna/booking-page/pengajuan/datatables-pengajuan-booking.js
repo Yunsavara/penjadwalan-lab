@@ -1,13 +1,13 @@
 import DataTable from 'datatables.net';
 
-export function initPenggunaDatatable() {
-    const table = new DataTable("#tablePengguna", {
+export function initPengajuanBookingDatatable() {
+    const table = new DataTable("#tablePengajuanBooking", {
         serverSide: true,
         processing: true,
         responsive: true,
         fixedHeader: false,
         ajax: {
-            url: "/admin/api/data-pengguna",
+            url: "/pengajuan/api/data-pengajuan-booking",
             method: "GET"
         },
         columns: [

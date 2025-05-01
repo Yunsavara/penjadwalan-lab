@@ -11,13 +11,14 @@ use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
 use App\Models\PengajuanBooking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class PengajuanBookingController extends Controller
 {
     public function index() {
-        return view("pengguna.pengajuan-page.pengajuan-booking", [
+        return view("pengguna.booking-page.pengajuan-booking", [
             'page_meta' => [
                 'page' => 'Pengajuan',
                 'description' => 'Halaman untuk Membuat Pengajuan Booking.'
@@ -32,7 +33,7 @@ class PengajuanBookingController extends Controller
             'nama_lokasi'
         ])->whereNot('nama_lokasi', 'fleksible')->get();
 
-        return view("pengguna.pengajuan-page.form-pengajuan-booking-store", [
+        return view("pengguna.booking-page.pengajuan.form-pengajuan-booking-store", [
             'old_sesi' => session('old_sesi', []),
             'old_sesi_tanggal' => session('old_sesi_tanggal', []),
             'old_hari' => session('old_hari', []),
@@ -88,34 +89,101 @@ class PengajuanBookingController extends Controller
         return response()->json($jamOperasional);
     }
 
-
-    public function toPivotData(): array
+    public function getApiPengajuanBooking(Request $request)
     {
-        $pivotData = [];
+        $query =    PengajuanBooking::select([
+                        'id',
+                        'kode_booking',
+                        'status_pengajuan_booking',
+                        'keperluan_pengajuan_booking',
+                        'balasan_pengajuan_booking',
+                        'user_id',
+                    ]);
 
-        foreach ($this->laboratorium as $labId) {
-            foreach ($this->sesi_tanggal as $tanggal => $jamList) {
-                foreach ($jamList as $jam) {
-                    [$mulai, $selesai] = explode(' - ', $jam);
-                    $pivotData[] = [
-                        'laboratorium_id' => $labId,
-                        'tanggal' => $tanggal,
-                        'jam_mulai' => $mulai,
-                        'jam_selesai' => $selesai,
-                    ];
-                }
-            }
+        // Pencarian
+        if ($request->has('search') && !empty($request->search['value'])) {
+            $search = $request->search['value'];
+            $query->where(function ($q) use ($search) {
+                $q->where('kode_booking', 'like', "%{$search}%")
+                    ->orWhere('status_pengajuan_booking', 'like', "%{$search}%");
+            });
         }
 
-        return $pivotData;
+        $totalData = PengajuanBooking::count();
+        $totalFiltered = $query->count();
+
+        // Sorting
+        $orderColumnIndex = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir') ?? 'desc';
+
+        $columns = [null, 'kode_booking','id', 'keperluan_pengajuan_booking', 'status_pengajuan_booking', 'balasan_pengajuan_booking', 'user_id'];
+        $orderColumnName = $columns[$orderColumnIndex] ?? 'id';
+
+        if (in_array($orderColumnName, ['id','kode_booking', 'keperluan_pengajuan_booking','status_pengajuan_booking', 'balasan_pengajuan_booking', 'user_id'])) {
+            $query->orderBy($orderColumnName, $orderDirection);
+        } else {
+            $query->orderBy('id', 'desc');
+        }
+
+        // Pagination (limit data yang tampil per page)
+        $start = $request->start ?? 0;
+        $length = $request->length ?? 10;
+
+        $data = $query->skip($start)->take($length)->get();
+
+        $result = [];
+        foreach ($data as $index => $pengajuanBooking) {
+            $result[] = [
+                'id_pengajuan_booking' => Crypt::encryptString($pengajuanBooking->id),
+                'kode_booking' => $pengajuanBooking->kode_booking,
+                'status_pengajuan_booking' => $pengajuanBooking->status_pengajuan_booking,
+                'balasan_pengajuan_booking' => $pengajuanBooking->balasan_pengajuan_booking,
+                'status_pengajuan_booking' => $pengajuanBooking->status_pengajuan_booking,
+                'user_id' => Crypt::encryptString($pengajuanBooking->user_id)
+            ];
+        }
+
+        return response()->json([
+            'draw' => intval($request->draw),
+            'recordsTotal' => $totalData,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $result
+        ]);
     }
 
 
-    public function store(PengajuanBookingStoreRequest $Request)
-    {   
-        $pivotData = $Request->toPivotData();
+    public function store(PengajuanBookingStoreRequest $request)
+    {
+        DB::beginTransaction();
 
-        dd($pivotData);
+        try {
+            // Simpan pengajuan booking
+            $pengajuan = PengajuanBooking::create([
+                'kode_booking' => 'BOOK-' . now()->format('Ymd-His'),
+                'status_pengajuan_booking' => 'menunggu',
+                'keperluan_pengajuan_booking' => $request->keperluan_pengajuan_booking,
+                'user_id' => auth()->id(),
+            ]);
+
+            // Simpan semua jadwal booking
+            foreach ($request->toPivotData() as $data) {
+                JadwalBooking::create([
+                    'pengajuan_booking_id' => $pengajuan->id,
+                    'laboratorium_unpam_id' => $data['laboratorium_id'],
+                    'tanggal_jadwal' => $data['tanggal'],
+                    'jam_mulai' => $data['jam_mulai'],
+                    'jam_selesai' => $data['jam_selesai'],
+                    'status' => 'menunggu',
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('pengajuan')->with('success', 'Pengajuan booking berhasil dikirim.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->route('pengajuan.create')->withError('error', 'Pengajuan book tidak berhasil dikirim.');
+        }
     }
 
 }

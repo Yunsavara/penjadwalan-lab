@@ -17,7 +17,7 @@ export function initSelect2() {
   $('#lokasiSelect, #labSelect').select2({
     theme: "bootstrap-5",
     placeholder: "Pilih Opsi"
-  });
+  }); 
 }
 
 export function initTanggalRangePicker() {
