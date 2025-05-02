@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('keperluan_pengajuan_booking');
             $table->text('balasan_pengajuan_booking')->nullable();
 
+            $table->foreignId('lokasi_id')->constrained('lokasis');
             $table->foreignId('user_id')->constrained('users');
 
             $table->timestamps();

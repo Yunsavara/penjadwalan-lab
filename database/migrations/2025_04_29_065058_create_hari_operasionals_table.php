@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('hari_operasionals', function (Blueprint $table) {
             $table->id();
-            $table->string('hari_operasional');
-
+            $table->tinyInteger('hari_operasional'); 
             $table->foreignId('lokasi_id')->constrained('lokasis');
             $table->boolean('is_disabled')->default(false);
-
             $table->timestamps();
         });
     }

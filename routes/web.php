@@ -111,10 +111,12 @@ Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
     // Pengajuan Booking Datatables
     Route::get('/pengajuan/api/data-pengajuan-booking', [PengajuanBookingController::class, 'getApiPengajuanBooking']);
 
-    // Pengajuan Store
+    // Pengajuan Store, Update
     Route::get('/pengajuan/buat-pengajuan-booking', [PengajuanBookingController::class, 'create'])->name('pengajuan.create');
     Route::post('/pengajuan/tambah-pengajuan-booking', [PengajuanBookingController::class, 'store'])->name('pengajuan.store');
- 
+    Route::get('/pengajuan/ubah-pengajuan-booking/{id}', [PengajuanBookingController::class, 'edit'])->name('pengajuan.edit');
+    Route::put('/pengajuan/ubah-pengajuan-booking/{id}', [PengajuanBookingController::class, 'update'])->name('pengajuan.update');
+
     // Jadwal Page
     Route::get('/jadwal', [JadwalBookingController::class, 'index'])->name('jadwal');
 });

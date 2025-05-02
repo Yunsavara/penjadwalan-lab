@@ -28,4 +28,9 @@ class Lokasi extends Model
     {
         return $this->hasMany(HariOperasional::class);
     }
+
+    public function pengajuanBookings()
+    {
+        return $this->hasMany(PengajuanBooking::class);
+    }
 }

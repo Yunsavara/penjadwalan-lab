@@ -10,6 +10,8 @@ use App\Models\JamOperasional;
 use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
 use App\Models\PengajuanBooking;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -34,16 +36,9 @@ class PengajuanBookingController extends Controller
         ])->whereNot('nama_lokasi', 'fleksible')->get();
 
         return view("pengguna.booking-page.pengajuan.form-pengajuan-booking-store", [
-            'old_sesi' => session('old_sesi', []),
-            'old_sesi_tanggal' => session('old_sesi_tanggal', []),
-            'old_hari' => session('old_hari', []),
-            'old_labs' => session('old_labs', []),
-            'old_range' => session('old_range', []),
             'lokasi' => $lokasi,
             'page_meta' => [
                 'page' => 'Buat Pengajuan Booking',
-                'route_name' => 'pengajuan.store',
-                'method' => 'POST',
                 'description' => 'Halaman untuk input Data Pengajuan Booking'
             ] 
         ]);
@@ -88,7 +83,12 @@ class PengajuanBookingController extends Controller
 
         return response()->json($jamOperasional);
     }
-
+    
+    public function store(PengajuanBookingStoreRequest $request)
+    {
+        
+    }
+    
     public function getApiPengajuanBooking(Request $request)
     {
         $query =    PengajuanBooking::select([
@@ -150,40 +150,83 @@ class PengajuanBookingController extends Controller
             'data' => $result
         ]);
     }
-
-
-    public function store(PengajuanBookingStoreRequest $request)
+   
+    public function edit($id)
     {
-        DB::beginTransaction();
+        $pengajuan = PengajuanBooking::with('jadwalBookings')->findOrFail(Crypt::decryptString($id));
+        $lokasi = Lokasi::select('id', 'nama_lokasi')->where('nama_lokasi', '!=', 'fleksible')->get();
 
-        try {
-            // Simpan pengajuan booking
-            $pengajuan = PengajuanBooking::create([
-                'kode_booking' => 'BOOK-' . now()->format('Ymd-His'),
-                'status_pengajuan_booking' => 'menunggu',
-                'keperluan_pengajuan_booking' => $request->keperluan_pengajuan_booking,
-                'user_id' => auth()->id(),
-            ]);
+        // Ambil jadwal bookings
+        $jadwal = $pengajuan->jadwalBookings;
 
-            // Simpan semua jadwal booking
-            foreach ($request->toPivotData() as $data) {
-                JadwalBooking::create([
-                    'pengajuan_booking_id' => $pengajuan->id,
-                    'laboratorium_unpam_id' => $data['laboratorium_id'],
-                    'tanggal_jadwal' => $data['tanggal'],
-                    'jam_mulai' => $data['jam_mulai'],
-                    'jam_selesai' => $data['jam_selesai'],
-                    'status' => 'menunggu',
-                ]);
-            }
+        // Ambil laboratorium_unpam_id unik dari semua jadwal
+        $laboratoriumTerpilih = $jadwal->pluck('laboratorium_unpam_id')->unique()->toArray();
 
-            DB::commit();
+        // Ambil tanggal mulai dan selesai dari jadwal
+        $tanggalMulai = $jadwal->min('tanggal_jadwal');
+        $tanggalSelesai = $jadwal->max('tanggal_jadwal');
 
-            return redirect()->route('pengajuan')->with('success', 'Pengajuan booking berhasil dikirim.');
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return redirect()->route('pengajuan.create')->withError('error', 'Pengajuan book tidak berhasil dikirim.');
+        // Kelompokkan jam operasional berdasarkan tanggal
+        $jamTerpilih = [];
+        foreach ($jadwal as $j) {
+            $tanggal = $j->tanggal_jadwal;
+            $jam = $j->jam_mulai . '-' . $j->jam_selesai;
+            $jamTerpilih[$tanggal][] = $jam;
         }
-    }
 
+        return view('pengguna.booking-page.pengajuan.form-pengajuan-booking-update', [
+            'pengajuan' => $pengajuan,
+            'lokasi' => $lokasi,
+            'page_meta' => [
+                'page' => 'Edit Pengajuan Booking',
+                'description' => 'Halaman untuk edit Data Pengajuan Booking',
+            ],
+            'oldForm' => [
+                'lokasi' => $pengajuan->lokasi_id,
+                'laboratorium' => $laboratoriumTerpilih,
+                'tanggalMulai' => $tanggalMulai,
+                'tanggalSelesai' => $tanggalSelesai,
+                'jamOperasional' => $jamTerpilih,
+                'keperluan' => $pengajuan->keperluan_pengajuan_booking,
+            ]
+        ]);
+    }
+    
+    // public function update(PengajuanBookingStoreRequest $request, PengajuanBooking $pengajuan)
+    // {
+    //     DB::beginTransaction();
+
+    //     try {
+    //         // Update data utama pengajuan
+    //         $pengajuan->update([
+    //             'keperluan_pengajuan_booking' => $request->keperluan_pengajuan_booking,
+    //             // Jika status atau balasan ingin bisa diubah juga, tambahkan di sini
+    //         ]);
+
+    //         // Hapus jadwal lama
+    //         $pengajuan->jadwalBookings()->delete();
+
+    //         // Simpan jadwal baru
+    //         $pivotData = $request->toPivotData();
+
+    //         foreach ($pivotData as $data) {
+    //             JadwalBooking::create([
+    //                 'pengajuan_booking_id' => $pengajuan->id,
+    //                 'laboratorium_unpam_id' => $data['laboratorium_id'],
+    //                 'tanggal_jadwal' => $data['tanggal'],
+    //                 'jam_mulai' => $data['jam_mulai'],
+    //                 'jam_selesai' => $data['jam_selesai'],
+    //                 'status' => 'menunggu', // default
+    //             ]);
+    //         }
+
+    //         DB::commit();
+
+    //         return redirect()->route('pengajuan-booking.index')->with('success', 'Pengajuan berhasil diperbarui.');
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+
+    //         return back()->withErrors('Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
+    //     }
+    // }
 }

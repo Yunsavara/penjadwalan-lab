@@ -1,35 +1,27 @@
 @extends('layouts.app')
 
-@section('title', 'Buat Pengajuan')
-
 @section('content')
 @vite(['resources/js/pengguna/booking-page/booking'])
+<div class="container">
+    <h3>Buat Pengajuan Booking</h3>
 
-<div class="col-12 p-3 py-4">
-    <h2>{{ $page_meta['page'] }}</h2>
-    <span>{{ $page_meta['description'] }}</span>
-    <hr>
-
-    {{-- Error Section (tidak mengisi kembali input) --}}
     @if ($errors->any())
-      <div class="alert alert-danger mt-3">
-          <strong>Terjadi kesalahan:</strong>
-          <ul class="mb-0">
-              @foreach ($errors->all() as $e)
-                  <li>{{ $e }}</li>
-              @endforeach
-          </ul>
-      </div>
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
 
-    <form id="formPengajuanBookingStore" class="mb-5" method="POST" action="{{ route($page_meta['route_name']) }}">
-        @csrf
-        @method($page_meta['method'])
 
-        {{-- Pilih Lokasi --}}
+    <form action="{{ route('pengajuan.store') }}" method="POST">
+        @csrf
+
         <div class="mb-3">
-            <label for="lokasiSelect" class="form-label">Pilih Lokasi</label>
-            <select id="lokasiSelect" name="lokasi" class="form-select">
+            <label class="form-label" for="lokasiPengajuanBooking">Lokasi</label>
+            <select name="lokasi_pengajuan_booking" id="lokasiPengajuanBooking" class="form-select">
                 <option value=""></option>
                 @foreach ($lokasi as $lok)
                     <option value="{{ $lok->id }}">{{ $lok->nama_lokasi }}</option>
@@ -37,41 +29,47 @@
             </select>
         </div>
 
-        {{-- Pilih Lab --}}
+        <!-- Mode Pilih Tanggal -->
         <div class="mb-3">
-            <label for="labSelect" class="form-label">Pilih Laboratorium Utama</label>
-            <select id="labSelect" class="form-select" name="laboratorium[]" multiple></select>
+            <label class="form-label">Mode Pilih Tanggal</label>
+            <div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="mode_tanggal" id="modeMulti" value="multi" checked>
+                    <label class="form-check-label" for="modeMulti">Manual</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="mode_tanggal" id="modeRange" value="range">
+                    <label class="form-check-label" for="modeRange">Rentang</label>
+                </div>
+            </div>
         </div>
 
-        {{-- Tanggal Range --}}
-        <div class="mb-3">
-            <label for="tanggalRange" class="form-label">Pilih Tanggal (Range)</label>
-            <input type="hidden" name="tanggalRange[0]" id="tanggalMulai">
-            <input type="hidden" name="tanggalRange[1]" id="tanggalSelesai">
-            <input type="text" id="tanggalRange" class="form-control" placeholder="Pilih tanggal">
+        <!-- Input Multi Date -->
+        <div class="mb-3" id="multiDateContainer">
+            <label class="form-label" for="tanggalMulti">Tanggal (Manual)</label>
+            <input type="text" name="tanggal_multi" id="tanggalMulti" class="form-control">
         </div>
 
-        {{-- Keperluan --}}
-        <div class="mb-3">
-            <label for="keperluanPengajuanBooking">Keperluan</label>
-            <textarea name="keperluan_pengajuan_booking" class="form-control" id="keperluanPengajuanBooking"  style="min-height: 100px; max-height:100px; resize:none;"></textarea>
+        <!-- Input Range -->
+        <div class="mb-3 d-none" id="rangeDateContainer">
+            <label class="form-label" for="tanggalRange">Tanggal (Rentang)</label>
+            <input type="text" name="tanggal_range" id="tanggalRange" class="form-control">
         </div>
 
-        {{-- Hari Operasional --}}
-        <div class="mb-3" id="hariOperasionalWrapper">
-            <div id="hariOperasional"></div>
+        <!-- Container Checkbox Hari (hanya untuk mode range) -->
+        <div class="mb-3 d-none" id="hariOperasionalContainer">
+            <label class="form-label">Pilih Hari Operasional</label>
+            <div id="checkboxHariOperasional" class="form-check"></div>
         </div>
 
-        {{-- Jam Operasional & Tanggal --}}
-        <div id="jamOperasionalContainer" class="mb-3"></div>
-        <div id="daftarTanggal"></div>
+        <!-- Container sesi jam per hari -->
+        <div class="mb-3" id="jamOperasionalContainer"></div>
 
-        <button type="submit" class="btn btn-primary col-12 pt-3">Kirim</button>
+        <!-- Container sesi jam per tanggal (mode multi) -->
+        <div class="mb-3" id="jamPerTanggalContainer"></div>
+
+        <button type="submit" class="btn btn-primary col-12">Buat Pengajuan</button>
     </form>
 </div>
-
-<script>
-  window.oldFormData = @json(old());
-</script>
-
 @endsection
+

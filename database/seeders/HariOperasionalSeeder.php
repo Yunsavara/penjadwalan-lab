@@ -14,28 +14,28 @@ class HariOperasionalSeeder extends Seeder
      */
     public function run(): void
     {
-        // Definisikan hari operasional berdasarkan lokasi
+        // Mapping hari dalam angka sesuai getDay()
+        // 0 = Minggu, 1 = Senin, ..., 6 = Sabtu
         $lokasiHari = [
-            'Pusat' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
-            'Viktor' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
-            'Serang' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+            'Pusat' => [1, 2, 3, 4, 5],             // Senin–Jumat
+            'Viktor' => [1, 2, 3, 4, 5, 6],         // Senin–Sabtu
+            'Serang' => [0, 1, 2, 3, 4, 5, 6],      // Semua hari
         ];
-
-        // Ambil data lokasi yang bukan 'fleksible'
+    
+        // Ambil data lokasi (kecuali fleksible)
         $lokasis = Lokasi::whereNot('nama_lokasi', 'fleksible')->get();
-
+    
         foreach ($lokasis as $lokasi) {
-            // Tentukan hari operasional untuk lokasi tertentu
-            $hariList = $lokasiHari[$lokasi->nama_lokasi] ?? ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
-
+            $hariList = $lokasiHari[$lokasi->nama_lokasi] ?? [1, 2, 3, 4, 5]; // Default: Senin–Jumat
+    
             foreach ($hariList as $hari) {
-                HariOperasional::create([
+               HariOperasional::create([
                     'lokasi_id' => $lokasi->id,
                     'hari_operasional' => $hari,
-                    'is_disabled' => false, // Default aktif semua
+                    'is_disabled' => false,
                 ]);
             }
         }
-    }
+    }    
 
 }

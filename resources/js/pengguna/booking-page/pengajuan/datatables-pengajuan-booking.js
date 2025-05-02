@@ -30,28 +30,18 @@ export function initPengajuanBookingDatatable() {
             },
             {
                 title: "No",
-                data: "id_pengguna",
+                data: "id_pengajuan_booking",
                 visible: false,
             },
             {
-                title: "Nama Pengguna",
-                data: "nama_pengguna",
+                title: "Kode Booking",
+                data: "kode_booking",
                 className: "min-mobile text-nowrap align-middle"
             },
             {
-                title: "Email",
-                data: "email",
+                title: "Status",
+                data: "status_pengajuan_booking",
                 className: "text-nowrap align-middle",
-            },
-            {
-                title: "Lokasi",
-                data: "nama_lokasi",
-                className: "text-nowrap align-middle"
-            },
-            {
-                title: "Peran",
-                data: "nama_peran",
-                className: "text-nowrap align-middle"
             },
             {
                 title: "Aksi",
@@ -66,8 +56,8 @@ export function initPengajuanBookingDatatable() {
                                 Aksi
                             </button>
                             <ul class="dropdown-menu p-0">
-                                <li><button class="dropdown-item btn-edit-pengguna" data-row='${JSON.stringify(row)}'>Ubah</button></li>
-                                <li><button class="dropdown-item text-danger btn-delete-pengguna" data-row='${JSON.stringify(row)}'>Hapus</button></li>
+                                <li><a href="/pengajuan/ubah-pengajuan-booking/${row.id_pengajuan_booking}" class="dropdown-item">Ubah</a></li>
+                                <li><button class="dropdown-item text-danger">Hapus</button></li>
                             </ul>
                         </div>
                     `;
@@ -86,7 +76,7 @@ export function initPengajuanBookingDatatable() {
             moveToolsPengguna();
         },
         drawCallback: function (settings) {
-            const thElements = document.querySelectorAll('#tablePengguna th');
+            const thElements = document.querySelectorAll('#tablePengajuanBooking th');
             thElements.forEach(th => {
                 th.classList.add('table-white', 'text-nowrap', 'text-center');
             });
@@ -95,7 +85,7 @@ export function initPengajuanBookingDatatable() {
 } 
 
 function moveToolsPengguna() {
-    const wrapper = document.getElementById("tablePengguna").closest("#tablePengguna_wrapper");
+    const wrapper = document.getElementById("tablePengajuanBooking").closest("#tablePengajuanBooking_wrapper");
 
     const search = wrapper.querySelector(".dt-search");
     const length = wrapper.querySelector(".dt-length");
@@ -106,10 +96,10 @@ function moveToolsPengguna() {
         const input = search.querySelector("input");
         if (input) input.placeholder = "Pencarian...";
 
-        document.getElementById("searchPengguna").appendChild(search);
-        document.getElementById("sortingPengguna").appendChild(length);
-        document.getElementById("infoPengguna").appendChild(info);
-        document.getElementById("pagingPengguna").appendChild(paging);
+        document.getElementById("searchPengajuanBooking").appendChild(search);
+        document.getElementById("sortingPengajuanBooking").appendChild(length);
+        document.getElementById("infoPengajuanBooking").appendChild(info);
+        document.getElementById("pagingPengajuanBooking").appendChild(paging);
     } else {
         console.warn("Tools Pengguna Error: Beberapa elemen tidak ditemukan.");
     }
