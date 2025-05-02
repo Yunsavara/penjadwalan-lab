@@ -3,7 +3,8 @@
 @section('title', 'Tambah Jenis Lab')
 
 @section('content')
-    <h1 class="fw-bold">{{ $page_meta['page'] }}</h1>
+    <div class="mx-2 my-3">
+        <h1 class="fw-bold fs-3">Tambah Jenis Laboratorium</h1>
     <hr>
 
     {{-- Alert --}}
@@ -15,7 +16,7 @@
             @csrf
 
             <div class="col-12 mb-3">
-                <label for="namaJenisLab">Nama Jenis Lab</label>
+                <label for="namaJenisLab">Nama</label>
                 <input type="text" name="name" id="namaJenisLab" class="form-control @error('name') is-invalid @enderror" autocomplete="off" value="{{ old('name', $Jenislab->name) }}">
                 @error('name')
                     <div class="invalid-feedback d-block">
@@ -35,10 +36,11 @@
             </div>
 
             <div class="col-12 d-flex justify-content-end">
-                <button type="reset" class="btn btn-danger me-2">Reset</button>
-                <button type="submit" class="btn btn-primary">{{ $page_meta['button_text'] }}</button>
+                <button type="reset" class="btn me-2">Kosongkan</button>
+                <button type="submit" class="btn bg-brown text-light">Simpan</button>
             </div>
 
         </form>
+    </div>
     </div>
 @endsection

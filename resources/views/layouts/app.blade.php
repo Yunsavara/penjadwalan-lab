@@ -7,7 +7,6 @@
     <!-- CSS and JS -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'public/css/mystyle.css'])
     <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/mychart.css') }}">
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
@@ -17,7 +16,7 @@
     <title>@yield('title', 'Penjadwalan Lab')</title>
 
 </head>
-<body>
+<body class="bg-light">
 
     {{-- Header atau Navbar --}}
     @include('layouts.header')
@@ -28,7 +27,7 @@
         @include('layouts.sidebar')
 
         {{-- Content --}}
-        <div class="content bg-light flex-grow">
+        <div class="content flex-grow">
 
             <div class="hidden-container">
                 <!-- Search Box Disini Biar Lebarnya Sesuai Dengan Content -->

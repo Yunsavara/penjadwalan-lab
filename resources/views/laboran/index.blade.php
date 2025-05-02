@@ -43,13 +43,7 @@
     <div class="bg-white rounded-3 m-4 p-4">
         <h6 class="fs-2 fw-medium mb-4">Grafik Penggunaan Laboratorium</h6>
 
-        <dl>
-            <dd class="percentage percentage-50"><span class="text">Teknik Informatika (50%)</span></dd>
-            <dd class="percentage percentage-16"><span class="text">Sistem Informasi (16%)</span></dd>
-            <dd class="percentage percentage-5"><span class="text">Teknik Eletro (5%)</span></dd>
-            <dd class="percentage percentage-2"><span class="text">Lembaga Bahasa (2%)</span></dd>
-            <dd class="percentage percentage-2"><span class="text">Lembaga Sertifikasi Profesi (2%)</span></dd>
-        </dl>
+
     </div>
 
     {{-- Submission Table --}}

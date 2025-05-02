@@ -10,10 +10,22 @@ use App\Http\Controllers\Controller;
 
 class LaboranPengajuanController extends Controller
 {
-    public function index(){
+    // Page Jadwal
+    public function index()
+    {
         return view('laboran.jadwal-page.index', [
             'page_meta' => [
-                'page' => 'Jadwal'
+                'page' => 'Jadwal Penggunaan'
+            ]
+        ]);
+    }
+
+    // Page Pengajuan
+    public function viewPengajuan()
+    {
+        return view('laboran.jadwal-page.pengajuan.index', [
+            'page_meta' => [
+                'page' => 'Pengajuan Jadwal'
             ]
         ]);
     }
@@ -30,12 +42,12 @@ class LaboranPengajuanController extends Controller
 
             $query->where(function ($q) use ($search) {
                 $q->where('kode_pengajuan', 'like', "%{$search}%")
-                ->orWhereHas('bookingDetail', function ($q) use ($search) {
-                    $q->where('status', 'like', "%{$search}%");
-                })
-                ->orWhereHas('bookingDetail.laboratorium', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                });
+                    ->orWhereHas('bookingDetail', function ($q) use ($search) {
+                        $q->where('status', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('bookingDetail.laboratorium', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -122,7 +134,6 @@ class LaboranPengajuanController extends Controller
             DB::commit();
 
             return redirect()->back()->with('success', 'Pengajuan diterima.');
-
         } catch (\Exception $e) {
             // Jika terjadi error, rollback transaksi
             DB::rollBack();
@@ -182,7 +193,6 @@ class LaboranPengajuanController extends Controller
             DB::commit();
 
             return redirect()->back()->with('success', 'Pengajuan ditolak.');
-
         } catch (\Exception $e) {
             // Jika terjadi error, rollback transaksi
             DB::rollBack();

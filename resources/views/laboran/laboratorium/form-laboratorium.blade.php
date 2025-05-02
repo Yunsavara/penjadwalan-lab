@@ -3,7 +3,8 @@
 @section('title', 'Tambah Jenis Lab')
 
 @section('content')
-    <h1 class="fw-bold">{{ $page_meta['page'] }}</h1>
+    <div class="mx-2 my-3">
+        <h1 class="fw-bold fs-3">{{ $page_meta['page'] }}</h1>
     <hr>
 
     {{-- Alert Error --}}
@@ -15,7 +16,7 @@
             @csrf
 
             <div class="col-12 mb-3">
-                <label for="namaLaboratorium">Nama Laboratorium</label>
+                <label for="namaLaboratorium">Nama</label>
                 <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="namaLaboratorium" autocomplete="off" value="{{ old('name', $Laboratorium->name) }}">
                 @error('name')
                     <div class="invalid-feedback d-block">
@@ -25,7 +26,7 @@
             </div>
 
             <div class="col-12 mb-3">
-                <label for="jenisLab">Jenis Lab</label>
+                <label for="jenisLab">Jenis</label>
                 <select name="jenislab_id" id="jenisLab" class="form-select @error('jenislab_id') is-invalid @enderror">
                     <option value="" selected></option>
                     @foreach ($Jenislab as $lab)
@@ -38,7 +39,7 @@
             </div>
 
             <div class="col-12 mb-3">
-                <label for="lokasiLaboratorium">Lokasi Laboratorium</label>
+                <label for="lokasiLaboratorium">Lokasi</label>
                 <select name="lokasi_id" id="lokasiLaboratorium" class="form-select @error('lokasi_id') is-invalid @enderror">
                     <option value="" selected></option>
                     @foreach ($Lokasi as $lok)
@@ -51,7 +52,7 @@
             </div>
 
             <div class="col-12 mb-3">
-                <label for="kapasitasLaboratorium">Kapasitas Laboratorium</label>
+                <label for="kapasitasLaboratorium">Kapasitas</label>
                 <input type="text" name="kapasitas" class="form-control @error('kapasitas') is-invalid @enderror" id="kapasitasLaboratorium" autocomplete="off" value="{{ old('kapasitas', $Laboratorium->kapasitas) }}">
                 @error('kapasitas')
                     <div class="invalid-feedback d-block">
@@ -61,7 +62,7 @@
             </div>
 
             <div class="col-12 mb-3">
-                <label for="statusLaboratorium">Status Laboratorium</label>
+                <label for="statusLaboratorium">Status</label>
                 <select name="status" id="statusLaboratorium" class="form-select @error('status') is-invalid @enderror">
                     <option value="tersedia" {{ old('status', $Laboratorium->status) === 'tersedia' ? 'selected' : '' }}>Tersedia</option>
                     <option value="tidak tersedia" {{ old('status', $Laboratorium->status) === 'tidak tersedia' ? 'selected' : '' }}>Tidak Tersedia</option>
@@ -74,10 +75,11 @@
             </div>
 
             <div class="col-12 d-flex justify-content-end">
-                <button type="reset" class="btn btn-danger me-2">Reset</button>
-                <button type="submit" class="btn btn-primary">{{ $page_meta['button_text'] }}</button>
+                <button type="reset" class="btn me-2">Kosongkan</button>
+                <button type="submit" class="btn bg-brown text-light">Simpan</button>
             </div>
         </form>
     </div>
 
+    </div>
 @endsection

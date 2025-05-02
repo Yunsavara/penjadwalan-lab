@@ -43,13 +43,10 @@
         <div class="bg-white rounded-3 m-4 p-4">
             <h6 class="fs-2 fw-medium mb-4">Grafik Penggunaan Laboratorium</h6>
 
-            <dl>
-                <dd class="percentage percentage-50"><span class="text">Teknik Informatika (50%)</span></dd>
-                <dd class="percentage percentage-16"><span class="text">Sistem Informasi (16%)</span></dd>
-                <dd class="percentage percentage-5"><span class="text">Teknik Eletro (5%)</span></dd>
-                <dd class="percentage percentage-2"><span class="text">Lembaga Bahasa (2%)</span></dd>
-                <dd class="percentage percentage-2"><span class="text">Lembaga Sertifikasi Profesi (2%)</span></dd>
-            </dl>
+            <div style="position: relative; height:40vh; width:80vw">
+                <canvas id="myChart"></canvas>
+            </div>
+
         </div>
 
         {{-- Submission Table --}}
@@ -58,34 +55,71 @@
 
             <table class="table">
                 <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                  </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Handle</th>
+                    </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>John</td>
-                    <td>Doe</td>
-                    <td>@social</td>
-                  </tr>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>John</td>
+                        <td>Doe</td>
+                        <td>@social</td>
+                    </tr>
                 </tbody>
-              </table>
+            </table>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+
+    <script>
+        const ctx = document.getElementById('myChart');
+
+        const data = {
+            labels: [
+                'Red',
+                'Blue',
+                'Yellow',
+                'Purple'
+            ],
+            datasets: [{
+                label: 'My First Dataset',
+                data: [300, 50, 100, 500],
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                    'rgb(165, 95, 117)'
+                ],
+                hoverOffset: 4
+            }],
+        };
+
+        const config = {
+            type: 'doughnut',
+            data: data,
+            // options: {
+            //     maintainAspectRatio: false;
+            // }
+        };
+
+
+        new Chart(ctx, config);
+    </script>
 @endsection

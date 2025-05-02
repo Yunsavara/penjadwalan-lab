@@ -29,14 +29,14 @@ body {
 
 /* Background */
 .bg-white {
-    background-color: rgba(241, 241, 241, 1);
+    background-color: rgba(241, 241, 241, 1) !important;
 }
 
 .bg-brown100 {
-    background-color: rgba(255, 234, 197, 1);
+    background-color: rgba(255, 234, 197, 1) !important;
 }
 .bg-brown200 {
-    background-color: rgba(255, 219, 181, 1);
+    background-color: rgba(255, 219, 181, 1) !important;
 }
 
 .bg-darken {
@@ -49,15 +49,15 @@ body {
 }
 
 .bg-brown {
-    background-color: rgba(166, 123, 91, 1);
+    background-color: rgba(166, 123, 91, 1) !important;
 }
 
 .bg-darkBrown {
-    background-color: rgba(108, 78, 49, 1);
+    background-color: rgba(108, 78, 49, 1) !important;
 }
 
 .bg-darkerBrown {
-    background-color: rgba(96, 63, 38, 1);
+    background-color: rgba(96, 63, 38, 1) !important;
 }
 /* End Background */
 
@@ -92,6 +92,11 @@ body {
     width: 10vw;
     height: 10vh;
 }
+
+.outline-0{
+    outline: none;
+    /* border: none; */
+}
 /* General Style End */
 
 /* Welcome Page Style */
@@ -102,6 +107,7 @@ body {
 .myfacility-icons{
     height: 100px;
 }
+/* Welcome Page End */
 
 /* Login Page Style */
 .bg-fullscreen{
@@ -129,3 +135,4 @@ body {
     font-weight: 500;
     width: 100%;
 }
+/* Login Page End */

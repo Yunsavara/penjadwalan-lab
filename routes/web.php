@@ -75,7 +75,8 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::put('/laboran/ubah-laboratorium/{laboratorium:slug}', [LaboratoriumUnpamController::class, 'update']);
 
     // Booking atau Pengajuan
-    Route::get('/laboran/jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.pengajuan');
+    Route::get('/laboran/jadwal', [LaboranPengajuanController::class, 'index'])->name('laboran.jadwal');
+    Route::get('/laboran/pengajuan', [LaboranPengajuanController::class, 'viewPengajuan'])->name('laboran.pengajuan');
     Route::get('/laboran/jadwal/pengajuan-data', [LaboranPengajuanController::class, 'getDataBooking']);
 
     Route::post('/laboran/pengajuan-diterima', [LaboranPengajuanController::class, 'terimaPengajuan'])->name('pengajuan.terima');
