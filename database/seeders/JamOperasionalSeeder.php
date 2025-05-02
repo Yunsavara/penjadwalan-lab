@@ -21,7 +21,7 @@ class JamOperasionalSeeder extends Seeder
             4 => ['08:00:00', '17:00:00'],
             5 => ['08:00:00', '17:00:00'],
             6 => ['08:00:00', '12:00:00'],
-            0 => ['08:00:00', '12:00:00'],
+            0 => ['08:00:00', '09:00:00'],
         ];
 
         $hariOperasionals = HariOperasional::all();

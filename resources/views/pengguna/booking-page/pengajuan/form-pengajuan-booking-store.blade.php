@@ -29,6 +29,13 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label class="form-label" for="laboratoriumPengajuanBooking">Laboratorium</label>
+            <select name="laboratorium_pengajuan_booking[]" id="laboratoriumPengajuanBooking" class="form-select" multiple>
+                <!-- Options akan diisi via JS -->
+            </select>
+        </div>
+
         <!-- Mode Pilih Tanggal -->
         <div class="mb-3">
             <label class="form-label">Mode Pilih Tanggal</label>
@@ -47,19 +54,19 @@
         <!-- Input Multi Date -->
         <div class="mb-3" id="multiDateContainer">
             <label class="form-label" for="tanggalMulti">Tanggal (Manual)</label>
-            <input type="text" name="tanggal_multi" id="tanggalMulti" class="form-control">
+            <input type="text" name="tanggal_multi" id="tanggalMulti" class="form-control tanggal-flatpickr">
         </div>
 
         <!-- Input Range -->
         <div class="mb-3 d-none" id="rangeDateContainer">
             <label class="form-label" for="tanggalRange">Tanggal (Rentang)</label>
-            <input type="text" name="tanggal_range" id="tanggalRange" class="form-control">
+            <input type="text" name="tanggal_range" id="tanggalRange" class="form-control tanggal-flatpickr">
         </div>
 
         <!-- Container Checkbox Hari (hanya untuk mode range) -->
         <div class="mb-3 d-none" id="hariOperasionalContainer">
             <label class="form-label">Pilih Hari Operasional</label>
-            <div id="checkboxHariOperasional" class="form-check"></div>
+            <div id="checkboxHariOperasional" class="row"></div>
         </div>
 
         <!-- Container sesi jam per hari -->
@@ -67,6 +74,8 @@
 
         <!-- Container sesi jam per tanggal (mode multi) -->
         <div class="mb-3" id="jamPerTanggalContainer"></div>
+
+
 
         <button type="submit" class="btn btn-primary col-12">Buat Pengajuan</button>
     </form>
