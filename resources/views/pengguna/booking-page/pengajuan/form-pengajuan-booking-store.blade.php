@@ -38,7 +38,7 @@
 
         <!-- Mode Pilih Tanggal -->
         <div class="mb-3">
-            <label class="form-label">Mode Pilih Tanggal</label>
+            <label class="form-label">Mode Tanggal</label>
             <div>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="mode_tanggal" id="modeMulti" value="multi" checked>
@@ -75,7 +75,10 @@
         <!-- Container sesi jam per tanggal (mode multi) -->
         <div class="mb-3" id="jamPerTanggalContainer"></div>
 
-
+        <div class="mb-3">
+            <label class="form-label" for="keperluanPengajuanBooking">Keperluan</label>
+            <textarea name="keperluan_pengajuan_booking" id="keperluanPengajuanBooking" class="form-control" style="max-height:100px; min-height:100px; resize:none;"></textarea>
+        </div>
 
         <button type="submit" class="btn btn-primary col-12">Buat Pengajuan</button>
     </form>
