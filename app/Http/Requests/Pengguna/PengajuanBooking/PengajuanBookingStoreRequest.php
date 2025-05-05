@@ -23,45 +23,28 @@ class PengajuanBookingStoreRequest extends FormRequest
      public function rules()
      {
          return [
-             'lokasi_pengajuan_booking' => ['required', 'exists:lokasis,id'],
-             'laboratorium_pengajuan_booking' => ['required', 'array', 'min:1'],
-             'laboratorium_pengajuan_booking.*' => ['exists:laboratorium_unpams,id'],
-             'tanggal_pengajuan_booking' => ['required', 'regex:/^\d{4}-\d{2}-\d{2} - \d{4}-\d{2}-\d{2}$/'],
-             'hari_operasional' => ['required', 'array', 'min:1'],
-             'hari_operasional.*' => ['string'],
-             'jam_operasional' => ['required', 'array'],
-             'jam_operasional.*' => ['array', 'min:1'],
-             'keperluan_pengajuan_booking' => ['required', 'string', 'min:10'],
+             'lokasi_pengajuan_booking' => 'required|exists:lokasis,id',
+             'laboratorium_pengajuan_booking' => 'required|array',
+             'laboratorium_pengajuan_booking.*' => 'exists:laboratorium_unpams,id',
+             'mode_tanggal' => 'required|in:multi,range',
+             'tanggal_multi' => 'required_if:mode_tanggal,multi',
+             'tanggal_range' => 'required_if:mode_tanggal,range',
+             'hari_operasional' => 'required_if:mode_tanggal,range|array',
+             'jam' => 'required|array',
+             'keperluan_pengajuan_booking' => 'required|string|max:255',
          ];
      }
      
      public function messages()
      {
          return [
-             'lokasi_pengajuan_booking.required' => 'Lokasi wajib dipilih.',
-             'lokasi_pengajuan_booking.exists' => 'Lokasi yang dipilih tidak valid.',
-     
-             'laboratorium_pengajuan_booking.required' => 'Minimal satu laboratorium harus dipilih.',
-             'laboratorium_pengajuan_booking.array' => 'Format laboratorium tidak valid.',
-             'laboratorium_pengajuan_booking.min' => 'Minimal satu laboratorium harus dipilih.',
-             'laboratorium_pengajuan_booking.*.exists' => 'Laboratorium yang dipilih tidak valid.',
-     
-             'tanggal_pengajuan_booking.required' => 'Tanggal pengajuan wajib diisi.',
-             'tanggal_pengajuan_booking.regex' => 'Format tanggal rentang tidak valid. Gunakan format YYYY-MM-DD - YYYY-MM-DD.',
-     
-             'hari_operasional.required' => 'Pilih minimal satu hari operasional.',
-             'hari_operasional.array' => 'Format hari operasional tidak valid.',
-             'hari_operasional.min' => 'Pilih minimal satu hari operasional.',
-             'hari_operasional.*.string' => 'Hari operasional tidak valid.',
-     
-             'jam_operasional.required' => 'Jam operasional wajib dipilih.',
-             'jam_operasional.array' => 'Format jam operasional tidak valid.',
-             'jam_operasional.*.array' => 'Format jam operasional tidak valid.',
-             'jam_operasional.*.min' => 'Setiap hari operasional harus memiliki minimal satu jam.',
-     
-             'keperluan_pengajuan_booking.required' => 'Keperluan wajib diisi.',
-             'keperluan_pengajuan_booking.string' => 'Format keperluan tidak valid.',
-             'keperluan_pengajuan_booking.min' => 'Keperluan minimal 10 karakter.',
+             'lokasi_pengajuan_booking.required' => 'Lokasi harus dipilih.',
+             'laboratorium_pengajuan_booking.required' => 'Laboratorium harus dipilih.',
+             'tanggal_multi.required_if' => 'Tanggal harus dipilih untuk mode manual.',
+             'tanggal_range.required_if' => 'Rentang tanggal harus dipilih untuk mode rentang.',
+             'hari_operasional.required_if' => 'Minimal satu hari operasional harus dicentang.',
+             'jam.required' => 'Sesi jam harus dipilih minimal satu.',
+             'keperluan_pengajuan_booking.required' => 'Keperluan tidak boleh kosong.',
          ];
      }
      

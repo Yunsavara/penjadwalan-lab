@@ -86,7 +86,7 @@ class PengajuanBookingController extends Controller
     
     public function store(PengajuanBookingStoreRequest $request)
     {
-        
+        dd($request->all());
     }
     
     public function getApiPengajuanBooking(Request $request)

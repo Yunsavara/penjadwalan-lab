@@ -65,7 +65,6 @@
 
         <!-- Container Checkbox Hari (hanya untuk mode range) -->
         <div class="mb-3 d-none" id="hariOperasionalContainer">
-            <label class="form-label">Pilih Hari Operasional</label>
             <div id="checkboxHariOperasional" class="row"></div>
         </div>
 
@@ -83,5 +82,10 @@
         <button type="submit" class="btn btn-primary col-12">Buat Pengajuan</button>
     </form>
 </div>
+
+<script>
+    window.oldData = @json(old());
+</script>
+  
 @endsection
 
