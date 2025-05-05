@@ -17,15 +17,8 @@ return new class extends Migration
             $table->integer('kapasitas_laboratorium');
             $table->enum('status_laboratorium', ['tersedia', 'tidak tersedia'])->default('tersedia');
 
-            $table->unsignedBigInteger('lokasi_id');
-            $table->foreign('lokasi_id')
-            ->references('id')
-            ->on('lokasis');
-
-            $table->unsignedBigInteger('jenislab_id');
-            $table->foreign('jenislab_id')
-              ->references('id')
-              ->on('jenislabs');
+            $table->foreignId('lokasi_id')->constrained('lokasis');
+            $table->foreignId('jenislab_id')->constrained('jenislabs');
 
             $table->text('deskripsi_laboratorium')->nullable();
 

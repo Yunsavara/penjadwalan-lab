@@ -150,7 +150,7 @@ class LaboratoriumUnpamController extends Controller
         DB::beginTransaction();
 
         try {
-            $lab = LaboratoriumUnpam::where('id', Crypt::decryptString($id))->firstOrFail();
+            $lab = LaboratoriumUnpam::findOrFail(Crypt::decryptString($id));
             $lab->delete(); // ini akan soft delete
 
             DB::commit();

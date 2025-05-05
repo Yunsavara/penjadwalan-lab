@@ -117,7 +117,7 @@ class JenisLabController extends Controller
         DB::beginTransaction();
 
         try {
-            $lab = Jenislab::where('id', Crypt::decryptString($id))->firstOrFail();
+            $lab = Jenislab::findOrFail(Crypt::decryptString($id));
             $lab->delete(); // ini akan soft delete
 
             DB::commit();

@@ -32,3 +32,22 @@ input[type=number] {
     appearance: textfield;
     -moz-appearance: textfield;
 }
+
+/* Select 2, Supaya responsive */
+.select2 {
+    width: 100% !important;
+}
+
+/* Buat hilangin border sama outline kaya icon help, tapi ini untuk semua icon feather */
+.feather {
+    outline: 0 !important;
+    border: 0 !important;
+}
+
+
+.select2-selection--multiple .select2-selection__choice {
+    white-space: normal !important;
+    max-width: 100%;
+    width: 100%; /* optional, bisa dihilangkan kalau pengen auto-wrap aja */
+    word-break: break-word;
+}

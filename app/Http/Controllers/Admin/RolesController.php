@@ -12,6 +12,9 @@ use App\Http\Requests\Admin\Peran\PeranUpdateRequest;
 
 class RolesController extends Controller
 {
+
+    // Index Nya ada di UsersController, karena pakai modal untuk formnya jadi gk pindah halaman
+
     public function getApiPeran(Request $request)
     {
         $query = roles::select(['id','nama_peran', 'prioritas_peran']);
@@ -114,11 +117,12 @@ class RolesController extends Controller
     }
 
     public function softDelete($id) {
+
         DB::beginTransaction();
 
         try {
 
-            $Peran = roles::where('id', Crypt::decryptString($id));
+            $Peran = roles::findOrFail(Crypt::decryptString($id));
             $Peran->delete();
 
             DB::commit();

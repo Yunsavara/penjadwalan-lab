@@ -5,6 +5,11 @@
 @section('content')
 @vite(['resources/js/admin/pengguna-page/pengguna'])
 
+{{-- Pengguna --}}
+@include('admin.pengguna-page.pengguna.form-pengguna-store')
+@include('admin.pengguna-page.pengguna.form-pengguna-update')
+@include('admin.pengguna-page.pengguna.form-pengguna-soft-delete')
+
 {{-- Peran --}}
 @include('admin.pengguna-page.peran.form-peran-store')
 @include('admin.pengguna-page.peran.form-peran-update')

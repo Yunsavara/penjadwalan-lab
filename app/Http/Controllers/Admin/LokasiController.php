@@ -116,7 +116,8 @@ class LokasiController extends Controller
         DB::beginTransaction();
 
         try {
-            $Lokasi = Lokasi::where('id', Crypt::decryptString($id));
+
+            $Lokasi = Lokasi::findOrFail(Crypt::decryptString($id));
             $Lokasi->delete();
 
             DB::commit();
