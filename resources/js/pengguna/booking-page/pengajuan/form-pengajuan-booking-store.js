@@ -22,8 +22,6 @@ export function initFormPengajuanBookingStore() {
   }
 }
 
-// ---------- Inisialisasi ----------
-
 function initializeSelects() {
   $('#lokasiPengajuanBooking').select2({
     theme: "bootstrap-5",
@@ -77,8 +75,6 @@ function bindEventListeners() {
   $('#tanggalRange').on('change', handleRangeOrCheckboxChange);
   $('#checkboxHariOperasional').on('change', '.checkbox-hari', handleRangeOrCheckboxChange);
 }
-
-// ---------- Event Handlers ----------
 
 function handleModeToggle() {
   const mode = $('input[name="mode_tanggal"]:checked').val();
@@ -171,8 +167,6 @@ function handleRangeOrCheckboxChange() {
   $('.select2-jam').select2({ theme: 'bootstrap-5', placeholder: 'Pilih Sesi Jam' });
 }
 
-// ---------- UI Rendering ----------
-
 function renderHariOperasionalCheckboxes() {
   $('#checkboxHariOperasional').prev('.label-wrapper').remove();
 
@@ -208,7 +202,8 @@ function generateJamSelect(tanggal, jamList) {
     day: 'numeric', month: 'long', year: 'numeric'
   });
 
-  const dateKey = tanggal.toISOString().split('T')[0];
+  const dateKey = tanggal.toLocaleDateString('sv-SE');
+
   const options = jamList.map(j => {
     const label = `${j.jam_mulai} - ${j.jam_selesai}`;
     return `<option value="${label}">${label}</option>`;
@@ -223,8 +218,6 @@ function generateJamSelect(tanggal, jamList) {
     </div>
   `;
 }
-
-// ---------- Helpers ----------
 
 function fetchJSON(url) {
   return fetch(url).then(res => {
@@ -259,8 +252,6 @@ function resetAll() {
   clearDateAndJamFields();
   setInputsDisabled(false);
 }
-
-// ---------- Restore Old Data ----------
 
 function restoreOldValues() {
   const old = window.oldData || {};

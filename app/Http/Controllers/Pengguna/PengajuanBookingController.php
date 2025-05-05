@@ -86,7 +86,83 @@ class PengajuanBookingController extends Controller
     
     public function store(PengajuanBookingStoreRequest $request)
     {
-        dd($request->all());
+        $data = $request->validated();
+
+        dd($data);
+
+        DB::beginTransaction();
+
+        try {
+            // Membuat kode booking unik
+            $kodeBooking = Str::uuid()->toString();
+
+            // Menyimpan data pengajuan booking
+            $pengajuanBooking = PengajuanBooking::create([
+                'kode_booking' => $kodeBooking,
+                'keperluan_pengajuan_booking' => $data['keperluan_pengajuan_booking'],
+                'status_pengajuan_booking' => 'menunggu',
+                'mode_tanggal_pengajuan' => $data['mode_tanggal'],
+                'lokasi_id' => $data['lokasi_pengajuan_booking'],
+                'user_id' => auth()->id(),
+            ]);
+
+            // Jika mode tanggal adalah multi
+            if ($data['mode_tanggal'] === 'multi' && $data['tanggal_multi']) {
+                foreach ($data['tanggal_multi'] as $tanggal) {
+                    foreach ($data['jam'][$tanggal] as $jam) {
+                        list($jamMulai, $jamSelesai) = explode(' - ', $jam);
+
+                        // Menyimpan data jadwal booking per tanggal dan sesi
+                        JadwalBooking::create([
+                            'tanggal_jadwal' => $tanggal,
+                            'jam_mulai' => $jamMulai,
+                            'jam_selesai' => $jamSelesai,
+                            'pengajuan_booking_id' => $pengajuanBooking->id,
+                            'laboratorium_unpam_id' => $data['laboratorium_pengajuan_booking'][0], // Pilih laboratorium pertama (asumsi)
+                        ]);
+                    }
+                }
+            }
+
+            // Jika mode tanggal adalah rentang
+            if ($data['mode_tanggal'] === 'range' && $data['tanggal_range']) {
+                $startDate = $data['tanggal_range']['start'];
+                $endDate = $data['tanggal_range']['end'];
+
+                // Mengiterasi setiap hari dalam rentang tanggal
+                $start = Carbon::parse($startDate);
+                $end = Carbon::parse($endDate);
+
+                while ($start->lte($end)) {
+                    if (in_array($start->dayOfWeek, $data['hari_operasional'])) {
+                        // Pastikan tanggal ada di array 'jam' sebelum diproses
+                        $tanggalString = $start->toDateString();
+                        if (isset($data['jam'][$tanggalString])) {
+                            foreach ($data['jam'][$tanggalString] as $jam) {
+                                list($jamMulai, $jamSelesai) = explode(' - ', $jam);
+
+                                JadwalBooking::create([
+                                    'tanggal_jadwal' => $tanggalString,
+                                    'jam_mulai' => $jamMulai,
+                                    'jam_selesai' => $jamSelesai,
+                                    'pengajuan_booking_id' => $pengajuanBooking->id,
+                                    'laboratorium_unpam_id' => $data['laboratorium_pengajuan_booking'][0], // Pilih laboratorium pertama (asumsi)
+                                ]);
+                            }
+                        }
+                    }
+
+                    // Pindah ke tanggal berikutnya
+                    $start->addDay();
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('pengajuan')->with('success', 'Pengajuan booking berhasil dibuat.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan data.' . $e->getMessage()])->withInput();
+        }
     }
     
     public function getApiPengajuanBooking(Request $request)

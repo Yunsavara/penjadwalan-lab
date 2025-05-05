@@ -11,6 +11,7 @@ class PengajuanBooking extends Model
         'status_pengajuan_booking',
         'keperluan_pengajuan_booking',
         'balasan_pengajuan_booking',
+        'mode_tanggal_pengajuan',
         'lokasi_id',
         'user_id',
     ];
