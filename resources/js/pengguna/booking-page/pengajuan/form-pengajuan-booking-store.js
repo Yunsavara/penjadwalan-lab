@@ -7,33 +7,34 @@ let flatpickrMultiInstance, flatpickrRangeInstance;
 let hariOperasionalGlobal = [];
 let jamOperasionalMap = {};
 
-// Mapping hari untuk menampilkan nama hari
 const hariMapping = {
   0: 'Minggu', 1: 'Senin', 2: 'Selasa', 3: 'Rabu',
   4: 'Kamis', 5: 'Jumat', 6: 'Sabtu'
 };
 
-// Inisialisasi form pengajuan booking
 export function initFormPengajuanBookingStore() {
   initializeSelects();
-  initializeFlatpickrs(); 
-  bindEventListeners(); 
+  initializeFlatpickrs();
+  bindEventListeners();
 
   if (window.oldData && Object.keys(window.oldData).length > 0) {
     restoreOldValues();
   }
 }
 
-// Inisialisasi elemen select2 untuk dropdown lokasi dan laboratorium
+// ---------- Inisialisasi ----------
+
 function initializeSelects() {
-  $('#lokasiPengajuanBooking').select2({ theme: "bootstrap-5", placeholder: "Pilih Lokasi" });
+  $('#lokasiPengajuanBooking').select2({
+    theme: "bootstrap-5",
+    placeholder: "Pilih Lokasi"
+  });
 
   $('#laboratoriumPengajuanBooking')
     .select2({ theme: "bootstrap-5", placeholder: "Pilih Laboratorium" })
-    .prop('disabled', true); // Menonaktifkan select2 laboratorium saat tidak ada lokasi
+    .prop('disabled', true);
 }
 
-// Pengaturan Flatpickr Multi Untuk Disable yang Tidak ada Di Hari Operasional
 function getFlatpickrMultiConfig() {
   return {
     minDate: "today",
@@ -43,20 +44,19 @@ function getFlatpickrMultiConfig() {
     locale: Indonesian,
     mode: "multiple",
     disable: [
-      function (date) {
+      date => {
         const allowedDays = hariOperasionalGlobal.map(h => Number(h.hari_operasional));
-        return !allowedDays.includes(date.getDay()); // True berarti akan dinonaktifkan
+        return !allowedDays.includes(date.getDay());
       }
     ],
     onReady: (_, __, instance) => instance._input.setAttribute("disabled", true)
   };
 }
 
-// Inisialisasi flatpickr dengan konfigurasi tertentu untuk tanggal multi dan range
 function initializeFlatpickrs() {
   flatpickrMultiInstance = flatpickr("#tanggalMulti", {
     ...getFlatpickrMultiConfig(),
-    disable: [() => true] // Disable semua dulu sampai data hari operasional diambil
+    disable: [() => true]
   });
 
   flatpickrRangeInstance = flatpickr("#tanggalRange", {
@@ -70,29 +70,27 @@ function initializeFlatpickrs() {
   });
 }
 
-// Menambahkan event listeners untuk elemen-elemen tertentu
 function bindEventListeners() {
-  $('input[name="mode_tanggal"]').on('change', handleModeToggle); // Event untuk mode tanggal
-  $('#lokasiPengajuanBooking').on('change', handleLokasiChange); // Event untuk perubahan lokasi
-  $('#tanggalMulti').on('change', handleMultiDateChange); // Event untuk perubahan tanggal multi
-  $('#tanggalRange').on('change', handleRangeOrCheckboxChange); // Event untuk perubahan range tanggal
-  $('#checkboxHariOperasional').on('change', '.checkbox-hari', handleRangeOrCheckboxChange); // Event untuk checkbox hari operasional
+  $('input[name="mode_tanggal"]').on('change', handleModeToggle);
+  $('#lokasiPengajuanBooking').on('change', handleLokasiChange);
+  $('#tanggalMulti').on('change', handleMultiDateChange);
+  $('#tanggalRange').on('change', handleRangeOrCheckboxChange);
+  $('#checkboxHariOperasional').on('change', '.checkbox-hari', handleRangeOrCheckboxChange);
 }
 
-// Menangani perubahan mode tanggal (multi atau range)
+// ---------- Event Handlers ----------
+
 function handleModeToggle() {
   const mode = $('input[name="mode_tanggal"]:checked').val();
 
-  // Menyembunyikan atau menampilkan elemen-elemen sesuai dengan mode yang dipilih
   $('#multiDateContainer').toggleClass('d-none', mode !== 'multi');
   $('#rangeDateContainer, #hariOperasionalContainer, #jamOperasionalContainer')
     .toggleClass('d-none', mode === 'multi');
   $('#jamPerTanggalContainer').toggleClass('d-none', mode !== 'multi').empty();
 
-  clearDateAndJamFields(); // Membersihkan tanggal dan jam
+  clearDateAndJamFields();
 }
 
-// Menangani perubahan lokasi
 async function handleLokasiChange(callback = null) {
   const lokasiId = $('#lokasiPengajuanBooking').val();
   if (!lokasiId) return resetAll();
@@ -102,10 +100,13 @@ async function handleLokasiChange(callback = null) {
 
   try {
     hariOperasionalGlobal = await fetchJSON(`/pengajuan/api/data-hari-operasional/${lokasiId}`);
-    
+
     const jamPromises = hariOperasionalGlobal.map(h => fetchJSON(`/pengajuan/api/data-jam-operasional/${h.id}`));
     const jamResults = await Promise.all(jamPromises);
-    hariOperasionalGlobal.forEach((hari, i) => jamOperasionalMap[hari.id] = jamResults[i]);
+
+    hariOperasionalGlobal.forEach((hari, i) => {
+      jamOperasionalMap[hari.id] = jamResults[i];
+    });
 
     renderHariOperasionalCheckboxes();
 
@@ -121,7 +122,7 @@ async function handleLokasiChange(callback = null) {
       .prop('disabled', false)
       .trigger('change');
 
-    if (typeof callback === 'function') callback(); // ✅ Panggil callback setelah semua siap
+    if (typeof callback === 'function') callback();
   } catch (error) {
     console.error("Gagal memuat data lokasi:", error);
     resetAll();
@@ -130,68 +131,66 @@ async function handleLokasiChange(callback = null) {
   }
 }
 
-// Menangani perubahan pada tanggal multi
 function handleMultiDateChange() {
   const tanggalList = flatpickrMultiInstance.selectedDates;
-  const $container = $('#jamPerTanggalContainer').empty(); // Bersihkan kontainer jam
+  const $container = $('#jamPerTanggalContainer').empty();
 
   tanggalList.forEach(tgl => {
     const day = tgl.getDay();
-    const matched = hariOperasionalGlobal.find(h => Number(h.hari_operasional) === day); // Cari hari yang cocok
-    if (!matched) return; // Jika tidak ditemukan, lanjutkan ke tanggal berikutnya
+    const matched = hariOperasionalGlobal.find(h => Number(h.hari_operasional) === day);
+    if (!matched) return;
 
     const jamList = jamOperasionalMap[matched.id] || [];
-    $container.append(generateJamSelect(tgl, jamList)); // Tambahkan select jam untuk tanggal ini
+    $container.append(generateJamSelect(tgl, jamList));
   });
 
-  $('.select2-jam').select2({ theme: 'bootstrap-5', placeholder: 'Pilih Sesi Jam' }); // Inisialisasi select2 untuk sesi jam
+  $('.select2-jam').select2({ theme: 'bootstrap-5', placeholder: 'Pilih Sesi Jam' });
 }
 
-// Menangani perubahan pada range tanggal atau checkbox hari
 function handleRangeOrCheckboxChange() {
   const range = flatpickrRangeInstance.selectedDates;
-  if (range.length !== 2) return; // Pastikan dua tanggal dipilih untuk range
+  if (range.length !== 2) return;
 
   const start = new Date(range[0]);
   const end = new Date(range[1]);
   const selectedHari = $('.checkbox-hari:checked').map(function () {
     return { hari: Number($(this).val()), id: $(this).data('id') };
-  }).get(); // Ambil hari yang dicentang dari checkbox
+  }).get();
 
-  const $container = $('#jamOperasionalContainer').empty(); // Bersihkan kontainer jam
+  const $container = $('#jamOperasionalContainer').empty();
 
-  // Iterasi dari tanggal awal hingga tanggal akhir untuk menambahkan sesi jam
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const current = new Date(d);
-    const match = selectedHari.find(h => h.hari === current.getDay()); // Cari hari yang cocok
-    if (!match) continue; // Jika tidak cocok, lanjutkan
+    const match = selectedHari.find(h => h.hari === current.getDay());
+    if (!match) continue;
 
     const jamList = jamOperasionalMap[match.id] || [];
-    $container.append(generateJamSelect(current, jamList)); // Tambahkan select jam untuk tanggal ini
+    $container.append(generateJamSelect(current, jamList));
   }
 
-  $('.select2-jam').select2({ theme: 'bootstrap-5', placeholder: 'Pilih Sesi Jam' }); // Inisialisasi select2 untuk sesi jam
+  $('.select2-jam').select2({ theme: 'bootstrap-5', placeholder: 'Pilih Sesi Jam' });
 }
 
-// Menampilkan checkbox untuk memilih hari operasional
+// ---------- UI Rendering ----------
+
 function renderHariOperasionalCheckboxes() {
   $('#checkboxHariOperasional').prev('.label-wrapper').remove();
 
-  // Tambahkan label baru di atas container checkbox
   $('#checkboxHariOperasional').before(`
     <div class="label-wrapper">
       <label class="form-label">Hari Operasional</label>
     </div>
   `);
-  
+
   const $container = $('#checkboxHariOperasional').empty().addClass('row');
+
   hariOperasionalGlobal.forEach(hari => {
-    const html = `
+    $container.append(`
       <div class="col-6 col-md-4 col-lg-3">
         <div class="form-check">
           <input class="form-check-input checkbox-hari"
                  type="checkbox"
-                 name="hari_operasional[]" 
+                 name="hari_operasional[]"
                  value="${hari.hari_operasional}"
                  data-id="${hari.id}"
                  id="hari-${hari.id}">
@@ -199,18 +198,20 @@ function renderHariOperasionalCheckboxes() {
             ${hariMapping[hari.hari_operasional]}
           </label>
         </div>
-      </div>`;
-    $container.append(html); // Menambahkan checkbox untuk hari operasional
+      </div>
+    `);
   });
 }
 
-// Membuat elemen select untuk memilih jam operasional
 function generateJamSelect(tanggal, jamList) {
-  const formatted = tanggal.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-  const dateKey = tanggal.toISOString().split('T')[0]; // Format tanggal untuk key
+  const formatted = tanggal.toLocaleDateString('id-ID', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  });
+
+  const dateKey = tanggal.toISOString().split('T')[0];
   const options = jamList.map(j => {
     const label = `${j.jam_mulai} - ${j.jam_selesai}`;
-    return `<option value="${label}">${label}</option>`; // Menghasilkan option untuk setiap sesi jam
+    return `<option value="${label}">${label}</option>`;
   }).join('');
 
   return `
@@ -219,10 +220,12 @@ function generateJamSelect(tanggal, jamList) {
       <select name="jam[${dateKey}][]" class="form-select select2-jam" multiple>
         ${options}
       </select>
-    </div>`;
+    </div>
+  `;
 }
 
-// Mengambil data JSON dari server
+// ---------- Helpers ----------
+
 function fetchJSON(url) {
   return fetch(url).then(res => {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -230,7 +233,6 @@ function fetchJSON(url) {
   });
 }
 
-// Menonaktifkan atau mengaktifkan input (lokasi, laboratorium, dan jam)
 function setInputsDisabled(disabled) {
   $('#lokasiPengajuanBooking, #laboratoriumPengajuanBooking').prop('disabled', disabled);
   $('.checkbox-hari, .select2-jam').prop('disabled', disabled);
@@ -239,15 +241,14 @@ function setInputsDisabled(disabled) {
   flatpickrRangeInstance._input.toggleAttribute('disabled', disabled);
 }
 
-// Membersihkan field tanggal dan jam
 function clearDateAndJamFields() {
   flatpickrMultiInstance.clear();
   flatpickrRangeInstance.clear();
+
   $('#jamPerTanggalContainer, #jamOperasionalContainer').empty();
   $('.checkbox-hari').prop('checked', false);
 }
 
-// Mereset semua data dan tampilan
 function resetAll() {
   hariOperasionalGlobal = [];
   jamOperasionalMap = {};
@@ -259,9 +260,10 @@ function resetAll() {
   setInputsDisabled(false);
 }
 
+// ---------- Restore Old Data ----------
+
 function restoreOldValues() {
   const old = window.oldData || {};
-
   applyOldMode(old);
   applyOldLokasi(old);
 }
@@ -277,13 +279,11 @@ function applyOldLokasi(old) {
 
   $('#lokasiPengajuanBooking').val(old.lokasi_pengajuan_booking).trigger('change');
 
-  // Trigger change dan tunggu data selesai diload
   handleLokasiChange(() => {
     applyOldLaboratorium(old);
     applyOldTanggalDanJam(old);
     applyOldKeperluan(old);
 
-    // Set checkbox hari operasional berdasarkan old data (penting untuk mode range)
     if (Array.isArray(old.hari_operasional)) {
       old.hari_operasional.forEach(hari => {
         $(`.checkbox-hari[value="${hari}"]`).prop('checked', true);
@@ -311,25 +311,22 @@ function applyMultiTanggalDanJam(old) {
 
   flatpickrMultiInstance.setDate(old.tanggal_multi.split(','));
   handleMultiDateChange();
-
   applyJamSelection(old.jam);
 }
 
 function applyRangeTanggalDanJam(old) {
   if (!old.tanggal_range) return;
 
-  // Memisahkan tanggal range jadi array (misal "2024-07-05 to 2024-07-10")
   const dates = old.tanggal_range.split(' - ').map(d => d.trim()).filter(Boolean);
   flatpickrRangeInstance.setDate(dates);
 
-  // Set checkbox hari operasional jika belum diset di handleLokasiChange callback
   if (Array.isArray(old.hari_operasional)) {
     old.hari_operasional.forEach(hari => {
       $(`.checkbox-hari[value="${hari}"]`).prop('checked', true);
     });
   }
 
-  handleRangeOrCheckboxChange(); // Memperbarui tampilan jam sesuai checkbox dan tanggal range
+  handleRangeOrCheckboxChange();
   applyJamSelection(old.jam);
 }
 
