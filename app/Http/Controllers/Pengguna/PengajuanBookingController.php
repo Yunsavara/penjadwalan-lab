@@ -88,13 +88,13 @@ class PengajuanBookingController extends Controller
     {
         $data = $request->validated();
 
-        dd($data);
+        // dd($data);
 
         DB::beginTransaction();
 
         try {
             // Membuat kode booking unik
-            $kodeBooking = Str::uuid()->toString();
+            $kodeBooking = 'PBL-' . strtoupper(Str::random(8));
 
             // Menyimpan data pengajuan booking
             $pengajuanBooking = PengajuanBooking::create([
