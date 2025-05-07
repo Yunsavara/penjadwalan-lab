@@ -19,9 +19,9 @@
               @endforeach
           </ul>
       </div> 
-    @endif
+    @endif 
 
-    <form id="formPengajuanBookingUpdate" class="mb-5" method="POST" action="{{ route('pengajuan.update', ['id' => request()->route('id')]) }}">
+    <form id="formPengajuanBookingUpdate" class="mb-5" action="{{ route('pengajuan.update', $pengajuan->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -91,12 +91,12 @@
 
 <script>
     window.oldData = {
-        mode_tanggal: "{{ old('mode_tanggal', $pengajuan->mode_tanggal) }}",
+        mode_tanggal: "{{ old('mode_tanggal', $pengajuan->mode_tanggal_pengajuan) }}",
         lokasi_pengajuan_booking: "{{ old('lokasi_pengajuan_booking', $pengajuan->lokasi_id) }}",
         laboratorium_pengajuan_booking: @json(old('laboratorium_pengajuan_booking', $pengajuan->laboratorium->pluck('id'))),
-        tanggal_multi: "{{ old('tanggal_multi', $pengajuan->tanggal_multi_string) }}",
-        tanggal_range: "{{ old('tanggal_range', $pengajuan->tanggal_range_string) }}",
-        hari_operasional: @json(old('hari_operasional', $pengajuan->hari_operasional_array)),
+        tanggal_multi: "{{ old('tanggal_multi', $tanggal_multi) }}",
+        tanggal_range: "{{ old('tanggal_range', $tanggal_range) }}",
+        hari_operasional: @json(old('hari_operasional', $hari_operasional)),
         jam: @json(old('jam', $pengajuan->jam_per_tanggal_array)),
         keperluan_pengajuan_booking: @json(old('keperluan_pengajuan_booking', $pengajuan->keperluan)),
     };

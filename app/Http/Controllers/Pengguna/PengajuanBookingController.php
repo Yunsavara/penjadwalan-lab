@@ -11,7 +11,6 @@ use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
 use App\Models\PengajuanBooking;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -235,10 +234,44 @@ class PengajuanBookingController extends Controller
 
         $lokasi = Lokasi::all();
 
+        // Generate tanggal_multi_string (format: yyyy-mm-dd,yyyy-mm-dd,...)
+        $tanggal_multi = $jadwal
+            ->sortBy('tanggal_jadwal')
+            ->pluck('tanggal_jadwal')
+            ->map(fn($tanggal) => Carbon::parse($tanggal)->format('Y-m-d'))
+            ->unique()
+            ->implode(', '); // spasi habis koma (karena flatpickr)
+
+        // dd($tanggal_multi);
+
+
+        // Generate tanggal_range_string (format: yyyy-mm-dd to yyyy-mm-dd)
+        $sorted_dates = $jadwal->pluck('tanggal_jadwal')
+            ->map(fn($tanggal) => Carbon::parse($tanggal)->format('Y-m-d'))
+            ->sort()
+            ->values();
+
+        $tanggal_range = $sorted_dates->isNotEmpty()
+            ? $sorted_dates->first() . ' - ' . $sorted_dates->last()
+            : '';
+
+        // dd($tanggal_range);
+
+        // Ambil hari dari tanggal yang ada di jadwal
+        $hari_operasional = $jadwal->pluck('tanggal_jadwal')->map(function($tanggal) {
+            return Carbon::parse($tanggal)->dayOfWeek; // 0 (Minggu) sampai 6 (Sabtu)
+        })->unique()->values(); // pakai ->values() kalau ingin reset index
+        
+        // dd($hari_operasional);
+
+        // Kirim ke view
         return view('pengguna.booking-page.pengajuan.form-pengajuan-booking-update', [
             'pengajuan' => $pengajuan,
             'jadwal' => $jadwal,
             'lokasi' => $lokasi,
+            'tanggal_multi' => $tanggal_multi,
+            'tanggal_range' => $tanggal_range,
+            'hari_operasional' => $hari_operasional,
             'page_meta' => [
                 'page' => 'Edit Pengajuan Booking',
                 'description' => 'Halaman untuk edit Data Pengajuan Booking',
