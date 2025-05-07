@@ -3,6 +3,13 @@ import { Indonesian } from "flatpickr/dist/l10n/id.js";
 import "flatpickr/dist/flatpickr.min.css";
 import "flatpickr/dist/themes/airbnb.css";
 
+import select2 from "select2";
+select2();
+
+document.addEventListener("DOMContentLoaded", () => {
+    initFormPengajuanBookingEdit();
+})
+
 let flatpickrMultiInstance, flatpickrRangeInstance;
 let hariOperasionalGlobal = [];
 let jamOperasionalMap = {};
@@ -12,7 +19,7 @@ const hariMapping = {
   4: 'Kamis', 5: 'Jumat', 6: 'Sabtu'
 };
 
-export function initFormPengajuanBookingStore() {
+export function initFormPengajuanBookingEdit() {
   initializeSelects();
   initializeFlatpickrs();
   bindEventListeners();
@@ -29,32 +36,19 @@ function initializeSelects() {
   });
 
   $('#laboratoriumPengajuanBooking')
-    .select2({ theme: "bootstrap-5", placeholder: "Pilih Laboratorium" })
-    .prop('disabled', true);
+    .select2({ theme: "bootstrap-5", placeholder: "Pilih Laboratorium" });
 }
 
-function getFlatpickrMultiConfig() {
-  return {
+function initializeFlatpickrs() {
+  flatpickrMultiInstance = flatpickr("#tanggalMulti", {
     minDate: "today",
     altInput: true,
     altFormat: "d F Y",
     dateFormat: "Y-m-d",
     locale: Indonesian,
     mode: "multiple",
-    disable: [
-      date => {
-        const allowedDays = hariOperasionalGlobal.map(h => Number(h.hari_operasional));
-        return !allowedDays.includes(date.getDay());
-      }
-    ],
+    disable: [() => true],
     onReady: (_, __, instance) => instance._input.setAttribute("disabled", true)
-  };
-}
-
-function initializeFlatpickrs() {
-  flatpickrMultiInstance = flatpickr("#tanggalMulti", {
-    ...getFlatpickrMultiConfig(),
-    disable: [() => true]
   });
 
   flatpickrRangeInstance = flatpickr("#tanggalRange", {
@@ -66,14 +60,13 @@ function initializeFlatpickrs() {
     mode: "range",
     onReady: (_, __, instance) => instance._input.setAttribute("disabled", true)
   });
-} 
+}
 
 function bindEventListeners() {
   $('input[name="mode_tanggal"]').on('change', handleModeToggle);
   $('#lokasiPengajuanBooking').on('change', handleLokasiChange);
   $('#tanggalMulti').on('change', handleMultiDateChange);
-  $('#tanggalRange').on('change', handleRangeOrCheckboxChange);
-  $('#checkboxHariOperasional').on('change', '.checkbox-hari', handleRangeOrCheckboxChange);
+  $('#tanggalRange, #checkboxHariOperasional').on('change', handleRangeOrCheckboxChange);
 }
 
 function handleModeToggle() {
@@ -89,14 +82,10 @@ function handleModeToggle() {
 
 async function handleLokasiChange(callback = null) {
   const lokasiId = $('#lokasiPengajuanBooking').val();
-  if (!lokasiId) return resetAll();
-
-  setInputsDisabled(true);
-  clearDateAndJamFields();
+  if (!lokasiId) return;
 
   try {
     hariOperasionalGlobal = await fetchJSON(`/pengajuan/api/data-hari-operasional/${lokasiId}`);
-
     const jamPromises = hariOperasionalGlobal.map(h => fetchJSON(`/pengajuan/api/data-jam-operasional/${h.id}`));
     const jamResults = await Promise.all(jamPromises);
 
@@ -115,16 +104,28 @@ async function handleLokasiChange(callback = null) {
     $('#laboratoriumPengajuanBooking')
       .empty()
       .select2({ theme: "bootstrap-5", placeholder: "Pilih Laboratorium", data: options })
-      .prop('disabled', false)
       .trigger('change');
 
     if (typeof callback === 'function') callback();
-  } catch (error) {
-    console.error("Gagal memuat data lokasi:", error);
-    resetAll();
-  } finally {
-    setInputsDisabled(false);
+  } catch (err) {
+    console.error(err);
   }
+}
+
+function getFlatpickrMultiConfig() {
+  return {
+    minDate: "today",
+    altInput: true,
+    altFormat: "d F Y",
+    dateFormat: "Y-m-d",
+    locale: Indonesian,
+    mode: "multiple",
+    disable: [date => {
+      const allowedDays = hariOperasionalGlobal.map(h => Number(h.hari_operasional));
+      return !allowedDays.includes(date.getDay());
+    }],
+    onReady: (_, __, instance) => instance._input.setAttribute("disabled", true)
+  };
 }
 
 function handleMultiDateChange() {
@@ -167,6 +168,28 @@ function handleRangeOrCheckboxChange() {
   $('.select2-jam').select2({ theme: 'bootstrap-5', placeholder: 'Pilih Sesi Jam' });
 }
 
+function generateJamSelect(tanggal, jamList) {
+  const formatted = tanggal.toLocaleDateString('id-ID', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  });
+
+  const dateKey = tanggal.toLocaleDateString('sv-SE');
+
+  const options = jamList.map(j => {
+    const label = `${j.jam_mulai} - ${j.jam_selesai}`;
+    return `<option value="${label}">${label}</option>`;
+  }).join('');
+
+  return `
+    <div class="mb-3">
+      <label class="form-label">Sesi Jam untuk ${formatted}</label>
+      <select name="jam[${dateKey}][]" class="form-select select2-jam" multiple>
+        ${options}
+      </select>
+    </div>
+  `;
+}
+
 function renderHariOperasionalCheckboxes() {
   $('#checkboxHariOperasional').prev('.label-wrapper').remove();
 
@@ -197,28 +220,6 @@ function renderHariOperasionalCheckboxes() {
   });
 }
 
-function generateJamSelect(tanggal, jamList) {
-  const formatted = tanggal.toLocaleDateString('id-ID', {
-    day: 'numeric', month: 'long', year: 'numeric'
-  });
-
-  const dateKey = tanggal.toLocaleDateString('sv-SE');
-
-  const options = jamList.map(j => {
-    const label = `${j.jam_mulai} - ${j.jam_selesai}`;
-    return `<option value="${label}">${label}</option>`;
-  }).join('');
-
-  return `
-    <div class="mb-3">
-      <label class="form-label">Sesi Jam untuk ${formatted}</label>
-      <select name="jam[${dateKey}][]" class="form-select select2-jam" multiple>
-        ${options}
-      </select>
-    </div>
-  `;
-}
-
 function fetchJSON(url) {
   return fetch(url).then(res => {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -226,114 +227,47 @@ function fetchJSON(url) {
   });
 }
 
-function setInputsDisabled(disabled) {
-  $('#lokasiPengajuanBooking, #laboratoriumPengajuanBooking').prop('disabled', disabled);
-  $('.checkbox-hari, .select2-jam').prop('disabled', disabled);
-
-  flatpickrMultiInstance._input.toggleAttribute('disabled', disabled);
-  flatpickrRangeInstance._input.toggleAttribute('disabled', disabled);
-}
-
 function clearDateAndJamFields() {
   flatpickrMultiInstance.clear();
   flatpickrRangeInstance.clear();
-
   $('#jamPerTanggalContainer, #jamOperasionalContainer').empty();
   $('.checkbox-hari').prop('checked', false);
 }
 
-function resetAll() {
-  hariOperasionalGlobal = [];
-  jamOperasionalMap = {};
-
-  $('#checkboxHariOperasional, #jamOperasionalContainer, #jamPerTanggalContainer').empty();
-  $('#laboratoriumPengajuanBooking').empty().prop('disabled', true).trigger('change');
-
-  clearDateAndJamFields();
-  setInputsDisabled(false);
-}
-
 function restoreOldValues() {
   const old = window.oldData || {};
-  applyOldMode(old);
-  applyOldLokasi(old);
-}
 
-function applyOldMode(old) {
+  // Mode
   const mode = old.mode_tanggal === 'range' ? 'range' : 'multi';
   $(`#mode${mode.charAt(0).toUpperCase() + mode.slice(1)}`).prop('checked', true);
   handleModeToggle();
-}
 
-function applyOldLokasi(old) {
-  if (!old.lokasi_pengajuan_booking) return;
-
+  // Lokasi
   $('#lokasiPengajuanBooking').val(old.lokasi_pengajuan_booking).trigger('change');
 
   handleLokasiChange(() => {
-    applyOldLaboratorium(old);
-    applyOldTanggalDanJam(old);
-    applyOldKeperluan(old);
-
-    if (Array.isArray(old.hari_operasional)) {
-      old.hari_operasional.forEach(hari => {
-        $(`.checkbox-hari[value="${hari}"]`).prop('checked', true);
-      });
-    }
-  });
-}
-
-function applyOldLaboratorium(old) {
-  if (Array.isArray(old.laboratorium_pengajuan_booking)) {
     $('#laboratoriumPengajuanBooking').val(old.laboratorium_pengajuan_booking).trigger('change');
-  }
-}
 
-function applyOldTanggalDanJam(old) {
-  if (old.mode_tanggal === 'multi') {
-    applyMultiTanggalDanJam(old);
-  } else if (old.mode_tanggal === 'range') {
-    applyRangeTanggalDanJam(old);
-  }
-}
+    if (old.mode_tanggal === 'multi') {
+      flatpickrMultiInstance.setDate(old.tanggal_multi.split(','));
+      handleMultiDateChange();
+    } else {
+      const range = old.tanggal_range.split(' - ').map(d => d.trim());
+      flatpickrRangeInstance.setDate(range);
 
-function applyMultiTanggalDanJam(old) {
-  if (!old.tanggal_multi) return;
+      if (Array.isArray(old.hari_operasional)) {
+        old.hari_operasional.forEach(hari => {
+          $(`.checkbox-hari[value="${hari}"]`).prop('checked', true);
+        });
+      }
 
-  flatpickrMultiInstance.setDate(old.tanggal_multi.split(','));
-  handleMultiDateChange();
-  applyJamSelection(old.jam);
-}
-
-function applyRangeTanggalDanJam(old) {
-  if (!old.tanggal_range) return;
-
-  const dates = old.tanggal_range.split(' - ').map(d => d.trim()).filter(Boolean);
-  flatpickrRangeInstance.setDate(dates);
-
-  if (Array.isArray(old.hari_operasional)) {
-    old.hari_operasional.forEach(hari => {
-      $(`.checkbox-hari[value="${hari}"]`).prop('checked', true);
-    });
-  }
-
-  handleRangeOrCheckboxChange();
-  applyJamSelection(old.jam);
-}
-
-function applyJamSelection(jamData) {
-  if (!jamData) return;
-
-  Object.entries(jamData).forEach(([tanggal, sesi]) => {
-    const $select = $(`select[name="jam[${tanggal}][]"]`);
-    if ($select.length) {
-      $select.val(sesi).trigger('change');
+      handleRangeOrCheckboxChange();
     }
-  });
-}
 
-function applyOldKeperluan(old) {
-  if (old.keperluan_pengajuan_booking) {
+    Object.entries(old.jam || {}).forEach(([tgl, sesi]) => {
+      $(`select[name="jam[${tgl}][]"]`).val(sesi).trigger('change');
+    });
+
     $('#keperluanPengajuanBooking').val(old.keperluan_pengajuan_booking);
-  }
+  });
 }
