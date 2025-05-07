@@ -208,10 +208,12 @@ function generateJamSelect(tanggal, jamList) {
   });
 
   const dateKey = tanggal.toLocaleDateString('sv-SE');
+  const oldJam = (window.oldData?.jam && window.oldData.jam[dateKey]) || [];
 
   const options = jamList.map(j => {
     const label = `${j.jam_mulai} - ${j.jam_selesai}`;
-    return `<option value="${label}">${label}</option>`;
+    const selected = oldJam.includes(label) ? 'selected' : '';
+    return `<option value="${label}" ${selected}>${label}</option>`;
   }).join('');
 
   return `
@@ -297,23 +299,32 @@ function applyOldLaboratorium(old) {
 function applyOldTanggalDanJam(old) {
   if (old.tanggal_multi) {
     flatpickrMultiInstance.setDate(old.tanggal_multi, false);
+    handleMultiDateChange(); 
   }
 
   if (old.tanggal_range) {
-    // Memisahkan tanggal range menjadi dua bagian (start dan end)
     const range = old.tanggal_range.split(" - ");
     if (range.length === 2) {
       const start = range[0].trim();
       const end = range[1].trim();
-      
-      // Set tanggal range pada flatpickr
-      flatpickrRangeInstance.setDate([start, end]);
+      flatpickrRangeInstance.setDate([start, end], false);
+
+      // Pastikan checkbox hari di-set terlebih dahulu
+      if (Array.isArray(old.hari_operasional)) {
+        old.hari_operasional.forEach(hari => {
+          $(`.checkbox-hari[value="${hari}"]`).prop('checked', true);
+        });
+      }
+
+      handleRangeOrCheckboxChange(); 
     }
   }
+
+  console.table(old.jam);
 }
 
 function applyOldKeperluan(old) {
-  if (old.keperluan) {
-    $('#keperluanPengajuanBooking').val(old.keperluan);
+  if (old.keperluan_pengajuan_booking) {
+    $('#keperluanPengajuanBooking').val(old.keperluan_pengajuan_booking);
   }
 }

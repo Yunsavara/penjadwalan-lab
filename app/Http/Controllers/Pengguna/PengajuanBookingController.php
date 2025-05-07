@@ -264,6 +264,16 @@ class PengajuanBookingController extends Controller
         
         // dd($hari_operasional);
 
+        $jam_per_tanggal = $jadwal->groupBy(function ($item) {
+            return Carbon::parse($item->tanggal_jadwal)->format('Y-m-d');
+        })->map(function ($items) {
+            return $items->map(function ($item) {
+                return Carbon::parse($item->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($item->jam_selesai)->format('H:i');
+            })->values();
+        });        
+
+        // dd($jam_per_tanggal);
+
         // Kirim ke view
         return view('pengguna.booking-page.pengajuan.form-pengajuan-booking-update', [
             'pengajuan' => $pengajuan,
@@ -271,6 +281,7 @@ class PengajuanBookingController extends Controller
             'lokasi' => $lokasi,
             'tanggal_multi' => $tanggal_multi,
             'tanggal_range' => $tanggal_range,
+            'jam_per_tanggal' => $jam_per_tanggal,
             'hari_operasional' => $hari_operasional,
             'page_meta' => [
                 'page' => 'Edit Pengajuan Booking',

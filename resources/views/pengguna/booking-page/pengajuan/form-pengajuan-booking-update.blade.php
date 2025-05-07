@@ -97,8 +97,8 @@
         tanggal_multi: "{{ old('tanggal_multi', $tanggal_multi) }}",
         tanggal_range: "{{ old('tanggal_range', $tanggal_range) }}",
         hari_operasional: @json(old('hari_operasional', $hari_operasional)),
-        jam: @json(old('jam', $pengajuan->jam_per_tanggal_array)),
-        keperluan_pengajuan_booking: @json(old('keperluan_pengajuan_booking', $pengajuan->keperluan)),
+        jam: @json(old('jam', $jam_per_tanggal)),
+        keperluan_pengajuan_booking: @json(old('keperluan_pengajuan_booking', $pengajuan->keperluan_pengajuan_booking)),
     };
 </script>
 
