@@ -15,12 +15,12 @@
                     <path
                         d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
                 </svg>
-                <input class="bg-transparent border-0 w-100 text-light mx-2 outline-0" type="search" name=""
+                <input class="bg-transparent border-0 w-100 text-light mx-2 myoutline-0" type="search" name=""
                     id="" placeholder="Pencarian...">
             </div>
 
             <div class="col-4 text-end">
-                <a href="" class="btn bg-brown text-light">Tambah Data</a>
+                <a href="" class="btn mybg-brown text-light">Tambah Data</a>
             </div>
         </div>
         <hr>
@@ -28,10 +28,10 @@
         <div class="my-5">
             <table class="table">
                 <thead>
-                    <td class="bg-brown100">No.</td>
-                    <td class="bg-brown100">Nama</td>
-                    <td class="bg-brown100">Tingkat Prioritas</td>
-                    <td class="bg-brown100 text-center">Pilihan</td>
+                    <td class="mybg-brown100">No.</td>
+                    <td class="mybg-brown100">Nama</td>
+                    <td class="mybg-brown100">Tingkat Prioritas</td>
+                    <td class="mybg-brown100 text-center">Pilihan</td>
                 </thead>
 
                 <tr>

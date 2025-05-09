@@ -35,6 +35,14 @@ class PengajuanController extends Controller
         ]);
     }
 
+    public function add() {
+        return view('all-role.jadwal-page.pengajuan.index', [
+            'page_meta' => [
+                'page' => 'Pengajuan',
+            ]
+            ]);
+    }
+
     public function store(PengajuanStoreRequest $request)
     {
         $kode_pengajuan = 'PJ-' . Carbon::now()->format('YmdHi') . Str::upper(Str::random(3));

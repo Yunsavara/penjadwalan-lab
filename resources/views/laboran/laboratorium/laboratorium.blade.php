@@ -6,7 +6,7 @@
     <div class="mx-2 my-3">
         <div class="d-flex justify-content-between">
             <h1 class="fw-bold fs-3">Laboratorium</h1>
-            <a href="{{ route('laboran.laboratorium.create') }}" class="col-12 col-md-auto"><button class="btn bg-brown text-light">Tambah Data</button></a>
+            <a href="{{ route('laboran.laboratorium.create') }}" class="col-12 col-md-auto"><button class="btn mybg-brown text-light">Tambah Data</button></a>
         </div>
     <hr>
 

@@ -3,7 +3,8 @@
 @section('title', 'Jadwal')
 
 @section('content')
-    <h1 class="fw-bold">{{ $page_meta['page'] }}</h1>
+    <div class="mx-2 my-3">
+        <h1 class="fw-bold fs-3">Jadwal Penggunaan</h1>
     <hr>
 
     <!-- Alert -->
@@ -20,5 +21,6 @@
 
     @include('all-role.jadwal-page.pengajuan.form-pengajuan-store')
     @include('all-role.jadwal-page.pengajuan.form-pengajuan-update')
+    </div>
 
 @endsection

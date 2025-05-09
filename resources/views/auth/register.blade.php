@@ -34,7 +34,7 @@
         <div class="myspacer-10"></div>
 
         <div class="d-flex justify-content-center">
-            <div class="mycard-md bg-dark30 p-4 border boder-primary">
+            <div class="mycard-md mybg-dark30 p-4 border boder-primary">
                 <form action="{{ $page_meta['url'] }}" method="post">
                     @method($page_meta['method'])
                     @csrf

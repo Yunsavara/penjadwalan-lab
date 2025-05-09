@@ -37,7 +37,7 @@
 
             <div class="col-12 d-flex justify-content-end">
                 <button type="reset" class="btn me-2">Kosongkan</button>
-                <button type="submit" class="btn bg-brown text-light">Simpan</button>
+                <button type="submit" class="btn mybg-brown text-light">Simpan</button>
             </div>
 
         </form>

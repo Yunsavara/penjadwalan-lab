@@ -95,7 +95,8 @@ Route::group(['middleware' => ['role:lembaga,prodi,user']], function() {
     Route::get('/dashboard', [DashboardController::class,'dashboardAllRole'])->name('dashboard');
 
     // Booking atau Pengajuan
-    Route::get('/jadwal', [PengajuanController::class, 'index'])->name('pengajuan');
+    Route::get('/jadwal', [PengajuanController::class, 'index'])->name('allrole.jadwal');
+    Route::get('/jadwal/pengajuan', [PengajuanController::class, 'add'])->name('allrole.pengajuan');
     Route::post('/jadwal', [PengajuanController::class, 'store'])->name('pengajuan.store');
     Route::get('/jadwal/pengajuan-data', [PengajuanController::class, 'getDataBooking']); //datatables
     Route::get('/jadwal/pengajuan-detail/{kode_pengajuan}', [PengajuanController::class, 'getDetailBooking']); //detail

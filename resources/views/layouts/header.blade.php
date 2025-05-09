@@ -1,4 +1,4 @@
-<nav class="navbar bg-brown text-light shadow-sm sticky-top py-3">
+<nav class="navbar mybg-brown text-light shadow-sm sticky-top py-3">
     <div class="container-fluid d-flex justify-content">
         <div class="menu-role d-flex gap-2">
             <i data-feather="menu" id="toggleSidebar"></i>

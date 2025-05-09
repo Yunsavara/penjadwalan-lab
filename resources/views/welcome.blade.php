@@ -79,7 +79,7 @@
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="{{ asset('images/lab-mobile.jpg') }}" class="d-block w-100 bg-darken" alt="...">
+                <img src="{{ asset('images/lab-mobile.jpg') }}" class="d-block w-100 mybg-darken" alt="...">
                 <div class="carousel-caption d-none d-md-block text-start">
                     <h5 class="fs-1 mytext-shadowed">Laboratorium Mobile Programming</h5>
                     <p class="mytext-shadowed">Laboratorium dengan spesifikasi tinggi untuk mendukung praktikum dengan
@@ -153,7 +153,7 @@
     </div>
 
     {{-- Feature --}}
-    <div class="bg-brown200 text-center py-5 mb-5">
+    <div class="mybg-brown200 text-center py-5 mb-5">
         <h4 class="fs-3 pb-5">Fitur Aplikasi</h4>
         <div class="container">
             <div class="row row-cols-1 row-cols-md-3 g-4  mb-5">
@@ -164,13 +164,13 @@
                             <center>
                                 <hr class="mydivider bolor-brown">
                             </center>
-                            <h5 class="card-title nytext-brown">Penjadwalan</h5>
+                            <h5 class="card-title mytext-brown">Penjadwalan</h5>
                         </div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="card bg-transparent border-0">
-                        <div class="card-body mycard bg-darkBrown p-5">
+                        <div class="card-body mycard mybg-darkBrown p-5">
                             <img class="myicons-feature" src="{{ asset('images/icons/settings.png') }}" alt="">
                             <center>
                                 <hr class="mydivider bolor-white">
@@ -274,7 +274,7 @@
     </div>
 
     {{-- Footer --}}
-    <footer class="bg-brown text-light text-center py-3">
+    <footer class="mybg-brown text-light text-center py-3">
         Penjadwalan Lab &copy; 2024. Hak Cipta Sepenuhnya milik Universitas Pamulang.
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.js"></script>

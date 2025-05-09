@@ -19,9 +19,9 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th class="bg-brown100">GEDUNG</th>
-                    <th class="bg-brown100">ALAMAT GEDUNG</th>
-                    <th class="bg-brown100 text-center">PILIHAN</th>
+                    <th class="mybg-brown100">GEDUNG</th>
+                    <th class="mybg-brown100">ALAMAT GEDUNG</th>
+                    <th class="mybg-brown100 text-center">PILIHAN</th>
                 </tr>
             </thead>
 

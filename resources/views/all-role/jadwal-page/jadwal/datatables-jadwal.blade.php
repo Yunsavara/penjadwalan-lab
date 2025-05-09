@@ -1,4 +1,4 @@
-<div class="col-12 d-flex flex-wrap justify-content-between bg-white">
+<div class="col-12 d-flex flex-wrap justify-content-between mybg-white">
 
     <div class="col-12 py-2 d-flex flex-wrap align-items-center justify-content-between">
         <div id="searchJadwal" class="col-12 col-md-auto mb-2"></div>

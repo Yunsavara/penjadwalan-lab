@@ -24,40 +24,56 @@ body {
 }
 
 .mytext-brown {
-    color: rgba(111, 78, 55, 1);
+    color: rgba(111, 78, 55, 1) !important;
 }
 
 /* Background */
-.bg-white {
+.mybg-white {
     background-color: rgba(241, 241, 241, 1) !important;
 }
 
-.bg-brown100 {
+.mybg-brown100 {
     background-color: rgba(255, 234, 197, 1) !important;
 }
-.bg-brown200 {
+.mybg-brown200 {
     background-color: rgba(255, 219, 181, 1) !important;
 }
 
-.bg-darken {
+.mybg-darken {
     filter: brightness(50%);
 }
 
-.bg-dark30 {
+.mybg-dark30 {
     background-color: rgba(0, 0, 0, 0.3);
     color: white;
 }
 
-.bg-brown {
+.mybg-brown {
     background-color: rgba(166, 123, 91, 1) !important;
 }
 
-.bg-darkBrown {
+.mybg-darkBrown {
     background-color: rgba(108, 78, 49, 1) !important;
 }
 
-.bg-darkerBrown {
+.mybg-darkerBrown {
     background-color: rgba(96, 63, 38, 1) !important;
+}
+
+.mybg-orange {
+    background-color: rgba(255, 179, 71, 1) !important;
+}
+
+.mybg-red {
+    background-color: rgba(255, 145, 155, 1) !important;
+}
+
+.mybg-blue {
+    background-color: rgba(128, 206, 225, 1) !important;
+}
+
+.mybg-green {
+    background-color: rgba(119, 221, 119, 1) !important;
 }
 /* End Background */
 
@@ -93,9 +109,12 @@ body {
     height: 10vh;
 }
 
-.outline-0{
+.myoutline-0{
     outline: none;
-    /* border: none; */
+}
+
+.myfs-1 {
+    font-size: 12px;
 }
 /* General Style End */
 
