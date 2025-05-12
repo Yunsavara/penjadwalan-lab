@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pengguna;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pengguna\PengajuanBooking\PengajuanBookingStoreRequest;
+use App\Http\Requests\Pengguna\PengajuanBooking\PengajuanBookingUpdateRequest;
 use App\Models\HariOperasional;
 use App\Models\JadwalBooking;
 use App\Models\JamOperasional;
@@ -232,9 +233,11 @@ class PengajuanBookingController extends Controller
         $pengajuan = PengajuanBooking::findOrFail(Crypt::decryptString($id));
         $jadwal = $pengajuan->jadwalBookings()->get();
 
-        $lokasi = Lokasi::all();
+        $lokasi = Lokasi::select([
+            'id',
+            'nama_lokasi'
+        ])->whereNot('nama_lokasi', 'fleksible')->get();
 
-        // Generate tanggal_multi_string (format: yyyy-mm-dd,yyyy-mm-dd,...)
         $tanggal_multi = $jadwal
             ->sortBy('tanggal_jadwal')
             ->pluck('tanggal_jadwal')
@@ -244,8 +247,6 @@ class PengajuanBookingController extends Controller
 
         // dd($tanggal_multi);
 
-
-        // Generate tanggal_range_string (format: yyyy-mm-dd to yyyy-mm-dd)
         $sorted_dates = $jadwal->pluck('tanggal_jadwal')
             ->map(fn($tanggal) => Carbon::parse($tanggal)->format('Y-m-d'))
             ->sort()
@@ -260,7 +261,7 @@ class PengajuanBookingController extends Controller
         // Ambil hari dari tanggal yang ada di jadwal
         $hari_operasional = $jadwal->pluck('tanggal_jadwal')->map(function($tanggal) {
             return Carbon::parse($tanggal)->dayOfWeek; // 0 (Minggu) sampai 6 (Sabtu)
-        })->unique()->values(); // pakai ->values() kalau ingin reset index
+        })->unique()->values();
         
         // dd($hari_operasional);
 
@@ -290,6 +291,10 @@ class PengajuanBookingController extends Controller
         ]);
     }
     
+    public function update(PengajuanBookingUpdateRequest $request){
+        dd($request->validated());
+    }
+
     // public function update(PengajuanBookingStoreRequest $request, PengajuanBooking $pengajuan)
     // {
     //     DB::beginTransaction();

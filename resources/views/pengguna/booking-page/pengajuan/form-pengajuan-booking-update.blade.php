@@ -94,8 +94,11 @@
         mode_tanggal: "{{ old('mode_tanggal', $pengajuan->mode_tanggal_pengajuan) }}",
         lokasi_pengajuan_booking: "{{ old('lokasi_pengajuan_booking', $pengajuan->lokasi_id) }}",
         laboratorium_pengajuan_booking: @json(old('laboratorium_pengajuan_booking', $pengajuan->laboratorium->pluck('id'))),
-        tanggal_multi: "{{ old('tanggal_multi', $tanggal_multi) }}",
-        tanggal_range: "{{ old('tanggal_range', $tanggal_range) }}",
+        @if($pengajuan->mode_tanggal_pengajuan == 'multi')
+            tanggal_multi: "{{ old('tanggal_multi', $tanggal_multi) }}",
+        @else
+            tanggal_range: "{{ old('tanggal_range', $tanggal_range) }}",
+        @endif
         hari_operasional: @json(old('hari_operasional', $hari_operasional)),
         jam: @json(old('jam', $jam_per_tanggal)),
         keperluan_pengajuan_booking: @json(old('keperluan_pengajuan_booking', $pengajuan->keperluan_pengajuan_booking)),

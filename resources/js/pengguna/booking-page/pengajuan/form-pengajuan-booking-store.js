@@ -35,7 +35,6 @@ function initializeSelects() {
 
 function getFlatpickrMultiConfig() {
   return {
-    minDate: "today",
     altInput: true,
     altFormat: "d F Y",
     dateFormat: "Y-m-d",
@@ -58,7 +57,6 @@ function initializeFlatpickrs() {
   });
 
   flatpickrRangeInstance = flatpickr("#tanggalRange", {
-    minDate: "today",
     altInput: true,
     altFormat: "d F Y",
     dateFormat: "Y-m-d",
