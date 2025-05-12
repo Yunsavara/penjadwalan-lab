@@ -104,8 +104,8 @@ async function handleLokasiChange(callback = null) {
 
     renderHariOperasionalCheckboxes();
 
-    flatpickrMultiInstance.destroy();
-    flatpickrMultiInstance = flatpickr("#tanggalMulti", getFlatpickrMultiConfig());
+    flatpickrMultiInstance.set(getFlatpickrMultiConfig());
+    flatpickrMultiInstance.clear();    
 
     const laboratorium = await fetchJSON(`/pengajuan/api/data-laboratorium/${lokasiId}`);
     const options = laboratorium.map(lab => ({ id: lab.id, text: lab.nama_laboratorium }));
