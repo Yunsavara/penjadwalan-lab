@@ -7,6 +7,9 @@
 
     @if ($errors->any())
         <div class="alert alert-danger">
+            @if (session('pesan'))
+                <span>{{ session('pesan') }}</span>
+            @endif
             <ul class="mb-0">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
