@@ -49,11 +49,11 @@ class PengajuanBookingController extends Controller
     {
         $data = $request->validated();
 
-        // Cek apakah masih ada pengajuan booking yang menunggu
-        $konflikPengajuanMenunggu = $pengajuan->cekPengajuanBookingMenunggu($data);
+        // Cek apakah masih ada pengajuan booking yang menunggu (user login)
+        $konflikPengajuanMenunggu = $pengajuan->cekPengajuanBookingMenungguLogin($data);
         if (!empty($konflikPengajuanMenunggu)) {
             return redirect()->route('pengajuan.create')
-                ->with('pesan', 'Anda Masih Memiliki Pengajuan yang belum diproses')
+                ->with('pesan', 'Anda Masih Memiliki Pengajuan yang belum diproses :')
                 ->withErrors(['konflik' => $konflikPengajuanMenunggu]) 
                 ->withInput();
         }

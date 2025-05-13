@@ -11,15 +11,17 @@
     <hr>
 
     @if ($errors->any())
-      <div class="alert alert-danger mt-3">
-          <strong>Terjadi kesalahan:</strong>
-          <ul class="mb-0">
-              @foreach ($errors->all() as $e)
-                  <li>{{ $e }}</li>
-              @endforeach
-          </ul>
-      </div> 
-    @endif 
+        <div class="alert alert-danger">
+            @if (session('pesan'))
+                <span>{{ session('pesan') }}</span>
+            @endif
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <form id="formPengajuanBookingUpdate" class="mb-5" action="{{ route('pengajuan.update', $pengajuan->id) }}" method="POST">
         @csrf

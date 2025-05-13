@@ -6,39 +6,34 @@ use App\Models\JadwalBooking;
 use App\Models\PengajuanBooking;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
-class PengajuanBookingStoreService
+class PengajuanBookingUpdateService
 {
     /**
-     * Membuat pengajuan booking dan jadwalnya.
+     * Update data pengajuan booking dan jadwalnya.
      *
+     * @param PengajuanBooking $pengajuan
      * @param array $data
      * @return PengajuanBooking
      * @throws Exception
      */
-    public function buatPengajuan(array $data): PengajuanBooking
+    public function update(PengajuanBooking $pengajuan, array $data): PengajuanBooking
     {
-
         DB::beginTransaction();
 
         try {
-            // Generate kode unik
-            $kodeBooking = 'PBL-' . strtoupper(Str::random(8));
-
-            // Simpan data utama pengajuan booking
-            $pengajuan = PengajuanBooking::create([
-                'kode_booking' => $kodeBooking,
+            // Update data utama
+            $pengajuan->update([
                 'keperluan_pengajuan_booking' => $data['keperluan_pengajuan_booking'],
-                'status_pengajuan_booking' => 'menunggu',
                 'mode_tanggal_pengajuan' => $data['mode_tanggal'],
                 'lokasi_id' => $data['lokasi_pengajuan_booking'],
-                'user_id' => Auth::id(),
             ]);
 
-            // Proses mode multi tanggal
+            // Hapus jadwal lama
+            $pengajuan->jadwalBookings()->delete();
+
+            // Buat ulang jadwal booking
             if ($data['mode_tanggal'] === 'multi' && !empty($data['tanggal_multi'])) {
                 foreach ($data['tanggal_multi'] as $tanggal) {
                     foreach ($data['jam'][$tanggal] as $jam) {
@@ -56,7 +51,6 @@ class PengajuanBookingStoreService
                 }
             }
 
-            // Proses mode rentang tanggal
             if ($data['mode_tanggal'] === 'range' && !empty($data['tanggal_range'])) {
                 $start = Carbon::parse($data['tanggal_range']['start']);
                 $end = Carbon::parse($data['tanggal_range']['end']);
@@ -92,19 +86,17 @@ class PengajuanBookingStoreService
         }
     }
 
-    /**
-     * Cek apakah user masih memiliki pengajuan booking dengan status 'menunggu'
-     *
-     * @param array $data
-     */
-    public function cekPengajuanBookingMenungguLogin(array $data): array
+    public function cekPengajuanBookingMenungguLogin(array $data, ?int $idPengajuanBookingAbaikan = null): array
     {
         $konflik = [];
 
         $query = PengajuanBooking::where('user_id', Auth::id())
             ->where('status_pengajuan_booking', 'menunggu')
             ->where('lokasi_id', $data['lokasi_pengajuan_booking'])
-            ->with('jadwalBookings.laboratoriumUnpam') // eager load relasi lab
+            ->when($idPengajuanBookingAbaikan, function ($q) use ($idPengajuanBookingAbaikan) {
+                $q->where('id', '!=', $idPengajuanBookingAbaikan);
+            })
+            ->with('jadwalBookings.laboratoriumUnpam')
             ->get();
 
         foreach ($query as $pengajuan) {
@@ -119,9 +111,8 @@ class PengajuanBookingStoreService
                     foreach ($data['jam'][$jadwal->tanggal_jadwal] ?? [] as $jam) {
                         [$mulaiBaru, $selesaiBaru] = explode(' - ', $jam);
 
-                        // Deteksi tabrakan
                         if ($jadwal->jam_mulai < $selesaiBaru && $jadwal->jam_selesai > $mulaiBaru) {
-                            $tanggalFormatted = Carbon::parse($jadwal->tanggal_jadwal)->locale('id')->translatedFormat('d F Y'); // Contoh: 23 Juni 2025
+                            $tanggalFormatted = Carbon::parse($jadwal->tanggal_jadwal)->locale('id')->translatedFormat('d F Y');
                             $jamFormatted = Carbon::parse($jadwal->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($jadwal->jam_selesai)->format('H:i');
                             $namaLab = $jadwal->laboratoriumUnpam->nama_laboratorium ?? 'Lab Tidak Diketahui';
 
@@ -134,4 +125,5 @@ class PengajuanBookingStoreService
 
         return $konflik;
     }
+
 }
