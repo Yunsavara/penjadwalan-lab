@@ -48,6 +48,7 @@ class PengajuanBookingController extends Controller
     public function store(PengajuanBookingStoreRequest $request, PengajuanBookingStoreService $pengajuan)
     {
         $data = $request->validated();
+        dd($data);
 
         // Cek apakah masih ada pengajuan booking yang menunggu (user login)
         $konflikPengajuanMenunggu = $pengajuan->cekPengajuanBookingMenungguLogin($data);
@@ -62,7 +63,7 @@ class PengajuanBookingController extends Controller
             $pengajuan->buatPengajuan($data);
             return redirect()->route('pengajuan')->with('success', 'Pengajuan Booking berhasil dibuat.');
         } catch (\Exception $e) {
-            return redirect()->route('pengajuan.create')->with('error', 'Pengajuan Booking tidak berhasil dibuat.')->withInput();
+            return redirect()->route('pengajuan.create')->withInput()->with('error', 'Pengajuan Booking tidak berhasil dibuat.' . $e->getMessage());
         }
     }
 

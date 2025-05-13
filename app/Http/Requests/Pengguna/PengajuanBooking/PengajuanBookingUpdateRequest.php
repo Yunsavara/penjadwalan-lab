@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Pengguna\PengajuanBooking;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -15,12 +16,6 @@ class PengajuanBookingUpdateRequest extends FormRequest
     {
         return true;
     }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
 
     public function prepareForValidation()
     {
@@ -47,6 +42,51 @@ class PengajuanBookingUpdateRequest extends FormRequest
                 ],
             ]);
         }
+    }
+    
+    public function withValidator(Validator $validator)
+    {
+        $validator->after(function ($validator) {
+            $jam = (array) $this->jam;
+
+            // Mode Multi
+            if ($this->mode_tanggal === 'multi') {
+                $tanggalMulti = (array) $this->tanggal_multi;
+
+                foreach ($tanggalMulti as $tanggal) {
+                    if (empty($jam[$tanggal]) || !is_array($jam[$tanggal]) || count($jam[$tanggal]) === 0) {
+                        $tanggalFormatted = Carbon::parse($tanggal)->locale('id')->translatedFormat('d F Y'); // Format tanggal Indonesia
+                        $validator->errors()->add("jam.$tanggal", "Jam untuk tanggal {$tanggalFormatted} wajib diisi.");
+                    }
+                }
+            }
+
+            // Mode Range
+            if ($this->mode_tanggal === 'range') {
+                $range = (array) $this->tanggal_range;
+                $hariOperasional = (array) $this->hari_operasional;
+
+                $start = isset($range['start']) ? Carbon::parse($range['start']) : null;
+                $end = isset($range['end']) ? Carbon::parse($range['end']) : null;
+
+                if ($start && $end && $start <= $end) {
+                    $tanggalIterasi = $start->copy();
+                    while ($tanggalIterasi->lte($end)) {
+                        $hariKe = $tanggalIterasi->dayOfWeek;
+
+                        if (in_array($hariKe, $hariOperasional)) {
+                            $tanggalStr = $tanggalIterasi->format('Y-m-d');
+                            if (empty($jam[$tanggalStr]) || !is_array($jam[$tanggalStr]) || count($jam[$tanggalStr]) === 0) {
+                                $tanggalFormatted = $tanggalIterasi->locale('id')->translatedFormat('d F Y'); // Format tanggal Indonesia
+                                $validator->errors()->add("jam.$tanggalStr", "Jam untuk tanggal {$tanggalFormatted} wajib diisi.");
+                            }
+                        }
+
+                        $tanggalIterasi->addDay();
+                    }
+                }
+            }
+        });
     }
 
     public function rules()
