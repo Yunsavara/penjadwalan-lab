@@ -48,7 +48,7 @@ class PengajuanBookingController extends Controller
     public function store(PengajuanBookingStoreRequest $request, PengajuanBookingStoreService $pengajuan)
     {
         $data = $request->validated();
-        dd($data);
+        // dd($data);
 
         // Cek apakah masih ada pengajuan booking yang menunggu (user login)
         $konflikPengajuanMenunggu = $pengajuan->cekPengajuanBookingMenungguLogin($data);
@@ -235,6 +235,5 @@ class PengajuanBookingController extends Controller
     public function update(PengajuanBookingUpdateRequest $request){
         dd($request->validated());
     }
-
    
 }

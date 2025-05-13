@@ -109,7 +109,6 @@ async function handleLokasiChange(callback = null) {
 
     renderHariCheckboxes();
 
-    // Destroy and reinit AFTER data siap
     flatpickrMultiInstance.set(getFlatpickrMultiConfig());
     flatpickrMultiInstance.clear();    
 

@@ -51,16 +51,22 @@ class PengajuanBookingUpdateRequest extends FormRequest
 
             // Mode Multi
             if ($this->mode_tanggal === 'multi') {
-                $tanggalMulti = (array) $this->tanggal_multi;
+                $tanggalMulti = array_map('trim', (array) $this->tanggal_multi); // trim ulang untuk jaga-jaga
+                $jam = array_change_key_case((array) $this->jam, CASE_LOWER); // standarisasi key optional
 
                 foreach ($tanggalMulti as $tanggal) {
-                    if (empty($jam[$tanggal]) || !is_array($jam[$tanggal]) || count($jam[$tanggal]) === 0) {
-                        $tanggalFormatted = Carbon::parse($tanggal)->locale('id')->translatedFormat('d F Y'); // Format tanggal Indonesia
-                        $validator->errors()->add("jam.$tanggal", "Jam untuk tanggal {$tanggalFormatted} wajib diisi.");
+                    $tanggalKey = trim($tanggal); // pastikan key bersih
+                    if (
+                        empty($jam[$tanggalKey]) ||
+                        !is_array($jam[$tanggalKey]) ||
+                        count($jam[$tanggalKey]) === 0
+                    ) {
+                        $tanggalFormatted = Carbon::parse($tanggalKey)->locale('id')->translatedFormat('d F Y');
+                        $validator->errors()->add("jam.$tanggalKey", "Jam untuk tanggal {$tanggalFormatted} wajib diisi.");
                     }
                 }
             }
-
+            
             // Mode Range
             if ($this->mode_tanggal === 'range') {
                 $range = (array) $this->tanggal_range;
@@ -143,4 +149,4 @@ class PengajuanBookingUpdateRequest extends FormRequest
         );
     }
 
-}
+} 
