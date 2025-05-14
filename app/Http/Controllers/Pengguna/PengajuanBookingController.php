@@ -12,6 +12,7 @@ use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
 use App\Models\PengajuanBooking;
 use App\Services\PengajuanBookingStoreService;
+use App\Services\PengajuanBookingUpdateService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -232,8 +233,28 @@ class PengajuanBookingController extends Controller
         ]);
     }
     
-    public function update(PengajuanBookingUpdateRequest $request){
-        dd($request->validated());
+    public function update(PengajuanBookingUpdateRequest $request, PengajuanBooking $pengajuanBooking, PengajuanBookingUpdateService $pengajuanService)
+    {
+        $data = $request->validated();
+
+        // Cek konflik pengajuan 'menunggu', tapi abaikan pengajuan yang sedang diedit
+        $konflikPengajuanMenunggu = $pengajuanService->cekPengajuanBookingMenungguLogin($pengajuanBooking, $data);
+
+        if (!empty($konflikPengajuanMenunggu)) {
+            return redirect()->route('pengajuan.edit', $pengajuanBooking->id)
+                ->with('pesan', 'Anda masih memiliki pengajuan yang belum diproses:')
+                ->withErrors(['konflik' => $konflikPengajuanMenunggu])
+                ->withInput();
+        }
+
+        try {
+            $pengajuanService->ubahPengajuan($pengajuanBooking, $data);
+            return redirect()->route('pengajuan')->with('success', 'Pengajuan Booking berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->route('pengajuan.edit', $pengajuanBooking->id)
+                ->withInput()
+                ->with('error', 'Pengajuan Booking gagal diperbarui. ' . $e->getMessage());
+        }
     }
-   
+
 }
