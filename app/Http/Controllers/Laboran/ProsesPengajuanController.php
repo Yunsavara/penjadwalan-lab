@@ -160,7 +160,17 @@ class ProsesPengajuanController extends Controller
 
             // Jika mode terima otomatis, cek dan tolak jadwal bentrok dengan prioritas lebih rendah
             if ($request->mode_terima === 'otomatis') {
-                foreach ($pengajuan->jadwalBookings as $jadwal) {
+                // Ambil semua jadwal dari pengajuan ini
+                $jadwalPengajuan = $pengajuan->jadwalBookings;
+
+                // Ambil prioritas pengaju
+                $prioritasPengajuan = $pengajuan->user->role->prioritas_peran;
+
+                // Simpan semua ID pengajuan yang akan ditolak
+                $pengajuanIdsToReject = collect();
+                $jadwalIdsToReject = collect();
+
+                foreach ($jadwalPengajuan as $jadwal) {
                     $conflicts = JadwalBooking::where('tanggal_jadwal', $jadwal->tanggal_jadwal)
                         ->where('laboratorium_unpam_id', $jadwal->laboratorium_unpam_id)
                         ->where('status', 'diterima')
@@ -169,30 +179,39 @@ class ProsesPengajuanController extends Controller
                                 ->orWhereBetween('jam_selesai', [$jadwal->jam_mulai, $jadwal->jam_selesai])
                                 ->orWhere(function ($q) use ($jadwal) {
                                     $q->where('jam_mulai', '<=', $jadwal->jam_mulai)
-                                    ->where('jam_selesai', '>=', $jadwal->jam_selesai);
+                                        ->where('jam_selesai', '>=', $jadwal->jam_selesai);
                                 });
                         })
-                        ->whereHas('pengajuanBooking', function ($q) use ($prioritasPengajuan) {
+                        ->whereHas('pengajuanBooking', function ($q) use ($prioritasPengajuan, $pengajuan) {
                             $q->whereIn('status_pengajuan_booking', ['diterima', 'menunggu'])
-                            ->whereHas('user.role', function ($q2) use ($prioritasPengajuan) {
-                                $q2->where('prioritas_peran', '>', $prioritasPengajuan); // $prioritasPengajuan adalah yang ditolak
-                            });
+                                ->where('lokasi_id', $pengajuan->lokasi_id)
+                                ->whereHas('user.role', function ($q2) use ($prioritasPengajuan) {
+                                    $q2->where('prioritas_peran', '>', $prioritasPengajuan);
+                                });
                         })
                         ->with('pengajuanBooking')
                         ->get();
 
                     foreach ($conflicts as $conflict) {
-                        // Update status jadwal yang bentrok jadi ditolak
-                        $conflict->update(['status' => 'ditolak']);
-
-                        // Update status pengajuan induk jadwal tersebut jadi ditolak dengan alasan
-                        $conflict->pengajuanBooking->update([
-                            'status_pengajuan_booking' => 'ditolak',
-                            'balasan_pengajuan_booking' => $request->alasan_penolakan_otomatis ?? 'Ditolak otomatis karena konflik dengan pengajuan prioritas lebih tinggi',
-                        ]);
+                        $pengajuanIdsToReject->push($conflict->pengajuan_booking_id);
+                        $jadwalIdsToReject->push($conflict->id);
                     }
                 }
+
+                // Buang duplikat
+                $pengajuanIdsToReject = $pengajuanIdsToReject->unique();
+                $jadwalIdsToReject = $jadwalIdsToReject->unique();
+
+                // Update semua jadwal
+                JadwalBooking::whereIn('id', $jadwalIdsToReject)->update(['status' => 'ditolak']);
+
+                // Update semua pengajuan
+                PengajuanBooking::whereIn('id', $pengajuanIdsToReject)->update([
+                    'status_pengajuan_booking' => 'ditolak',
+                    'balasan_pengajuan_booking' => $request->alasan_penolakan_otomatis ?? 'Ditolak otomatis karena konflik dengan pengajuan prioritas lebih tinggi',
+                ]);
             }
+
 
             DB::commit();
             return redirect()->route('laboran.proses-pengajuan')->with('success', 'Pengajuan Berhasil Diterima.');
