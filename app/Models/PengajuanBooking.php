@@ -32,14 +32,14 @@ class PengajuanBooking extends Model
     }
 
     public function laboratorium()
-{
-    return $this->hasManyThrough(
-        LaboratoriumUnpam::class,
-        JadwalBooking::class,
-        'pengajuan_booking_id', // Foreign key di JadwalBooking
-        'id',                    // Primary key di LaboratoriumUnpam
-        'id',                    // Local key di PengajuanBooking
-        'laboratorium_unpam_id' // Foreign key di JadwalBooking
-    );
-}
+    {
+        return $this->hasManyThrough(
+            LaboratoriumUnpam::class,
+            JadwalBooking::class,
+            'pengajuan_booking_id', // Foreign key di JadwalBooking
+            'id',                    // Primary key di LaboratoriumUnpam
+            'id',                    // Local key di PengajuanBooking
+            'laboratorium_unpam_id' // Foreign key di JadwalBooking
+        );
+    }
 }

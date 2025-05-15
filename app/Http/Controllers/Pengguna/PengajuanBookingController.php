@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pengguna\PengajuanBooking\PengajuanBookingStoreRequest;
 use App\Http\Requests\Pengguna\PengajuanBooking\PengajuanBookingUpdateRequest;
 use App\Models\HariOperasional;
-use App\Models\JadwalBooking;
 use App\Models\JamOperasional;
 use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
@@ -15,9 +14,8 @@ use App\Services\PengajuanBookingStoreService;
 use App\Services\PengajuanBookingUpdateService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class PengajuanBookingController extends Controller
 {
@@ -110,55 +108,60 @@ class PengajuanBookingController extends Controller
     
     public function getApiPengajuanBooking(Request $request)
     {
-        $query =    PengajuanBooking::select([
-                        'id',
-                        'kode_booking',
-                        'status_pengajuan_booking',
-                        'keperluan_pengajuan_booking',
-                        'balasan_pengajuan_booking',
-                        'user_id',
-                    ]);
+        // Query dasar dengan filter user login
+        $query = PengajuanBooking::select([
+            'id',
+            'kode_booking',
+            'status_pengajuan_booking',
+            'keperluan_pengajuan_booking',
+            'balasan_pengajuan_booking',
+            'user_id',
+        ])->where('user_id', Auth::id()); 
+
+        $totalData = $query->count();
+
+        // Cloning query untuk proses pencarian
+        $filteredQuery = clone $query;
 
         // Pencarian
         if ($request->has('search') && !empty($request->search['value'])) {
             $search = $request->search['value'];
-            $query->where(function ($q) use ($search) {
+            $filteredQuery->where(function ($q) use ($search) {
                 $q->where('kode_booking', 'like', "%{$search}%")
                     ->orWhere('status_pengajuan_booking', 'like', "%{$search}%");
             });
         }
 
-        $totalData = PengajuanBooking::count();
-        $totalFiltered = $query->count();
+        $totalFiltered = $filteredQuery->count();
 
         // Sorting
         $orderColumnIndex = $request->input('order.0.column');
         $orderDirection = $request->input('order.0.dir') ?? 'desc';
 
-        $columns = [null, 'kode_booking','id', 'keperluan_pengajuan_booking', 'status_pengajuan_booking', 'balasan_pengajuan_booking', 'user_id'];
+        $columns = [null, 'kode_booking', 'id', 'keperluan_pengajuan_booking', 'status_pengajuan_booking', 'balasan_pengajuan_booking', 'user_id'];
         $orderColumnName = $columns[$orderColumnIndex] ?? 'id';
 
-        if (in_array($orderColumnName, ['id','kode_booking', 'keperluan_pengajuan_booking','status_pengajuan_booking', 'balasan_pengajuan_booking', 'user_id'])) {
-            $query->orderBy($orderColumnName, $orderDirection);
+        if (in_array($orderColumnName, $columns)) {
+            $filteredQuery->orderBy($orderColumnName, $orderDirection);
         } else {
-            $query->orderBy('id', 'desc');
+            $filteredQuery->orderBy('id', 'desc');
         }
 
-        // Pagination (limit data yang tampil per page)
+        // Pagination
         $start = $request->start ?? 0;
         $length = $request->length ?? 10;
 
-        $data = $query->skip($start)->take($length)->get();
+        $data = $filteredQuery->skip($start)->take($length)->get();
 
+        // Format response
         $result = [];
-        foreach ($data as $index => $pengajuanBooking) {
+        foreach ($data as $pengajuanBooking) {
             $result[] = [
                 'id_pengajuan_booking' => Crypt::encryptString($pengajuanBooking->id),
                 'kode_booking' => $pengajuanBooking->kode_booking,
                 'status_pengajuan_booking' => $pengajuanBooking->status_pengajuan_booking,
                 'balasan_pengajuan_booking' => $pengajuanBooking->balasan_pengajuan_booking,
-                'status_pengajuan_booking' => $pengajuanBooking->status_pengajuan_booking,
-                'user_id' => Crypt::encryptString($pengajuanBooking->user_id)
+                'user_id' => Crypt::encryptString($pengajuanBooking->user_id),
             ];
         }
 
@@ -166,10 +169,10 @@ class PengajuanBookingController extends Controller
             'draw' => intval($request->draw),
             'recordsTotal' => $totalData,
             'recordsFiltered' => $totalFiltered,
-            'data' => $result
+            'data' => $result,
         ]);
     }
-   
+
     public function edit($id)
     {
         $pengajuan = PengajuanBooking::findOrFail(Crypt::decryptString($id));

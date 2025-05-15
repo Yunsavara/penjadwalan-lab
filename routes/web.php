@@ -10,9 +10,11 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Laboran\JenisLabController;
 
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
+use App\Http\Controllers\Laboran\ProsesPengajuanController;
 use App\Http\Controllers\Pengguna\JadwalBookingController;
 use App\Http\Controllers\Pengguna\PengajuanBookingController;
 use Illuminate\Support\Facades\Route;
+
 
 
 Route::group(['middleware' => 'guest'], function() {
@@ -40,7 +42,7 @@ Route::group(['middleware' => ['role:admin']], function() {
     // Pengguna Page
     Route::get('/admin/pengguna', [UsersController::class, 'index'])->name('admin.pengguna');
 
-    // Pengguna Datatables
+    // Pengguna Datatable
     Route::get('/admin/api/data-pengguna', [UsersController::class, 'getApiPengguna']);
 
     // Pengguna Store, Update & Soft Delete
@@ -48,7 +50,7 @@ Route::group(['middleware' => ['role:admin']], function() {
     Route::put('/admin/ubah-pengguna/{id}', [UsersController::class, 'update']);
     Route::delete('/admin/hapus-pengguna/{id}', [UsersController::class, 'softDelete']);
 
-    // Peran Datatables
+    // Peran Datatable
     Route::get('/admin/api/data-peran', [RolesController::class, 'getApiPeran']);
 
     // Peran Store, Update & Soft Delete
@@ -56,7 +58,7 @@ Route::group(['middleware' => ['role:admin']], function() {
     Route::put('/admin/ubah-peran/{id}', [RolesController::class, 'update']);
     Route::delete('/admin/hapus-peran/{id}', [RolesController::class, 'softDelete']);
 
-    // Lokasi Datatables
+    // Lokasi Datatable
     Route::get('/admin/api/data-lokasi', [LokasiController::class, 'getApiLokasi']);
 
     // Lokasi Store, Update & Soft Delete
@@ -79,7 +81,7 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
     // Laboratorium Page
     Route::get('/laboran/laboratorium', [LaboratoriumUnpamController::class, 'index'])->name('laboran.laboratorium');
 
-    // Laboratorium Datatables
+    // Laboratorium Datatable
     Route::get('/laboran/api/data-laboratorium', [LaboratoriumUnpamController::class, 'getApiLaboratorium']);
 
     // Laboratorium Store, Update & Soft Delete
@@ -87,7 +89,7 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::put('/laboran/ubah-laboratorium/{id}', [LaboratoriumUnpamController::class, 'update']);
     Route::delete('/laboran/hapus-laboratorium/{id}', [LaboratoriumUnpamController::class, 'softDelete']);
 
-    // Jenis Laboratorium Datatables
+    // Jenis Laboratorium Datatable
     Route::get('/laboran/api/data-jenis-laboratorium', [JenisLabController::class, 'getApiJenisLaboratorium']);
 
     // Jenis Laboratorium Store, Update & Soft Delete
@@ -95,6 +97,13 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::put('/laboran/ubah-jenis-laboratorium/{id}', [JenisLabController::class, 'update']);
     Route::delete('/laboran/hapus-jenis-laboratorium/{id}', [JenisLabController::class, 'softDelete']);
 
+    // Proses Pengajuan Page
+    Route::get('/laboran/proses-pengajuan', [ProsesPengajuanController::class, 'index'])->name('laboran.proses-pengajuan');
+
+    // Proses Pengajuan Datatable
+    Route::get('laboran/api/data-proses-pengajuan-booking', [ProsesPengajuanController::class, 'getDataProsesPengajuan']);
+    Route::get('laboran/api/detail-proses-pengajuan-booking/{id}', [ProsesPengajuanController::class, 'getDetailProsesPengajuan']);
+    Route::put('/laboran/terima-proses-pengajuan-booking/{id}', [ProsesPengajuanController::class, 'terimaProsesPengajuan']);
 });
 
 Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
@@ -108,7 +117,7 @@ Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
     Route::get('/pengajuan/api/data-hari-operasional/{lokasiId}', [PengajuanBookingController::class, 'getHariOperasionalByLokasi']);
     Route::get('/pengajuan/api/data-jam-operasional/{hariOperasionalId}', [PengajuanBookingController::class, 'getJamOperasional']);
 
-    // Pengajuan Booking Datatables
+    // Pengajuan Booking Datatable
     Route::get('/pengajuan/api/data-pengajuan-booking', [PengajuanBookingController::class, 'getApiPengajuanBooking']);
 
     // Pengajuan Store, Update
