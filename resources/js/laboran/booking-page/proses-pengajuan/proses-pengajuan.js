@@ -1,5 +1,5 @@
 import { initProsesPengajuanDatatable } from './datatables-proses-pengajuan';
-import { detailProsesPengajuan, terimaProsesPengajuan } from './aksi-proses-pengajuan';
+import { detailProsesPengajuan, terimaProsesPengajuan, tolakProsesPengajuan } from './aksi-proses-pengajuan';
 
 import 'datatables.net-responsive-bs5';
 import 'datatables.net-fixedheader-bs5';
@@ -12,4 +12,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initProsesPengajuanDatatable();
     detailProsesPengajuan();
     terimaProsesPengajuan();
+    tolakProsesPengajuan();
 });

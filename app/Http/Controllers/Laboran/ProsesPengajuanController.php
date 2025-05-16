@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\DB;
 
 class ProsesPengajuanController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view("laboran.booking-page.proses-pengajuan.proses-pengajuan", [
             'page_meta' => [
                 'page' => 'Proses Pengajuan',
@@ -23,7 +24,8 @@ class ProsesPengajuanController extends Controller
         ]);
     }
 
-    public function getDataProsesPengajuan(Request $request) {
+    public function getDataProsesPengajuan(Request $request)
+    {
         $query = PengajuanBooking::select([
             'id',
             'kode_booking',
@@ -218,6 +220,36 @@ class ProsesPengajuanController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('laboran.proses-pengajuan')->with('error', 'Pengajuan Tidak Berhasil Diterima.');
+        }
+    }
+
+    public function tolakProsesPengajuan($id, Request $request)
+    {
+        DB::beginTransaction();
+
+        $request->validate([
+            'balasan_pengajuan_booking' => 'required'
+        ]);
+
+        try {
+
+            $pengajuanId    = Crypt::decryptString($id);
+            $pengajuan      = PengajuanBooking::with('jadwalBookings')->findOrFail($pengajuanId);
+
+            $pengajuan->update([
+                'status_pengajuan_booking' => 'ditolak',
+                'balasan_pengajuan_booking' => $request->balasan_pengajuan_booking
+            ]);
+
+            $pengajuan->jadwalBookings()->update([
+                'status' => 'ditolak'
+            ]);
+
+            DB::commit();
+            return redirect()->route('laboran.proses-pengajuan')->with('success', 'Pengajuan Berhasil Ditolak.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('laboran.proses-pengajuan')->with('error', 'Pengajuan Gagal Ditolak.' . $e->getMessage());
         }
     }
 }

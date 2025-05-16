@@ -63,7 +63,7 @@ export function initProsesPengajuanDatatable() {
                             <ul class="dropdown-menu p-0">
                                 <li><button class="dropdown-item btn-detail-proses-pengajuan" data-id="${row.id_pengajuan_booking}" data-bs-toggle="modal" data-bs-target="#detailProsesPengajuanModal">Detail</button></li>
                                 <li><button class="dropdown-item btn-terima-proses-pengajuan" data-id="${row.id_pengajuan_booking}" data-kode-booking="${row.kode_booking}" data-bs-toggle="modal" data-bs-target="#terimaProsesPengajuanModal">Terima</button></li>
-                                <li><button class="dropdown-item text-danger">Tolak</button></li>
+                                <li><button class="dropdown-item text-danger btn-tolak-proses-pengajuan" data-id="${row.id_pengajuan_booking}" data-kode-booking="${row.kode_booking}" data-bs-toggle="modal" data-bs-target="#tolakProsesPengajuanModal">Tolak</button></li>
                             </ul>
                         </div>
                     `;

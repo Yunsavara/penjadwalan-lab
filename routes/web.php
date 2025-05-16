@@ -104,6 +104,7 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::get('laboran/api/data-proses-pengajuan-booking', [ProsesPengajuanController::class, 'getDataProsesPengajuan']);
     Route::get('laboran/api/detail-proses-pengajuan-booking/{id}', [ProsesPengajuanController::class, 'getDetailProsesPengajuan']);
     Route::put('/laboran/terima-proses-pengajuan-booking/{id}', [ProsesPengajuanController::class, 'terimaProsesPengajuan']);
+    Route::put('/laboran/tolak-proses-pengajuan-booking/{id}', [ProsesPengajuanController::class, 'tolakProsesPengajuan']);
 });
 
 Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {

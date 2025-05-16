@@ -79,10 +79,10 @@ export function terimaProsesPengajuan() {
             const id = event.target.getAttribute('data-id');
             const kodeBooking = event.target.getAttribute('data-kode-booking');
             const terimaBody = document.getElementById('terimaProsesPengajuanBody');
-            const formProsesPengajuan = document.getElementById('formTerimaProsesPengajuan');
+            const formTerimaProsesPengajuan = document.getElementById('formTerimaProsesPengajuan');
 
             terimaBody.innerText = `Terima Pengajuan Kode Booking :\n${kodeBooking} ?`;
-            formProsesPengajuan.setAttribute('action', `/laboran/terima-proses-pengajuan-booking/${id}`);
+            formTerimaProsesPengajuan.setAttribute('action', `/laboran/terima-proses-pengajuan-booking/${id}`);
         }
     });
 
@@ -98,4 +98,16 @@ export function terimaProsesPengajuan() {
     });
 }
 
+export function tolakProsesPengajuan() {
+    table.addEventListener('click', function(event) {
+        if(event.target.classList.contains('btn-tolak-proses-pengajuan')) {
+            const id = event.target.getAttribute('data-id');
+            const kodeBooking = event.target.getAttribute('data-kode-booking');
+            const tolakBody = document.getElementById('tolakProsesPengajuanBody');
+            const formTolakProsesPengajuan = document.getElementById('formTolakProsesPengajuan');
 
+            tolakBody.innerText = `Tolak Pengajuan Kode Booking :\n${kodeBooking} ?`;
+            formTolakProsesPengajuan.setAttribute('action', `/laboran/tolak-proses-pengajuan-booking/${id}`);
+        }
+    });
+}
