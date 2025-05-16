@@ -5,6 +5,8 @@
 @section('content')
 @vite(['resources/js/pengguna/booking-page/booking'])
 
+@include('pengguna.booking-page.pengajuan.modal-pengajuan-booking')
+
     <div class="col-12 p-3 py-4">
         <h2>{{ $page_meta['page'] }}</h2>
         <span>{{ $page_meta['description'] }}</span>

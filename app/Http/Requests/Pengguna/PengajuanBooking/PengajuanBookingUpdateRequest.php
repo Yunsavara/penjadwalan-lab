@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class PengajuanBookingStoreRequest extends FormRequest
+class PengajuanBookingUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -43,7 +43,7 @@ class PengajuanBookingStoreRequest extends FormRequest
             ]);
         }
     }
-
+    
     public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
@@ -66,7 +66,7 @@ class PengajuanBookingStoreRequest extends FormRequest
                     }
                 }
             }
-
+            
             // Mode Range
             if ($this->mode_tanggal === 'range') {
                 $range = (array) $this->tanggal_range;
@@ -96,20 +96,20 @@ class PengajuanBookingStoreRequest extends FormRequest
     }
 
     public function rules()
-    {
-         return [
-             'lokasi_pengajuan_booking' => 'required|exists:lokasis,id',
-             'laboratorium_pengajuan_booking' => 'required|array',
-             'laboratorium_pengajuan_booking.*' => 'exists:laboratorium_unpams,id',
-             'mode_tanggal' => 'required|in:multi,range',
-             'tanggal_multi' => 'required_if:mode_tanggal,multi',
-             'tanggal_range' => 'required_if:mode_tanggal,range',
-             'hari_operasional' => 'required_if:mode_tanggal,range|array',
-             'jam' => 'required|array',
-             'keperluan_pengajuan_booking' => 'required|string|max:255',
-         ];
+    { 
+        return [
+            'lokasi_pengajuan_booking' => 'required|exists:lokasis,id',
+            'laboratorium_pengajuan_booking' => 'required|array',
+            'laboratorium_pengajuan_booking.*' => 'exists:laboratorium_unpams,id',
+            'mode_tanggal' => 'required|in:multi,range',
+            'tanggal_multi' => 'required_if:mode_tanggal,multi',
+            'tanggal_range' => 'required_if:mode_tanggal,range',
+            'hari_operasional' => 'required_if:mode_tanggal,range|array',
+            'jam' => 'required|array',
+            'keperluan_pengajuan_booking' => 'required|string|max:255',
+        ];
     }
-     
+
     public function messages()
     {
         return [
@@ -148,5 +148,5 @@ class PengajuanBookingStoreRequest extends FormRequest
                 ->withInput()
         );
     }
-     
-}
+
+} 

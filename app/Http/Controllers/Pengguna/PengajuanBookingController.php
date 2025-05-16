@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Pengguna;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pengguna\PengajuanBooking\PengajuanBookingStoreRequest;
+use App\Http\Requests\Pengguna\PengajuanBooking\PengajuanBookingUpdateRequest;
 use App\Models\HariOperasional;
-use App\Models\JadwalBooking;
 use App\Models\JamOperasional;
 use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
 use App\Models\PengajuanBooking;
+use App\Services\PengajuanBookingStoreService;
+use App\Services\PengajuanBookingUpdateService;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class PengajuanBookingController extends Controller
 {
@@ -42,6 +43,28 @@ class PengajuanBookingController extends Controller
                 'description' => 'Halaman untuk input Data Pengajuan Booking'
             ] 
         ]);
+    }
+
+    public function store(PengajuanBookingStoreRequest $request, PengajuanBookingStoreService $pengajuan)
+    {
+        $data = $request->validated();
+        // dd($data);
+
+        // Cek apakah masih ada pengajuan booking yang menunggu (user login)
+        $konflikPengajuanMenunggu = $pengajuan->cekPengajuanBookingMenungguLogin($data);
+        if (!empty($konflikPengajuanMenunggu)) {
+            return redirect()->route('pengajuan.create')
+                ->with('pesan', 'Anda Masih Memiliki Pengajuan yang belum diproses :')
+                ->withErrors(['konflik' => $konflikPengajuanMenunggu]) 
+                ->withInput();
+        }
+
+        try {
+            $pengajuan->buatPengajuan($data);
+            return redirect()->route('pengajuan')->with('success', 'Pengajuan Booking berhasil dibuat.');
+        } catch (\Exception $e) {
+            return redirect()->route('pengajuan.create')->withInput()->with('error', 'Pengajuan Booking tidak berhasil dibuat.' . $e->getMessage());
+        }
     }
 
     public function getLaboratoriumByLokasi($lokasiId)
@@ -84,138 +107,62 @@ class PengajuanBookingController extends Controller
         return response()->json($jamOperasional);
     }
     
-    public function store(PengajuanBookingStoreRequest $request)
-    {
-        $data = $request->validated();
-
-        // dd($data);
-
-        DB::beginTransaction();
-
-        try {
-            // Membuat kode booking unik
-            $kodeBooking = 'PBL-' . strtoupper(Str::random(8));
-
-            // Menyimpan data pengajuan booking
-            $pengajuanBooking = PengajuanBooking::create([
-                'kode_booking' => $kodeBooking,
-                'keperluan_pengajuan_booking' => $data['keperluan_pengajuan_booking'],
-                'status_pengajuan_booking' => 'menunggu',
-                'mode_tanggal_pengajuan' => $data['mode_tanggal'],
-                'lokasi_id' => $data['lokasi_pengajuan_booking'],
-                'user_id' => auth()->id(),
-            ]);
-
-            // Jika mode tanggal adalah multi
-            if ($data['mode_tanggal'] === 'multi' && $data['tanggal_multi']) {
-                foreach ($data['tanggal_multi'] as $tanggal) {
-                    foreach ($data['jam'][$tanggal] as $jam) {
-                        list($jamMulai, $jamSelesai) = explode(' - ', $jam);
-
-                        // Menyimpan data jadwal booking per tanggal dan sesi
-                        JadwalBooking::create([
-                            'tanggal_jadwal' => $tanggal,
-                            'jam_mulai' => $jamMulai,
-                            'jam_selesai' => $jamSelesai,
-                            'pengajuan_booking_id' => $pengajuanBooking->id,
-                            'laboratorium_unpam_id' => $data['laboratorium_pengajuan_booking'][0], // Pilih laboratorium pertama (asumsi)
-                        ]);
-                    }
-                }
-            }
-
-            // Jika mode tanggal adalah rentang
-            if ($data['mode_tanggal'] === 'range' && $data['tanggal_range']) {
-                $startDate = $data['tanggal_range']['start'];
-                $endDate = $data['tanggal_range']['end'];
-
-                // Mengiterasi setiap hari dalam rentang tanggal
-                $start = Carbon::parse($startDate);
-                $end = Carbon::parse($endDate);
-
-                while ($start->lte($end)) {
-                    if (in_array($start->dayOfWeek, $data['hari_operasional'])) {
-                        // Pastikan tanggal ada di array 'jam' sebelum diproses
-                        $tanggalString = $start->toDateString();
-                        if (isset($data['jam'][$tanggalString])) {
-                            foreach ($data['jam'][$tanggalString] as $jam) {
-                                list($jamMulai, $jamSelesai) = explode(' - ', $jam);
-
-                                JadwalBooking::create([
-                                    'tanggal_jadwal' => $tanggalString,
-                                    'jam_mulai' => $jamMulai,
-                                    'jam_selesai' => $jamSelesai,
-                                    'pengajuan_booking_id' => $pengajuanBooking->id,
-                                    'laboratorium_unpam_id' => $data['laboratorium_pengajuan_booking'][0], // Pilih laboratorium pertama (asumsi)
-                                ]);
-                            }
-                        }
-                    }
-
-                    // Pindah ke tanggal berikutnya
-                    $start->addDay();
-                }
-            }
-
-            DB::commit();
-            return redirect()->route('pengajuan')->with('success', 'Pengajuan booking berhasil dibuat.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan data.' . $e->getMessage()])->withInput();
-        }
-    }
-    
     public function getApiPengajuanBooking(Request $request)
     {
-        $query =    PengajuanBooking::select([
-                        'id',
-                        'kode_booking',
-                        'status_pengajuan_booking',
-                        'keperluan_pengajuan_booking',
-                        'balasan_pengajuan_booking',
-                        'user_id',
-                    ]);
+        // Query dasar dengan filter user login
+        $query = PengajuanBooking::select([
+            'id',
+            'kode_booking',
+            'status_pengajuan_booking',
+            'keperluan_pengajuan_booking',
+            'balasan_pengajuan_booking',
+            'user_id',
+        ])->where('user_id', Auth::id()); 
+
+        $totalData = $query->count();
+
+        // Cloning query untuk proses pencarian
+        $filteredQuery = clone $query;
 
         // Pencarian
         if ($request->has('search') && !empty($request->search['value'])) {
             $search = $request->search['value'];
-            $query->where(function ($q) use ($search) {
+            $filteredQuery->where(function ($q) use ($search) {
                 $q->where('kode_booking', 'like', "%{$search}%")
                     ->orWhere('status_pengajuan_booking', 'like', "%{$search}%");
             });
         }
 
-        $totalData = PengajuanBooking::count();
-        $totalFiltered = $query->count();
+        $totalFiltered = $filteredQuery->count();
 
         // Sorting
         $orderColumnIndex = $request->input('order.0.column');
         $orderDirection = $request->input('order.0.dir') ?? 'desc';
 
-        $columns = [null, 'kode_booking','id', 'keperluan_pengajuan_booking', 'status_pengajuan_booking', 'balasan_pengajuan_booking', 'user_id'];
+        $columns = [null, 'kode_booking', 'id', 'keperluan_pengajuan_booking', 'status_pengajuan_booking', 'balasan_pengajuan_booking', 'user_id'];
         $orderColumnName = $columns[$orderColumnIndex] ?? 'id';
 
-        if (in_array($orderColumnName, ['id','kode_booking', 'keperluan_pengajuan_booking','status_pengajuan_booking', 'balasan_pengajuan_booking', 'user_id'])) {
-            $query->orderBy($orderColumnName, $orderDirection);
+        if (in_array($orderColumnName, $columns)) {
+            $filteredQuery->orderBy($orderColumnName, $orderDirection);
         } else {
-            $query->orderBy('id', 'desc');
+            $filteredQuery->orderBy('id', 'desc');
         }
 
-        // Pagination (limit data yang tampil per page)
+        // Pagination
         $start = $request->start ?? 0;
         $length = $request->length ?? 10;
 
-        $data = $query->skip($start)->take($length)->get();
+        $data = $filteredQuery->skip($start)->take($length)->get();
 
+        // Format response
         $result = [];
-        foreach ($data as $index => $pengajuanBooking) {
+        foreach ($data as $pengajuanBooking) {
             $result[] = [
                 'id_pengajuan_booking' => Crypt::encryptString($pengajuanBooking->id),
                 'kode_booking' => $pengajuanBooking->kode_booking,
                 'status_pengajuan_booking' => $pengajuanBooking->status_pengajuan_booking,
                 'balasan_pengajuan_booking' => $pengajuanBooking->balasan_pengajuan_booking,
-                'status_pengajuan_booking' => $pengajuanBooking->status_pengajuan_booking,
-                'user_id' => Crypt::encryptString($pengajuanBooking->user_id)
+                'user_id' => Crypt::encryptString($pengajuanBooking->user_id),
             ];
         }
 
@@ -223,86 +170,124 @@ class PengajuanBookingController extends Controller
             'draw' => intval($request->draw),
             'recordsTotal' => $totalData,
             'recordsFiltered' => $totalFiltered,
-            'data' => $result
+            'data' => $result,
         ]);
     }
-   
+
     public function edit($id)
     {
-        $pengajuan = PengajuanBooking::with('jadwalBookings')->findOrFail(Crypt::decryptString($id));
-        $lokasi = Lokasi::select('id', 'nama_lokasi')->where('nama_lokasi', '!=', 'fleksible')->get();
+        $pengajuan = PengajuanBooking::findOrFail(Crypt::decryptString($id));
+        $jadwal = $pengajuan->jadwalBookings()->get();
 
-        // Ambil jadwal bookings
-        $jadwal = $pengajuan->jadwalBookings;
+        $lokasi = Lokasi::select([
+            'id',
+            'nama_lokasi'
+        ])->whereNot('nama_lokasi', 'fleksible')->get();
 
-        // Ambil laboratorium_unpam_id unik dari semua jadwal
-        $laboratoriumTerpilih = $jadwal->pluck('laboratorium_unpam_id')->unique()->toArray();
+        $tanggal_multi = $jadwal
+            ->sortBy('tanggal_jadwal')
+            ->pluck('tanggal_jadwal')
+            ->map(fn($tanggal) => Carbon::parse($tanggal)->format('Y-m-d'))
+            ->unique()
+            ->implode(', '); // spasi habis koma (karena flatpickr)
 
-        // Ambil tanggal mulai dan selesai dari jadwal
-        $tanggalMulai = $jadwal->min('tanggal_jadwal');
-        $tanggalSelesai = $jadwal->max('tanggal_jadwal');
+        // dd($tanggal_multi);
 
-        // Kelompokkan jam operasional berdasarkan tanggal
-        $jamTerpilih = [];
-        foreach ($jadwal as $j) {
-            $tanggal = $j->tanggal_jadwal;
-            $jam = $j->jam_mulai . '-' . $j->jam_selesai;
-            $jamTerpilih[$tanggal][] = $jam;
-        }
+        $sorted_dates = $jadwal->pluck('tanggal_jadwal')
+            ->map(fn($tanggal) => Carbon::parse($tanggal)->format('Y-m-d'))
+            ->sort()
+            ->values();
 
+        $tanggal_range = $sorted_dates->isNotEmpty()
+            ? $sorted_dates->first() . ' - ' . $sorted_dates->last()
+            : '';
+
+        // dd($tanggal_range);
+
+        // Ambil hari dari tanggal yang ada di jadwal
+        $hari_operasional = $jadwal->pluck('tanggal_jadwal')->map(function($tanggal) {
+            return Carbon::parse($tanggal)->dayOfWeek; // 0 (Minggu) sampai 6 (Sabtu)
+        })->unique()->values();
+        
+        // dd($hari_operasional);
+
+        $jam_per_tanggal = $jadwal->groupBy(function ($item) {
+            return Carbon::parse($item->tanggal_jadwal)->format('Y-m-d');
+        })->map(function ($items) {
+            return $items->map(function ($item) {
+                return Carbon::parse($item->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($item->jam_selesai)->format('H:i');
+            })->values();
+        });        
+
+        // dd($jam_per_tanggal);
+
+        // Kirim ke view
         return view('pengguna.booking-page.pengajuan.form-pengajuan-booking-update', [
             'pengajuan' => $pengajuan,
+            'jadwal' => $jadwal,
             'lokasi' => $lokasi,
+            'tanggal_multi' => $tanggal_multi,
+            'tanggal_range' => $tanggal_range,
+            'jam_per_tanggal' => $jam_per_tanggal,
+            'hari_operasional' => $hari_operasional,
             'page_meta' => [
                 'page' => 'Edit Pengajuan Booking',
                 'description' => 'Halaman untuk edit Data Pengajuan Booking',
-            ],
-            'oldForm' => [
-                'lokasi' => $pengajuan->lokasi_id,
-                'laboratorium' => $laboratoriumTerpilih,
-                'tanggalMulai' => $tanggalMulai,
-                'tanggalSelesai' => $tanggalSelesai,
-                'jamOperasional' => $jamTerpilih,
-                'keperluan' => $pengajuan->keperluan_pengajuan_booking,
             ]
         ]);
     }
     
-    // public function update(PengajuanBookingStoreRequest $request, PengajuanBooking $pengajuan)
-    // {
-    //     DB::beginTransaction();
+    public function update(PengajuanBookingUpdateRequest $request, PengajuanBooking $pengajuanBooking, PengajuanBookingUpdateService $pengajuanService)
+    {
+        $data = $request->validated();
 
-    //     try {
-    //         // Update data utama pengajuan
-    //         $pengajuan->update([
-    //             'keperluan_pengajuan_booking' => $request->keperluan_pengajuan_booking,
-    //             // Jika status atau balasan ingin bisa diubah juga, tambahkan di sini
-    //         ]);
+        // Cek konflik pengajuan 'menunggu', tapi abaikan pengajuan yang sedang diedit
+        $konflikPengajuanMenunggu = $pengajuanService->cekPengajuanBookingMenungguLogin($pengajuanBooking, $data);
 
-    //         // Hapus jadwal lama
-    //         $pengajuan->jadwalBookings()->delete();
+        if (!empty($konflikPengajuanMenunggu)) {
+            return redirect()->route('pengajuan.edit', $pengajuanBooking->id)
+                ->with('pesan', 'Anda masih memiliki pengajuan yang belum diproses:')
+                ->withErrors(['konflik' => $konflikPengajuanMenunggu])
+                ->withInput();
+        }
 
-    //         // Simpan jadwal baru
-    //         $pivotData = $request->toPivotData();
+        try {
+            $pengajuanService->ubahPengajuan($pengajuanBooking, $data);
+            return redirect()->route('pengajuan')->with('success', 'Pengajuan Booking berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->route('pengajuan.edit', $pengajuanBooking->id)
+                ->withInput()
+                ->with('error', 'Pengajuan Booking gagal diperbarui. ' . $e->getMessage());
+        }
+    }
 
-    //         foreach ($pivotData as $data) {
-    //             JadwalBooking::create([
-    //                 'pengajuan_booking_id' => $pengajuan->id,
-    //                 'laboratorium_unpam_id' => $data['laboratorium_id'],
-    //                 'tanggal_jadwal' => $data['tanggal'],
-    //                 'jam_mulai' => $data['jam_mulai'],
-    //                 'jam_selesai' => $data['jam_selesai'],
-    //                 'status' => 'menunggu', // default
-    //             ]);
-    //         }
+    public function batalkanPengajuanBooking($id,Request $request)
+    {
+        DB::beginTransaction();
 
-    //         DB::commit();
+        $request->validate([
+            'balasan_pengajuan_booking' => 'required'
+        ]);
 
-    //         return redirect()->route('pengajuan-booking.index')->with('success', 'Pengajuan berhasil diperbarui.');
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
+        try {
 
-    //         return back()->withErrors('Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
-    //     }
-    // }
+            $pengajuanBookingId = Crypt::decryptString($id);
+            $pengajuanBooking = PengajuanBooking::with('jadwalBookings')->findOrFail($pengajuanBookingId);
+
+            $pengajuanBooking->update([
+                'status_pengajuan_booking' => 'dibatalkan',
+                'balasan_pengajuan_booking' => $request->balasan_pengajuan_booking
+            ]);
+
+            $pengajuanBooking->jadwalBookings()->update([
+                'status' => 'dibatalkan'
+            ]);
+
+            DB::commit();
+            return redirect()->route('pengajuan')->with('success', 'Pengajuan Berhasil Dibatalkan.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('pengajuan')->with('error', 'Pengajuan Tidak Berhasil Dibatalkan.' . $e->getMessage());
+        }
+    }
 }

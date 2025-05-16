@@ -7,6 +7,9 @@
 
     @if ($errors->any())
         <div class="alert alert-danger">
+            @if (session('pesan'))
+                <span>{{ session('pesan') }}</span>
+            @endif
             <ul class="mb-0">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -62,7 +65,7 @@
             <label class="form-label" for="tanggalRange">Tanggal (Rentang)</label>
             <input type="text" name="tanggal_range" id="tanggalRange" class="form-control tanggal-flatpickr">
         </div>
-
+ 
         <!-- Container Checkbox Hari (hanya untuk mode range) -->
         <div class="mb-3 d-none" id="hariOperasionalContainer">
             <div id="checkboxHariOperasional" class="row"></div>
