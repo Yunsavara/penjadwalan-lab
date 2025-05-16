@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class PengajuanBookingController extends Controller
 {
@@ -260,4 +261,33 @@ class PengajuanBookingController extends Controller
         }
     }
 
+    public function batalkanPengajuanBooking($id,Request $request)
+    {
+        DB::beginTransaction();
+
+        $request->validate([
+            'balasan_pengajuan_booking' => 'required'
+        ]);
+
+        try {
+
+            $pengajuanBookingId = Crypt::decryptString($id);
+            $pengajuanBooking = PengajuanBooking::with('jadwalBookings')->findOrFail($pengajuanBookingId);
+
+            $pengajuanBooking->update([
+                'status_pengajuan_booking' => 'dibatalkan',
+                'balasan_pengajuan_booking' => $request->balasan_pengajuan_booking
+            ]);
+
+            $pengajuanBooking->jadwalBookings()->update([
+                'status' => 'dibatalkan'
+            ]);
+
+            DB::commit();
+            return redirect()->route('pengajuan')->with('success', 'Pengajuan Berhasil Dibatalkan.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('pengajuan')->with('error', 'Pengajuan Tidak Berhasil Dibatalkan.' . $e->getMessage());
+        }
+    }
 }

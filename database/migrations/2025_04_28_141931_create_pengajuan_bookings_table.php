@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pengajuan_bookings', function (Blueprint $table) {
             $table->id();
             $table->string('kode_booking')->unique();
-            $table->enum('status_pengajuan_booking', ['menunggu', 'diterima', 'ditolak'])->default('menunggu');
+            $table->enum('status_pengajuan_booking', ['menunggu', 'diterima', 'ditolak','dibatalkan'])->default('menunggu');
             $table->text('keperluan_pengajuan_booking');
             $table->text('balasan_pengajuan_booking')->nullable();
             $table->enum('mode_tanggal_pengajuan', ['multi','range']);

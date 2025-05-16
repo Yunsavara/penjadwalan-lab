@@ -126,6 +126,7 @@ Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
     Route::post('/pengajuan/tambah-pengajuan-booking', [PengajuanBookingController::class, 'store'])->name('pengajuan.store');
     Route::get('/pengajuan/ubah-pengajuan-booking/{pengajuanBooking}', [PengajuanBookingController::class, 'edit'])->name('pengajuan.edit');
     Route::put('/pengajuan/ubah-pengajuan-booking/{pengajuanBooking}', [PengajuanBookingController::class, 'update'])->name('pengajuan.update');
+    Route::put('/pengajuan/batalkan-pengajuan-booking/{id}', [PengajuanBookingController::class, 'batalkanPengajuanBooking']);
 
     // Jadwal Page
     Route::get('/jadwal', [JadwalBookingController::class, 'index'])->name('jadwal');

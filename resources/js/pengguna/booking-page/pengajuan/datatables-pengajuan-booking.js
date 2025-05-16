@@ -57,7 +57,7 @@ export function initPengajuanBookingDatatable() {
                             </button>
                             <ul class="dropdown-menu p-0">
                                 <li><a href="/pengajuan/ubah-pengajuan-booking/${row.id_pengajuan_booking}" class="dropdown-item">Ubah</a></li>
-                                <li><button class="dropdown-item text-danger">Hapus</button></li>
+                                <li><button class="dropdown-item text-danger btn-batalkan-pengajuan-booking" data-id="${row.id_pengajuan_booking}" data-kode-booking="${row.kode_booking}" data-bs-toggle="modal" data-bs-target="#batalkanPengajuanBookingModal">Batalkan</button></li>
                             </ul>
                         </div>
                     `;
