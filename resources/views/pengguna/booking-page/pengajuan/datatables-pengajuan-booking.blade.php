@@ -1,10 +1,4 @@
 <div class="col-12 p-2 d-flex flex-wrap align-items-center justify-content-between">
-    <div class="col-12 col-md-auto mb-2 bg-info rounded p-2 text-center text-white">
-        <span><b>Daftar Pengajuan Booking</b></span>
-    </div>
-</div>
-
-<div class="col-12 p-2 d-flex flex-wrap align-items-center justify-content-between">
     <div id="searchPengajuanBooking" class="col-12 col-md-auto mb-2"></div>
     <div id="sortingPengajuanBooking" class="col-12 col-md-auto mb-2"></div>
 </div>
