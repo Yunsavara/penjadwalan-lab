@@ -12,12 +12,14 @@
         <span>{{ $page_meta['description'] }}</span>
         <hr>
 
-        <div id="tools-pengajuan-booking">
+        
+
+        {{-- <div id="tools-pengajuan-booking">
             @include('pengguna.booking-page.pengajuan.tools-pengajuan-booking')
         </div>
 
         <div id="table-container">
             @include('pengguna.booking-page.navigasi-pengajuan-booking')
-        </div>
+        </div>  --}}
     </div>
 @endsection 

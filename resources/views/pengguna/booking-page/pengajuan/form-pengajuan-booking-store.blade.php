@@ -65,7 +65,7 @@
             <label class="form-label" for="tanggalRange">Tanggal (Rentang)</label>
             <input type="text" name="tanggal_range" id="tanggalRange" class="form-control tanggal-flatpickr">
         </div>
- 
+  
         <!-- Container Checkbox Hari (hanya untuk mode range) -->
         <div class="mb-3 d-none" id="hariOperasionalContainer">
             <div id="checkboxHariOperasional" class="row"></div>

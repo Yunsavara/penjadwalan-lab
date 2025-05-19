@@ -7,13 +7,15 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Auth\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Laboran\JenisLabController;
+use App\Http\Controllers\BookingController;
 
+use App\Http\Controllers\Laboran\JenisLabController;
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
 use App\Http\Controllers\Laboran\ProsesPengajuanController;
 use App\Http\Controllers\Pengguna\JadwalBookingController;
 use App\Http\Controllers\Pengguna\PengajuanBookingController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -130,4 +132,8 @@ Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
 
     // Jadwal Page
     Route::get('/jadwal', [JadwalBookingController::class, 'index'])->name('jadwal');
+
+
+    // Booking Page
+    Route::resource('/booking', BookingController::class);
 });

@@ -49,7 +49,7 @@
         @endif
 
         @php
-            $isBookingActive = Route::is('pengajuan*') || Route::is('jadwal')  || Route::is('laboran.proses-pengajuan*'); 
+            $isBookingActive = Route::is('pengajuan*') || Route::is('booking*')  || Route::is('laboran.proses-pengajuan*'); 
         @endphp
 
         <li class="sidebar-item {{ $isBookingActive ? 'active' : '' }}">
@@ -61,14 +61,15 @@
             <ul class="collapse list-unstyled dropdown-menu-vanilla {{ $isBookingActive ? 'active' : '' }}" id="bookingDropdown">
 
                 @if ($userRole !== "laboran")
-                    <li class="sidebar-item {{ Route::is('pengajuan*') ? 'active' : '' }}">
+                    {{-- <li class="sidebar-item {{ Route::is('pengajuan*') ? 'active' : '' }}">
                         <a href="{{ route('pengajuan') }}" class="sidebar-link">Pengajuan</a>
+                    </li> --}}
+
+                    <li class="sidebar-item {{ Route::is('booking*') ? 'active' : '' }}">
+                        <a href="{{ route('booking.index') }}" class="sidebar-link">Booking</a>
                     </li>
                 @endif
 
-                <li class="sidebar-item {{ Route::is('jadwal') ? 'active' : '' }}">
-                    <a href="{{ route('jadwal') }}" class="sidebar-link">Jadwal</a>
-                </li>
 
                 @if ($userRole == "laboran" || $userRole == "admin")
                     <li class="sidebar-item {{ Route::is('laboran.proses-pengajuan*') ? 'active' : '' }}">

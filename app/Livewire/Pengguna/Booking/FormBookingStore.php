@@ -1,0 +1,166 @@
+<?php
+
+namespace App\Livewire\Pengguna\Booking;
+
+use App\Models\HariOperasional;
+use App\Models\LaboratoriumUnpam;
+use App\Models\Lokasi;
+use Carbon\Carbon;
+use Livewire\Component;
+
+class FormBookingStore extends Component
+{
+    public $lokasiId;
+    public $laboratoriumId;
+    public $laboratoriumList = [];
+    public $modeTanggal = 'multi';
+
+    public $tanggalMulti = [];
+    public $jamOperasionalPerTanggal = [];
+    public $jamTerpilih = [];
+    public $hariOperasionalList = [];
+
+    public $tanggalRange = ''; 
+    public $hariTerpilih = []; 
+    public $tanggalFiltered = []; 
+
+    public function updatedLokasiId($value)
+    {
+        if ($value) {
+            $this->laboratoriumList = LaboratoriumUnpam::where('lokasi_id', $value)->get();
+
+            $this->hariOperasionalList = HariOperasional::where('lokasi_id', $value)
+                ->where('is_disabled', false)
+                ->orderBy('hari_operasional')
+                ->get();
+        } else {
+            $this->laboratoriumList = [];
+            $this->hariOperasionalList = [];
+        }
+
+        $this->laboratoriumId = null;
+        $this->modeTanggal = 'multi';
+        $this->tanggalMulti = [];
+        $this->jamOperasionalPerTanggal = [];
+        $this->jamTerpilih = [];
+
+        $this->dispatch('resetLaboratoriumSelect');
+        $this->dispatch('resetTanggalMultiFlatpickr');
+    }
+
+    public function updatedModeTanggal()
+    {
+        $this->tanggalMulti = [];
+        $this->jamOperasionalPerTanggal = [];
+        $this->jamTerpilih = [];
+    }
+
+    public function updatedTanggalMulti($value)
+    {
+        $this->jamOperasionalPerTanggal = [];
+
+        if (is_string($value)) {
+            $value = explode(',', $value);
+        }
+
+        foreach ($value as $tgl) {
+            try {
+                $carbon = Carbon::parse($tgl);
+                $hariKe = $carbon->dayOfWeek;
+                $tanggalStr = $carbon->format('Y-m-d');
+
+                $data = HariOperasional::with('jamOperasionals')
+                    ->where('lokasi_id', $this->lokasiId)
+                    ->where('hari_operasional', $hariKe)
+                    ->where('is_disabled', false)
+                    ->first();
+
+                if ($data) {
+                    $this->jamOperasionalPerTanggal[$tanggalStr] = $data->jamOperasionals
+                        ->map(function ($jam) {
+                            return Carbon::parse($jam->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($jam->jam_selesai)->format('H:i');
+                        })->toArray();
+                }
+            } catch (\Exception $e) {
+                // Bisa log error jika dibutuhkan
+            }
+        }
+    }
+
+    public function updatedTanggalRange($value)
+    {
+        $this->filterTanggalByHari();
+    }
+
+    public function updatedHariTerpilih($value)
+    {
+        $this->filterTanggalByHari();
+    }
+
+    protected function filterTanggalByHari()
+    {
+        $this->tanggalFiltered = [];
+        $this->jamOperasionalPerTanggal = [];
+        $this->jamTerpilih = [];
+
+        if (!$this->tanggalRange || empty($this->hariTerpilih)) {
+            return;
+        }
+
+        $parts = explode(' - ', $this->tanggalRange);
+
+        // dump('tanggalRange:', $this->tanggalRange);
+        // dump('explode result:', $parts);
+
+        if (count($parts) !== 2) {
+            return;
+        }
+
+        try {
+            $start = Carbon::parse(trim($parts[0]));
+            $end = Carbon::parse(trim($parts[1]));
+        } catch (\Exception $e) {
+        }
+
+        // dump('Parsed Start:', $start->toDateString());
+        // dump('Parsed End:', $end->toDateString());
+
+        $current = $start->copy();
+
+        while ($current->lte($end)) {
+            $hari = $current->dayOfWeek;
+            if (in_array($hari, array_map('intval', $this->hariTerpilih))) {
+                $tanggalStr = $current->format('Y-m-d');
+                $this->tanggalFiltered[] = $tanggalStr;
+
+                $data = HariOperasional::with('jamOperasionals')
+                    ->where('lokasi_id', $this->lokasiId)
+                    ->where('hari_operasional', $hari)
+                    ->where('is_disabled', false)
+                    ->first();
+
+                if ($data) {
+                    $this->jamOperasionalPerTanggal[$tanggalStr] = $data->jamOperasionals
+                        ->map(fn($jam) => Carbon::parse($jam->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($jam->jam_selesai)->format('H:i'))
+                        ->toArray();
+                }
+            }
+
+            $current->addDay();
+        }
+        
+        dump($this->jamOperasionalPerTanggal);
+        
+    }
+
+    public function render()
+    {
+        $lokasis = Lokasi::select(['id', 'nama_lokasi'])
+            ->whereNot('nama_lokasi', 'fleksible')
+            ->get();
+
+        return view('livewire.pengguna.booking.form-booking-store', [
+            'lokasis' => $lokasis,
+        ]);
+    }
+}
