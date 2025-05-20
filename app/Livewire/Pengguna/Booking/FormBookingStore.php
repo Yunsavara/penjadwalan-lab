@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pengguna\Booking;
 
+use App\Http\Requests\Pengguna\Booking\BookingStoreRequest;
 use App\Models\HariOperasional;
 use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
@@ -11,7 +12,7 @@ use Livewire\Component;
 class FormBookingStore extends Component
 {
     public $lokasiId;
-    public $laboratoriumId;
+    public $laboratoriumIds = [];
     public $laboratoriumList = [];
     public $modeTanggal = 'multi';
 
@@ -23,6 +24,8 @@ class FormBookingStore extends Component
     public $tanggalRange = ''; 
     public $hariTerpilih = []; 
     public $tanggalFiltered = []; 
+
+    public $keperluanBooking;
 
     public function updatedLokasiId($value)
     {
@@ -38,7 +41,7 @@ class FormBookingStore extends Component
             $this->hariOperasionalList = [];
         }
 
-        $this->laboratoriumId = null;
+        $this->laboratoriumIds = [];
         $this->modeTanggal = 'multi';
         $this->tanggalMulti = [];
         $this->jamOperasionalPerTanggal = [];
@@ -46,6 +49,7 @@ class FormBookingStore extends Component
 
         $this->dispatch('resetLaboratoriumSelect');
         $this->dispatch('resetTanggalMultiFlatpickr');
+        $this->dispatch('resetTanggalRangeFlatpickr');
     }
 
     public function updatedModeTanggal()
@@ -149,7 +153,7 @@ class FormBookingStore extends Component
             $current->addDay();
         }
         
-        dump($this->jamOperasionalPerTanggal);
+        // dump($this->jamOperasionalPerTanggal);
         
     }
 
@@ -163,4 +167,11 @@ class FormBookingStore extends Component
             'lokasis' => $lokasis,
         ]);
     }
+
+
 }
+
+// public function storeBooking(BookingStoreRequest $request)
+// {
+//     dd($request->all());
+// }

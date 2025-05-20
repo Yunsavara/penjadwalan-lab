@@ -13,6 +13,7 @@
 
                 {{-- Name Model --}}
 
+                <form wire:submit.prevent="storeBooking">
                 <div class="modal-body">
                     {{-- Pilihan Lokasi --}}
                     <div class="mb-3" x-data x-init="initFuncInput.initLokasiSelect2($el.querySelector('select'), $wire)" wire:ignore>
@@ -29,21 +30,18 @@
 
                     {{-- Pilihan Laboratorium --}}
                     @if (!empty($laboratoriumList))
-                        <div class="mb-3" x-data x-init="initFuncInput.initLaboratoriumSelect2($el.querySelector('select'), $wire)" wire:ignore>
+                        <div class="mb-3" x-data x-init="initFuncInput.initLaboratoriumSelect2($el.querySelector('select'), $wire)" wire:key="laboratorium-list-{{ md5(json_encode($laboratoriumList)) }}" wire:ignore>
                             <label for="laboratoriumId">Laboratorium</label>
                             <div id="select2-laboratorium-parent">
-                                <select id="laboratoriumId" class="form-select">
-                                    <option value="">Pilih Laboratorium</option>
+                                <select id="laboratoriumId" class="form-select" multiple>
                                     @foreach ($laboratoriumList as $lab)
                                         <option value="{{ $lab->id }}">{{ $lab->nama_laboratorium }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                    @endif
 
-                    {{-- Mode Tanggal --}}
-                    @if ($laboratoriumList)
+                        {{-- Mode Tanggal --}}
                         <div class="mb-3">
                             <label for="form-label">Mode Tanggal</label>
                             <div>
@@ -67,11 +65,11 @@
 
                             @if (!empty($jamOperasionalPerTanggal))
                                 @foreach ($jamOperasionalPerTanggal as $tanggal => $jams)
-                                    <div class="mb-4" x-data <div class="mb-4" x-data x-init="initFuncInput.initJamOperasionalSelect2($el.querySelector('select'), $wire, {{ $tanggal }})" wire:ignore>
+                                    <div class="mb-3" x-data x-init="initFuncInput.initJamOperasionalSelect2($el.querySelector('select'), $wire, {{ $tanggal }})" wire:ignore>
                                         <label class="form-label">
                                             {{ Carbon::parse($tanggal)->locale('id')->translatedFormat('l, d F Y') }}
                                         </label>
-                                        <select id="jamSelect{{ $tanggal }}" multiple class="form-select">
+                                        <select id="jamSelect{{ $tanggal }}" class="form-select" multiple>
                                             @foreach ($jams as $jam)
                                                 <option value="{{ $jam }}" @if (in_array($jam, $jamTerpilih[$tanggal] ?? [])) selected @endif>
                                                     {{ $jam }}
@@ -117,11 +115,11 @@
 
                             @if (!empty($jamOperasionalPerTanggal))
                                 @foreach ($jamOperasionalPerTanggal as $tanggal => $jamList)
-                                    <div class="mb-4" wire:key="jam-{{ $tanggal }}" x-data x-init="initFuncInput.initJamOperasionalSelect2($el.querySelector('select'), $wire, '{{ $tanggal }}')" wire:ignore>
+                                    <div class="mb-3" wire:key="jam-{{ $tanggal }}" x-data x-init="initFuncInput.initJamOperasionalSelect2($el.querySelector('select'), $wire, '{{ $tanggal }}')" wire:ignore>
                                         <label class="form-label">
                                             {{ Carbon::parse($tanggal)->locale('id')->translatedFormat('l, d F Y') }}
                                         </label>
-                                        <select id="jamSelect{{ $tanggal }}" multiple class="form-select">
+                                        <select id="jamSelect{{ $tanggal }}" class="form-select" multiple>
                                             @foreach ($jamList as $jam)
                                                 <option value="{{ $jam }}" @if (in_array($jam, $jamTerpilih[$tanggal] ?? [])) selected @endif>
                                                     {{ $jam }}
@@ -134,13 +132,18 @@
 
                         @endif
 
+                        <div class="mb-3">
+                            <label for="keperluanBooking">Keperluan</label>
+                            <textarea id="keperluanBooking" class="form-control" wire:model.defer="keperluanBooking" style="resize:none; max-height:100px; min-height:100px;"></textarea>
+                        </div>
                     @endif
                 </div>
-
+                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-primary">Kirim</button>
+                    <button type="submit" class="btn btn-primary">Kirim</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>

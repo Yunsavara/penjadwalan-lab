@@ -46,7 +46,8 @@ function initLaboratoriumSelect2(laboratorium, livewire)
     if (livewire)
     {
         $select.on('change', function () {
-            livewire.set('laboratoriumId', $(this).val());
+            // Gunakan array
+            livewire.set('laboratoriumIds', $(this).val());
         });
     }
 }
@@ -88,7 +89,7 @@ function initJamOperasionalSelect2(jamOperasional, livewire, tanggalStr) {
 }
 
 function initTanggalRangeFlatpickr(tanggalRange, livewire) {
-    flatpickr(tanggalRange, {
+    const instance = flatpickr(tanggalRange, {
         mode: 'range',
         altInput: 'true',
         altFormat: 'd F Y',
@@ -104,13 +105,15 @@ function initTanggalRangeFlatpickr(tanggalRange, livewire) {
             }
         }
     });
+
+    tanggalRange.flatpickrInstance = instance;
 }
 
 
 // Reset, dispatch di controller livewire
 Livewire.on('resetLaboratoriumSelect', () => {
     const $select = $('#laboratoriumId');
-    $select.val('').trigger('change');
+    $select.val(null).trigger('change');
 });
 
 Livewire.on('resetTanggalMultiFlatpickr', () => {
@@ -120,3 +123,9 @@ Livewire.on('resetTanggalMultiFlatpickr', () => {
     }
 });
 
+Livewire.on('resetTanggalRangeFlatpickr', () => {
+    const el = document.querySelector('#tanggalRange');
+    if (el && el.flatpickrInstance) {
+        el.flatpickrInstance.clear();
+    }
+});
