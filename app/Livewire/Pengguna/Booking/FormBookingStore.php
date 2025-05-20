@@ -241,8 +241,9 @@ class FormBookingStore extends Component
             DB::commit();
 
             // Reset form jika perlu
-            $this->reset(['lokasiId', 'laboratoriumIds', 'tanggalMulti', 'tanggalRange', 'hariTerpilih', 'jamOperasionalPerTanggal', 'jamTerpilih', 'keperluanBooking']);
+            $this->reset(['laboratoriumIds', 'laboratoriumList','tanggalMulti', 'tanggalRange', 'hariTerpilih', 'jamOperasionalPerTanggal', 'jamTerpilih', 'keperluanBooking']);
             $this->modeTanggal = 'multi';
+            $this->dispatch('resetLokasiSelect');
             $this->dispatch('resetLaboratoriumSelect');
             $this->dispatch('resetTanggalMultiFlatpickr');
             $this->dispatch('resetTanggalRangeFlatpickr');

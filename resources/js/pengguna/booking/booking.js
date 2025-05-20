@@ -111,6 +111,11 @@ function initTanggalRangeFlatpickr(tanggalRange, livewire) {
 
 
 // Reset, dispatch di controller livewire
+Livewire.on('resetLokasiSelect', () => {
+    const $select = $('#lokasiId');
+    $select.val(null).trigger('change');
+});
+
 Livewire.on('resetLaboratoriumSelect', () => {
     const $select = $('#laboratoriumId');
     $select.val(null).trigger('change');
