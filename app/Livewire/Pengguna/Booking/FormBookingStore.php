@@ -111,18 +111,16 @@ class FormBookingStore extends Component
     {
         $this->tanggalFiltered = [];
         $this->jamOperasionalPerTanggal = [];
-        $this->jamTerpilih = [];
 
         if (!$this->tanggalRange || empty($this->hariTerpilih)) {
+            $this->jamTerpilih = []; // reset juga kalau kondisi tidak valid
             return;
         }
 
         $parts = explode(' - ', $this->tanggalRange);
 
-        // dump('tanggalRange:', $this->tanggalRange);
-        // dump('explode result:', $parts);
-
         if (count($parts) !== 2) {
+            $this->jamTerpilih = [];
             return;
         }
 
@@ -130,10 +128,9 @@ class FormBookingStore extends Component
             $start = Carbon::parse(trim($parts[0]));
             $end = Carbon::parse(trim($parts[1]));
         } catch (\Exception $e) {
+            $this->jamTerpilih = [];
+            return;
         }
-
-        // dump('Parsed Start:', $start->toDateString());
-        // dump('Parsed End:', $end->toDateString());
 
         $current = $start->copy();
 
@@ -158,9 +155,13 @@ class FormBookingStore extends Component
 
             $current->addDay();
         }
-        
-        // dump($this->jamOperasionalPerTanggal);
-        
+
+        // Sinkronkan jamTerpilih dengan tanggalFiltered
+        $this->jamTerpilih = array_filter(
+            $this->jamTerpilih,
+            fn ($tanggal) => in_array($tanggal, $this->tanggalFiltered),
+            ARRAY_FILTER_USE_KEY
+        );
     }
 
     public function render()
