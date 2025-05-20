@@ -3,6 +3,7 @@
 namespace App\Livewire\Pengguna\Booking;
 
 use App\Models\HariOperasional;
+use App\Models\JadwalBooking;
 use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
 use App\Models\PengajuanBooking;
@@ -195,7 +196,7 @@ class FormBookingStore extends Component
                 'kode_booking' => $kodeBooking,
                 'status_pengajuan_booking' => 'menunggu',
                 'keperluan_pengajuan_booking' => $this->keperluanBooking,
-                'mode_tanggall_pengajuan' => $this->modeTanggal,
+                'mode_tanggal_pengajuan' => $this->modeTanggal,
                 'lokasi_id' => $this->lokasiId,
                 'user_id' => auth()->id(),
             ]);
@@ -208,7 +209,7 @@ class FormBookingStore extends Component
                         foreach ($this->jamTerpilih[$tanggal] as $jam) {
                             [$mulai, $selesai] = array_map('trim', explode('-', $jam));
 
-                            \App\Models\JadwalBooking::create([
+                            JadwalBooking::create([
                                 'pengajuan_booking_id' => $pengajuan->id,
                                 'laboratorium_unpam_id' => $labId,
                                 'tanggal_jadwal' => $tanggal,
@@ -225,7 +226,7 @@ class FormBookingStore extends Component
                         foreach ($this->jamTerpilih[$tanggal] as $jam) {
                             [$mulai, $selesai] = array_map('trim', explode('-', $jam));
 
-                            \App\Models\JadwalBooking::create([
+                            JadwalBooking::create([
                                 'pengajuan_booking_id' => $pengajuan->id,
                                 'laboratorium_unpam_id' => $labId,
                                 'tanggal_jadwal' => $tanggal,

@@ -1,4 +1,5 @@
 import DataTable from 'datatables.net';
+
 import 'datatables.net-responsive-bs5';
 import 'datatables.net-fixedheader-bs5';
 import 'datatables.net-select';
