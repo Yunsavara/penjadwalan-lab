@@ -5,7 +5,10 @@ namespace App\Livewire\Pengguna\Booking;
 use App\Models\HariOperasional;
 use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
+use App\Models\PengajuanBooking;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class FormBookingStore extends Component
@@ -179,9 +182,78 @@ class FormBookingStore extends Component
     public function storeBooking()
     {
         $data = $this->validateBooking();
-        dd($data);
-    }
+        // dd($data);
 
+        DB::beginTransaction();
+
+        try
+        {
+
+            $kodeBooking = 'Book-' . strtoupper(Str::random(8));
+
+            $pengajuan = PengajuanBooking::create([
+                'kode_booking' => $kodeBooking,
+                'status_pengajuan_booking' => 'menunggu',
+                'keperluan_pengajuan_booking' => $this->keperluanBooking,
+                'mode_tanggall_pengajuan' => $this->modeTanggal,
+                'lokasi_id' => $this->lokasiId,
+                'user_id' => auth()->id(),
+            ]);
+
+            foreach ($this->laboratoriumIds as $labId) {
+                if ($this->modeTanggal === 'multi') {
+                    foreach ($this->tanggalMulti as $tanggal) {
+                        if (!isset($this->jamTerpilih[$tanggal])) continue;
+
+                        foreach ($this->jamTerpilih[$tanggal] as $jam) {
+                            [$mulai, $selesai] = array_map('trim', explode('-', $jam));
+
+                            \App\Models\JadwalBooking::create([
+                                'pengajuan_booking_id' => $pengajuan->id,
+                                'laboratorium_unpam_id' => $labId,
+                                'tanggal_jadwal' => $tanggal,
+                                'jam_mulai' => $mulai,
+                                'jam_selesai' => $selesai,
+                                'status' => 'menunggu',
+                            ]);
+                        }
+                    }
+                } elseif ($this->modeTanggal === 'range') {
+                    foreach ($this->tanggalFiltered as $tanggal) {
+                        if (!isset($this->jamTerpilih[$tanggal])) continue;
+
+                        foreach ($this->jamTerpilih[$tanggal] as $jam) {
+                            [$mulai, $selesai] = array_map('trim', explode('-', $jam));
+
+                            \App\Models\JadwalBooking::create([
+                                'pengajuan_booking_id' => $pengajuan->id,
+                                'laboratorium_unpam_id' => $labId,
+                                'tanggal_jadwal' => $tanggal,
+                                'jam_mulai' => $mulai,
+                                'jam_selesai' => $selesai,
+                                'status' => 'menunggu',
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            DB::commit();
+
+            // Reset form jika perlu
+            $this->reset(['lokasiId', 'laboratoriumIds', 'tanggalMulti', 'tanggalRange', 'hariTerpilih', 'jamOperasionalPerTanggal', 'jamTerpilih', 'keperluanBooking']);
+            $this->modeTanggal = 'multi';
+            $this->dispatch('resetLaboratoriumSelect');
+            $this->dispatch('resetTanggalMultiFlatpickr');
+            $this->dispatch('resetTanggalRangeFlatpickr');
+
+            session()->flash('success', 'Pengajuan booking berhasil disimpan!');
+        } catch(\Exception $e) {
+            DB::rollBack();
+            session()->flash('error', 'Terjadi kesalahan saat menyimpan pengajuan: ' . $e->getMessage());
+        }
+    }
+    
     public function validateBooking()
     {
         $rules = [
@@ -189,6 +261,7 @@ class FormBookingStore extends Component
             'laboratoriumIds' => 'required|array|min:1',
             'laboratoriumIds.*' => 'exists:laboratorium_unpams,id',
             'modeTanggal' => 'required|in:multi,range',
+            'keperluanBooking' => 'required|string|max:255'
         ];
 
         if ($this->modeTanggal === 'multi') {
@@ -212,5 +285,4 @@ class FormBookingStore extends Component
 
         return $this->validate($rules);
     }
-
 }
