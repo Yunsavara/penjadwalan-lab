@@ -65,7 +65,7 @@
 
                             @if (!empty($jamOperasionalPerTanggal))
                                 @foreach ($jamOperasionalPerTanggal as $tanggal => $jams)
-                                    <div class="mb-3" x-data x-init="initFuncInput.initJamOperasionalSelect2($el.querySelector('select'), $wire, {{ $tanggal }})" wire:ignore>
+                                    <div class="mb-3" x-data x-init="initFuncInput.initJamOperasionalSelect2($el.querySelector('select'), $wire, '{{ $tanggal }}')" wire:ignore>
                                         <label class="form-label">
                                             {{ Carbon::parse($tanggal)->locale('id')->translatedFormat('l, d F Y') }}
                                         </label>

@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Pengguna\Booking;
 
-use App\Http\Requests\Pengguna\Booking\BookingStoreRequest;
 use App\Models\HariOperasional;
 use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
@@ -86,7 +85,6 @@ class FormBookingStore extends Component
                         })->toArray();
                 }
             } catch (\Exception $e) {
-                // Bisa log error jika dibutuhkan
             }
         }
     }
@@ -168,10 +166,26 @@ class FormBookingStore extends Component
         ]);
     }
 
+    
+    public function storeBooking()
+    {
+        $data = $this->validateBooking();
+        dd($data);
+    }
+
+    public function validateBooking()
+    {
+        return $this->validate([
+            'lokasiId' => 'required|exists:lokasis,id',
+            'laboratoriumIds' => 'required|array|min:1',
+            'laboratoriumIds.*' => 'exists:laboratorium_unpams,id',
+            'modeTanggal' => 'required|in:multi,range',
+            'tanggalMulti' => 'required_if:modeTanggal,multi|array|min:1',
+            'tanggalMulti.*' => 'date',
+            'jamTerpilih' => 'required_if:modeTanggal,multi|array|min:1',
+            'jamTerpilih.*' => 'array|min:1',
+            'jamTerpilih.*.*' => 'string',
+        ]);
+    }
 
 }
-
-// public function storeBooking(BookingStoreRequest $request)
-// {
-//     dd($request->all());
-// }
