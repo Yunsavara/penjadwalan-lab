@@ -56,6 +56,7 @@ class FormBookingStore extends Component
         $this->tanggalMulti = [];
         $this->jamOperasionalPerTanggal = [];
         $this->jamTerpilih = [];
+        $this->hariTerpilih = [];
     }
 
     public function updatedTanggalMulti($value)
@@ -65,6 +66,13 @@ class FormBookingStore extends Component
         if (is_string($value)) {
             $value = explode(',', $value);
         }
+
+        // Bersihkan jamTerpilih dari tanggal yang tidak ada di tanggalMulti
+        $this->jamTerpilih = array_filter(
+            $this->jamTerpilih,
+            fn ($tanggal) => in_array($tanggal, $this->tanggalMulti),
+            ARRAY_FILTER_USE_KEY
+        );
 
         foreach ($value as $tgl) {
             try {
@@ -175,17 +183,33 @@ class FormBookingStore extends Component
 
     public function validateBooking()
     {
-        return $this->validate([
+        $rules = [
             'lokasiId' => 'required|exists:lokasis,id',
             'laboratoriumIds' => 'required|array|min:1',
             'laboratoriumIds.*' => 'exists:laboratorium_unpams,id',
             'modeTanggal' => 'required|in:multi,range',
-            'tanggalMulti' => 'required_if:modeTanggal,multi|array|min:1',
-            'tanggalMulti.*' => 'date',
-            'jamTerpilih' => 'required_if:modeTanggal,multi|array|min:1',
-            'jamTerpilih.*' => 'array|min:1',
-            'jamTerpilih.*.*' => 'string',
-        ]);
+        ];
+
+        if ($this->modeTanggal === 'multi') {
+            $rules = array_merge($rules, [
+                'tanggalMulti' => 'required|array|min:1',
+                'tanggalMulti.*' => 'date',
+                'jamTerpilih' => 'required|array|min:1',
+                'jamTerpilih.*' => 'array|min:1',
+                'jamTerpilih.*.*' => 'string',
+            ]);
+        } elseif ($this->modeTanggal === 'range') {
+            $rules = array_merge($rules, [
+                'tanggalRange' => 'required|string',
+                'hariTerpilih' => 'required|array|min:1',
+                'hariTerpilih.*' => 'in:0,1,2,3,4,5,6',
+                'jamTerpilih' => 'required|array|min:1',
+                'jamTerpilih.*' => 'array|min:1',
+                'jamTerpilih.*.*' => 'string',
+            ]);
+        }
+
+        return $this->validate($rules);
     }
 
 }
