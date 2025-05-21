@@ -95,7 +95,7 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::delete('/laboran/hapus-jenis-laboratorium/{id}', [JenisLabController::class, 'softDelete']);
 
     // Proses Pengajuan Page
-    Route::get('/laboran/proses-pengajuan', [ProsesPengajuanBookingController::class, 'index'])->name('laboran.proses-pengajuan');
+    Route::resource('/laboran/proses-pengajuan', ProsesPengajuanBookingController::class);
 
 });
 
