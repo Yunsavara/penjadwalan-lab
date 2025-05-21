@@ -19,6 +19,23 @@
                             <button type="button" class="btn-close" wire:click="$dispatchSelf('closeModalCreate')" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                            @if (session()->has('error'))
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    @php $errors = (array) session('error'); @endphp
+                                    @if (count($errors) > 1)
+                                        <div class="fw-bold mb-1">{!! $errors[0] !!}</div>
+                                        <ul class="mb-0">
+                                            @foreach ($errors as $i => $err)
+                                                @if ($i === 0) @continue @endif
+                                                <li>{!! $err !!}</li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        <div>{!! $errors[0] !!}</div>
+                                    @endif
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            @endif
 
                             <div class="mb-3" x-data x-init="initFuncInput.initLokasiSelect2($el.querySelector('select'), $wire)" wire:key="lokasi-select" wire:ignore>
                                 <label for="lokasiId" class="form-label">Lokasi</label>
