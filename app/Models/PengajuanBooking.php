@@ -21,7 +21,7 @@ class PengajuanBooking extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function lokasis()
+    public function lokasi()
     {
         return $this->belongsTo(Lokasi::class);
     }

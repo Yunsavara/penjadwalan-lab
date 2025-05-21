@@ -13,9 +13,9 @@ return [
     | Configure here the theme of your choice.
     */
 
-    'theme' => \PowerComponents\LivewirePowerGrid\Themes\Tailwind::class,
+    // 'theme' => \PowerComponents\LivewirePowerGrid\Themes\Tailwind::class,
     // 'theme' => \PowerComponents\LivewirePowerGrid\Themes\DaisyUI::class,
-    // 'theme' => \PowerComponents\LivewirePowerGrid\Themes\Bootstrap5::class,
+    'theme' => \PowerComponents\LivewirePowerGrid\Themes\Bootstrap5::class,
 
     'cache_ttl' => null,
 
@@ -49,8 +49,8 @@ return [
         'flatpickr' => [
             'locales' => [
                 'pt_BR' => [
-                    'locale'     => 'pt',
-                    'dateFormat' => 'd/m/Y H:i',
+                    'locale'     => 'id',
+                    'dateFormat' => 'd F Y H:i',
                     'enableTime' => true,
                     'time_24hr'  => true,
                 ],

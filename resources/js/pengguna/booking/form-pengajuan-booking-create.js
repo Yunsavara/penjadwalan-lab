@@ -13,9 +13,43 @@ window.initFuncInput = {
     initLokasiSelect2,
     initLaboratoriumSelect2,
     initTanggalMultiFlatpickr,
+    initTanggalRangeFlatpickr,
     initJamOperasionalSelect2,
-    initTanggalRangeFlatpickr
 };
+
+// Reset Lewat Dispatch Livewire
+Livewire.on('resetLokasiSelect', () => {
+    const $select = $('#lokasiId');
+    $select.val(null).trigger('change');
+});
+
+Livewire.on('resetLaboratoriumSelect', () => {
+    const $select = $('#laboratoriumId');
+    $select.val(null).trigger('change');
+});
+
+Livewire.on('resetTanggalMultiFlatpickr', () => {
+    const el = document.querySelector('#tanggalMulti');
+    if (el && el.flatpickrInstance) {
+        el.flatpickrInstance.clear();
+    }
+});
+
+Livewire.on('initFlatpickrWithHariAktif', ({ hariAktif }) => {
+    console.log('Hari Aktif Baru:', hariAktif);
+    const el = document.querySelector('#tanggalMulti');
+    if (el && el.flatpickrInstance) {
+        el.flatpickrInstance.destroy();
+        initFuncInput.initTanggalMultiFlatpickr(el, Livewire.find(el.closest('[wire\\:id]')), hariAktif);
+    }
+});
+
+Livewire.on('resetTanggalRangeFlatpickr', () => {
+    const el = document.querySelector('#tanggalRange');
+    if (el && el.flatpickrInstance) {
+        el.flatpickrInstance.clear();
+    }
+});
 
 function initLokasiSelect2(lokasi, livewire)
 {
@@ -23,7 +57,7 @@ function initLokasiSelect2(lokasi, livewire)
 
     $select.select2({
         theme: 'bootstrap-5',
-        dropdownParent: $('#select2-lokasi-parent'), 
+        dropdownParent: $select.parent(), 
     });
 
     if (livewire)
@@ -40,25 +74,31 @@ function initLaboratoriumSelect2(laboratorium, livewire)
 
     $select.select2({
         theme: "bootstrap-5",
-        dropdownParent: $('#select2-laboratorium-parent'),
+        dropdownParent: $select.parent(),
+        placeholder: "Pilih Laboratorium"
     });
 
     if (livewire)
     {
         $select.on('change', function () {
-            // Gunakan array
             livewire.set('laboratoriumIds', $(this).val());
         });
     }
 }
 
-function initTanggalMultiFlatpickr(tanggalMulti, livewire) {
+function initTanggalMultiFlatpickr(tanggalMulti, livewire, hariAktif) {
     const instance = flatpickr(tanggalMulti, {
         mode: 'multiple',
         altInput: true,
         altFormat: 'd F Y',
         dateFormat: 'Y-m-d',
         locale: 'id',
+        disable: [
+            function(date) {
+                // 0 = Minggu, 1 = Senin, ..., 6 = Sabtu
+                return !hariAktif.includes(date.getDay());
+            }
+        ],
         onChange: function (selectedDates, dateStr) {
             const tanggalArray = dateStr.split(', ').filter(t => t !== '');
             livewire.set('tanggalMulti', tanggalArray);
@@ -66,26 +106,6 @@ function initTanggalMultiFlatpickr(tanggalMulti, livewire) {
     });
 
     tanggalMulti.flatpickrInstance = instance;
-}
-
-function initJamOperasionalSelect2(jamOperasional, livewire, tanggalStr) {
-    const $select = $(jamOperasional);
-
-    if ($select.hasClass('select2-hidden-accessible')) {
-        // console.log("Select2 sudah diinisialisasi, lewati:", tanggalStr);
-        return;
-    }
-
-    $select.select2({
-        theme: 'bootstrap-5',
-        dropdownParent: $select.parent()
-    });
-
-    if (livewire) {
-        $select.on('change', function () {
-            livewire.set(`jamTerpilih.${tanggalStr}`, $(this).val());
-        });
-    }
 }
 
 function initTanggalRangeFlatpickr(tanggalRange, livewire) {
@@ -109,28 +129,21 @@ function initTanggalRangeFlatpickr(tanggalRange, livewire) {
     tanggalRange.flatpickrInstance = instance;
 }
 
+function initJamOperasionalSelect2(jamOperasional, livewire, tanggalStr) {
+    const $select = $(jamOperasional);
 
-// Reset, dispatch di controller livewire
-Livewire.on('resetLokasiSelect', () => {
-    const $select = $('#lokasiId');
-    $select.val(null).trigger('change');
-});
-
-Livewire.on('resetLaboratoriumSelect', () => {
-    const $select = $('#laboratoriumId');
-    $select.val(null).trigger('change');
-});
-
-Livewire.on('resetTanggalMultiFlatpickr', () => {
-    const el = document.querySelector('#tanggalMulti');
-    if (el && el.flatpickrInstance) {
-        el.flatpickrInstance.clear();
+    if ($select.hasClass('select2-hidden-accessible')) {
+        return;
     }
-});
 
-Livewire.on('resetTanggalRangeFlatpickr', () => {
-    const el = document.querySelector('#tanggalRange');
-    if (el && el.flatpickrInstance) {
-        el.flatpickrInstance.clear();
+    $select.select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $select.parent()
+    });
+
+    if (livewire) {
+        $select.on('change', function () {
+            livewire.set(`jamTerpilih.${tanggalStr}`, $(this).val());
+        });
     }
-});
+}

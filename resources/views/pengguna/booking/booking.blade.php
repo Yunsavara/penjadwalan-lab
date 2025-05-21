@@ -2,8 +2,7 @@
 
 @section('title', 'Pengajuan')
 @vite([
-    'resources/js/pengguna/booking/form-booking-store.js',
-    'resources/js/pengguna/booking/datatables-pengajuan-booking.js',
+    'resources/js/pengguna/booking/form-pengajuan-booking-create.js',
 ])
 
 
@@ -13,15 +12,13 @@
         <span>{{ $page_meta['description'] }}</span>
         <hr>
 
-        {{-- Tombol Modal Form pengajuan booking --}}
+        {{-- Tombol Modal Form pengajuan booking
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalPengajuanBooking">
             <i data-feather="plus"></i>
         </button>
 
-        @livewire('pengguna.booking.form-booking-store')
-
-        <div class="table-container pt-2">
-            @include('pengguna.booking.navigasi-booking')
-        </div>
+        @livewire('pengguna.booking.form-pengajuan-booking-store') --}}
+        @livewire('pengguna.booking.form-pengajuan-booking-create')
+        <livewire:pengguna.booking.pengajuan-booking-table/>
     </div>
 @endsection 

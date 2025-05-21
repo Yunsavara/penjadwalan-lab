@@ -14,3 +14,7 @@
 @import url(../css/style.css);
 @import url(../css/datatables.css);
 @import url(../css/form.css);
+
+/* Powergrid (Datatables) */
+/*resources/css/app.css*/
+@import './../../vendor/power-components/livewire-powergrid/dist/bootstrap5.css'
