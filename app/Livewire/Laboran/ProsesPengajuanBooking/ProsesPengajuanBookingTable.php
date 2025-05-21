@@ -85,7 +85,7 @@ final class ProsesPengajuanBookingTable extends PowerGridComponent
 
             Column::make('Created at', 'created_at_formatted')
                 ->sortable()
-                ->searchable(),
+                ->searchable(),  
 
             Column::action('Action')
         ];
@@ -113,6 +113,11 @@ final class ProsesPengajuanBookingTable extends PowerGridComponent
                 ->class('btn btn-info')
                 ->dispatch('detailProsesPengajuanBookingModal', ['rowId' => $row->id]),
 
+            Button::add('Terima')
+                ->slot('Terima')
+                ->id()
+                ->class('btn btn-success')
+                ->dispatch('terimaProsesPengajuanBookingModal', ['rowId' => $row->id]),
         ];
     } 
 
