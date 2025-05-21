@@ -10,10 +10,11 @@ use App\Http\Controllers\Auth\RegisterController;
 
 use App\Http\Controllers\Laboran\JenisLabController;
 use App\Http\Controllers\Laboran\LaboratoriumUnpamController;
-use App\Http\Controllers\Laboran\ProsesPengajuanController;
 use App\Http\Controllers\Pengguna\BookingController;
 use App\Http\Controllers\Pengguna\JadwalBookingController;
+use App\Http\Controllers\Pengguna\ProsesPengajuanBookingController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::group(['middleware' => 'guest'], function() {
     // Home
@@ -64,8 +65,6 @@ Route::group(['middleware' => ['role:admin']], function() {
     Route::put('/admin/ubah-lokasi/{id}', [LokasiController::class, 'update']);
     Route::delete('/admin/hapus-lokasi/{id}', [LokasiController::class, 'softDelete']);
 
-
-
     // Barang
     Route::get('/admin/barang', [BarangController::class, 'index'])->name('admin.barang');
     Route::get('/admin/tambah-barang', [BarangController::class, 'create'])->name('admin.barang.create');
@@ -96,13 +95,8 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
     Route::delete('/laboran/hapus-jenis-laboratorium/{id}', [JenisLabController::class, 'softDelete']);
 
     // Proses Pengajuan Page
-    Route::get('/laboran/proses-pengajuan', [ProsesPengajuanController::class, 'index'])->name('laboran.proses-pengajuan');
+    Route::get('/laboran/proses-pengajuan', [ProsesPengajuanBookingController::class, 'index'])->name('laboran.proses-pengajuan');
 
-    // Proses Pengajuan Datatable
-    Route::get('laboran/api/data-proses-pengajuan-booking', [ProsesPengajuanController::class, 'getDataProsesPengajuan']);
-    Route::get('laboran/api/detail-proses-pengajuan-booking/{id}', [ProsesPengajuanController::class, 'getDetailProsesPengajuan']);
-    Route::put('/laboran/terima-proses-pengajuan-booking/{id}', [ProsesPengajuanController::class, 'terimaProsesPengajuan']);
-    Route::put('/laboran/tolak-proses-pengajuan-booking/{id}', [ProsesPengajuanController::class, 'tolakProsesPengajuan']);
 });
 
 Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
