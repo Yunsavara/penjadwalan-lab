@@ -99,10 +99,10 @@ final class PengajuanBookingTable extends PowerGridComponent
     {
         return [
             Button::add('edit')
-                ->slot('Edit: '.$row->id)
+                ->slot('Ubah')
                 ->id()
                 ->class('btn btn-primary')
-                ->dispatch('edit', ['rowId' => $row->id])
+                ->dispatch('openModalEdit', ['rowId' => $row->id])
         ];
     }
 

@@ -68,9 +68,11 @@ function initLokasiSelect2(lokasi, livewire)
     }
 }
 
-function initLaboratoriumSelect2(laboratorium, livewire)
-{
+function initLaboratoriumSelect2(laboratorium, livewire) {
     const $select = $(laboratorium);
+
+    let selectedIds = livewire.get('laboratoriumIds');
+    $select.val(selectedIds);
 
     $select.select2({
         theme: "bootstrap-5",
@@ -78,24 +80,27 @@ function initLaboratoriumSelect2(laboratorium, livewire)
         placeholder: "Pilih Laboratorium"
     });
 
-    if (livewire)
-    {
+    $select.val(selectedIds).trigger('change');
+
+    if (livewire) {
         $select.on('change', function () {
             livewire.set('laboratoriumIds', $(this).val());
         });
     }
 }
 
-function initTanggalMultiFlatpickr(tanggalMulti, livewire, hariAktif) {
-    const instance = flatpickr(tanggalMulti, {
+function initTanggalMultiFlatpickr(tanggalMultiInput, livewire, hariAktif) {
+    const tanggalMultiFromLivewire = livewire.get('tanggalMulti') || [];
+
+    const instance = flatpickr(tanggalMultiInput, {
         mode: 'multiple',
         altInput: true,
         altFormat: 'd F Y',
         dateFormat: 'Y-m-d',
         locale: 'id',
+        defaultDate: tanggalMultiFromLivewire, // ← ini penting
         disable: [
             function(date) {
-                // 0 = Minggu, 1 = Senin, ..., 6 = Sabtu
                 return !hariAktif.includes(date.getDay());
             }
         ],
@@ -105,7 +110,7 @@ function initTanggalMultiFlatpickr(tanggalMulti, livewire, hariAktif) {
         }
     });
 
-    tanggalMulti.flatpickrInstance = instance;
+    tanggalMultiInput.flatpickrInstance = instance;
 }
 
 function initTanggalRangeFlatpickr(tanggalRange, livewire) {
