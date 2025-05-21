@@ -37,12 +37,6 @@
                         </div>
                         @endif
 
-                        {{-- Keperluan --}}
-                        <div class="mb-3">
-                            <label for="keperluanBooking" class="form-label">Keperluan</label>
-                            <input type="text" class="form-control" id="keperluanBooking" wire:model.defer="keperluanBooking">
-                        </div>
-
                         {{-- Mode Tanggal --}}
                         @if(!empty($laboratoriumList))
                             <div class="mb-3">

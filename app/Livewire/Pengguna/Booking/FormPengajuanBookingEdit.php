@@ -29,8 +29,6 @@ class FormPengajuanBookingEdit extends Component
     public $keperluanBooking;
     public bool $showModal = false;
 
-    // --- Utility ---
-
     protected function resetForm()
     {
         $this->reset([
@@ -81,8 +79,6 @@ class FormPengajuanBookingEdit extends Component
         }
         return collect();
     }
-
-    // --- Modal & State ---
 
     #[On('openModalEdit')]
     public function openModalEdit($rowId): void
@@ -153,8 +149,6 @@ class FormPengajuanBookingEdit extends Component
         $this->showModal = false;
     }
 
-    // --- Livewire Hooks ---
-
     public function updatedLokasiId($value)
     {
         $this->onLokasiChanged($value);
@@ -179,8 +173,6 @@ class FormPengajuanBookingEdit extends Component
     {
         $this->onHariTerpilihChanged();
     }
-
-    // --- Handler Functions ---
 
     protected function onLokasiChanged($value)
     {
@@ -278,8 +270,6 @@ class FormPengajuanBookingEdit extends Component
         );
     }
 
-    // --- Validation & Update ---
-
     public function validatePengajuanBooking()
     {
         $rules = [
@@ -315,7 +305,7 @@ class FormPengajuanBookingEdit extends Component
     public function ubahPengajuanBooking()
     {
         $data = $this->validatePengajuanBooking();
-        dd($data);
+        // dd($data);
 
         DB::beginTransaction();
         try {
@@ -381,8 +371,6 @@ class FormPengajuanBookingEdit extends Component
         }
     }
 
-    // --- Getter ---
-
     public function getHariAktifProperty()
     {
         return HariOperasional::where('lokasi_id', $this->lokasiId)
@@ -390,8 +378,6 @@ class FormPengajuanBookingEdit extends Component
             ->pluck('hari_operasional')
             ->toArray(); 
     }
-
-    // --- Render ---
 
     public function render()
     {
