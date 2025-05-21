@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Pengajuan')
-@vite(['resources/js/pengguna/booking/form-pengajuan-booking-create.js'])
-
+@vite(['resources/js/pengguna/booking/form-pengajuan-booking.js'])
 
 @section('content')
     <div class="col-12 p-3 py-4">
