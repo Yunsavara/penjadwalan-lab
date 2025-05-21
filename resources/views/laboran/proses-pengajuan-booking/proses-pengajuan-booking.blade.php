@@ -11,6 +11,6 @@
         <hr>
 
         @livewire('laboran.prosespengajuanbooking.proses-pengajuan-booking-table')
-
+        @livewire('laboran.prosespengajuanbooking.detail-proses-pengajuan-booking')
     </div>
 @endsection 
