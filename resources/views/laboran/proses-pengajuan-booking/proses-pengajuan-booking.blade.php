@@ -9,5 +9,8 @@
         <h2>{{ $page_meta['page'] }}</h2>
         <span>{{ $page_meta['description'] }}</span>
         <hr>
+
+        @livewire('laboran.prosespengajuanbooking.proses-pengajuan-booking-table')
+
     </div>
 @endsection 
