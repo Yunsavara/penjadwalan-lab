@@ -47,8 +47,9 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'lokasi_id' => 1,
             'role_id' => 4,
-        ]);
+        ]); 
 
+        
 
         User::create([
             'nama_pengguna' => 'Mahasiswa',
