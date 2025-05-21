@@ -49,8 +49,6 @@ export function errorUpdateModalPengguna(){
     const errors = JSON.parse(formData.dataset.errors);
     const sessionForm = formData.dataset.session;
 
-    console.log(errors, sessionForm);
-
     const old = JSON.parse(formData.dataset.old || '{}');
 
     if (errors && sessionForm === 'editPengguna') {
@@ -105,7 +103,7 @@ export function formPasswordViewUpdate() {
     });
 }
 
-// Hapus Password kalau buka aksi edit di baris lain
+// Hapus Password kalau buka aksi edit di baris lain 
 
 document.getElementById('formPenggunaUpdate').addEventListener('hidden.bs.modal', function () {
     document.getElementById('edit-passwordPengguna').value = '';

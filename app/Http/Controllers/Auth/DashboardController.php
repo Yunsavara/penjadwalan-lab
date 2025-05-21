@@ -23,8 +23,8 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function dashboardAllRole(){
-        return view("all-role.dashboard-page.index", [
+    public function dashboardPengguna(){
+        return view("pengguna.index", [
             'page_meta' => [
                 'page' => 'Dashboard'
             ]

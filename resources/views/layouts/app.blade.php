@@ -15,9 +15,8 @@
 
     <title>@yield('title', 'Penjadwalan Lab')</title>
 
-
 </head>
-<body class="pt-4">
+<body class="pt-4 bg-body-tertiary">
 
     {{-- Header atau Navbar --}}
     @include('layouts.header')
@@ -50,6 +49,5 @@
             feather.replace();
         })
     </script>
-
 </body>
 </html>

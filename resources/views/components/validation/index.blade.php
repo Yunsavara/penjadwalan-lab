@@ -1,4 +1,4 @@
-<div aria-live="polite" aria-atomic="true" class="position-absolute p-3 top-3 start-50 translate-middle-x" style="z-index: 1080; max-width: 20rem;">
+<div aria-live="polite" aria-atomic="true" class="position-absolute p-3 top-3 start-50 translate-middle-x" style="z-index: 2; max-width: 20rem;">
     {{-- Success --}}
     @if (session('success'))
         <div class="toast bg-white border-0 show mb-2" role="alert" aria-live="assertive" aria-atomic="true">

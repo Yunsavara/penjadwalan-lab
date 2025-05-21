@@ -92,7 +92,7 @@ export function initPenggunaDatatable() {
             });
         }
     });
-}
+} 
 
 function moveToolsPengguna() {
     const wrapper = document.getElementById("tablePengguna").closest("#tablePengguna_wrapper");

@@ -25,15 +25,15 @@ class LaboratoriumUnpam extends Model
         return $this->belongsTo(Jenislab::class, 'jenislab_id');
     }
 
-    // Relasi ke Booking Detail (Pengajuan yang terkait dengan lab ini)
-    public function bookingDetail()
-    {
-        return $this->hasMany(BookingDetail::class);
-    }
-
     // Relasi ke Lokasi
     public function lokasi()
     {
         return $this->belongsTo(Lokasi::class, 'lokasi_id');
+    }
+
+
+    public function jadwalBookings()
+    {
+        return $this->hasMany(JadwalBooking::class);
     }
 }

@@ -14,11 +14,6 @@ class Lokasi extends Model
         'deskripsi_lokasi'
     ];
 
-    public function waktuOperasional()
-    {
-        return $this->hasMany(WaktuOperasional::class);
-    }
-
     public function laboratoriumUnpam()
     {
         return $this->hasMany(LaboratoriumUnpam::class, 'lokasi_id');
@@ -27,5 +22,15 @@ class Lokasi extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function hariOperasionals()
+    {
+        return $this->hasMany(HariOperasional::class);
+    }
+
+    public function pengajuanBookings()
+    {
+        return $this->hasMany(PengajuanBooking::class);
     }
 }

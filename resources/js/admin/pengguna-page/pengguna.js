@@ -8,7 +8,7 @@ select2();
 // Pengguna
 import { initPenggunaDatatable } from './pengguna/datatables-pengguna';
 import { errorStoreModalPengguna, formPasswordViewStore, initSelect2Store } from './pengguna/form-pengguna-store';
-
+import { initSoftDeletePenggunaModal } from './pengguna/form-pengguna-soft-delete';
 
 // Peran
 import { initPeranDatatable } from './peran/datatables-peran';
@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initDatatablesValueToModalUpdatePengguna();
     formPasswordViewStore();
     formPasswordViewUpdate();
+    initSoftDeletePenggunaModal();
 
     // Peran
     initPeranDatatable();

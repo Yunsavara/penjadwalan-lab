@@ -1,4 +1,4 @@
-/* Core style (optional kalau kamu pakai Bootstrap styling) */
+/* Datatables */
 @import url('datatables.net-dt/css/dataTables.dataTables.min.css');
 
 /* Bootstrap 5 theming */
@@ -14,4 +14,7 @@
 @import url(../css/style.css);
 @import url(../css/datatables.css);
 @import url(../css/form.css);
-@import url(../css/form-pengajuan.css);
+
+/* Powergrid (Datatables) */
+/*resources/css/app.css*/
+@import './../../vendor/power-components/livewire-powergrid/dist/bootstrap5.css'

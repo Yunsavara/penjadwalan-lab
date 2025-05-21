@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 JenisLabSeeder::class,
                 LaboratoriumUnpamSeeder::class,
-                WaktuOperasionalSeeder::class,
+                HariOperasionalSeeder::class,
+                JamOperasionalSeeder::class
             ]
         );
     }
