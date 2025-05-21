@@ -112,28 +112,9 @@ Route::group(['middleware' => ['role:admin,laboran']], function() {
 Route::group(['middleware' => ['role:admin,lembaga,prodi,user']], function() {
     Route::get('/dashboard', [DashboardController::class,'dashboardPengguna'])->name('dashboard');
 
-    // Pengajuan Page
-    Route::get('/pengajuan', [PengajuanBookingController::class, 'index'])->name('pengajuan');
-
-    // Form Pengajuan
-    Route::get('/pengajuan/api/data-laboratorium/{lokasiId}', [PengajuanBookingController::class, 'getLaboratoriumByLokasi']);
-    Route::get('/pengajuan/api/data-hari-operasional/{lokasiId}', [PengajuanBookingController::class, 'getHariOperasionalByLokasi']);
-    Route::get('/pengajuan/api/data-jam-operasional/{hariOperasionalId}', [PengajuanBookingController::class, 'getJamOperasional']);
-
-    // Pengajuan Booking Datatable
-    Route::get('/pengajuan/api/data-pengajuan-booking', [PengajuanBookingController::class, 'getApiPengajuanBooking']);
-
-    // Pengajuan Store, Update
-    Route::get('/pengajuan/buat-pengajuan-booking', [PengajuanBookingController::class, 'create'])->name('pengajuan.create');
-    Route::post('/pengajuan/tambah-pengajuan-booking', [PengajuanBookingController::class, 'store'])->name('pengajuan.store');
-    Route::get('/pengajuan/ubah-pengajuan-booking/{pengajuanBooking}', [PengajuanBookingController::class, 'edit'])->name('pengajuan.edit');
-    Route::put('/pengajuan/ubah-pengajuan-booking/{pengajuanBooking}', [PengajuanBookingController::class, 'update'])->name('pengajuan.update');
-    Route::put('/pengajuan/batalkan-pengajuan-booking/{id}', [PengajuanBookingController::class, 'batalkanPengajuanBooking']);
-
     // Jadwal Page
     Route::get('/jadwal', [JadwalBookingController::class, 'index'])->name('jadwal');
 
-
-    // Booking Page
+    // Booking Page (Livewire)
     Route::resource('/booking', BookingController::class);
 });

@@ -250,7 +250,7 @@ class FormPengajuanBookingCreate extends Component
     public function simpanPengajuanBooking()
     {
         $data = $this->validatePengajuanBooking();
-        dd($data);
+        // dd($data);
 
         DB::beginTransaction();
 
@@ -317,6 +317,7 @@ class FormPengajuanBookingCreate extends Component
             $this->dispatch('resetTanggalRangeFlatpickr');
 
             session()->flash('success', 'Pengajuan booking berhasil disimpan!');
+            $this->showModal = false;
         } catch(\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'Terjadi kesalahan saat menyimpan pengajuan: ' . $e->getMessage());
