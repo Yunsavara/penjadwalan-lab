@@ -318,6 +318,7 @@ class FormPengajuanBookingCreate extends Component
 
             session()->flash('success', 'Pengajuan booking berhasil disimpan!');
             $this->showModal = false;
+            $this->refreshTable();
         } catch(\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'Terjadi kesalahan saat menyimpan pengajuan: ' . $e->getMessage());
@@ -330,6 +331,11 @@ class FormPengajuanBookingCreate extends Component
             ->where('is_disabled', false)
             ->pluck('hari_operasional')
             ->toArray(); 
+    }
+
+    public function refreshTable()
+    {
+        $this->dispatch('pg:eventRefresh-pengajuan_bookings');
     }
 
     public function render()

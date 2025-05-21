@@ -359,7 +359,7 @@ class FormPengajuanBookingEdit extends Component
             DB::commit();
             $this->showModal = false;
             session()->flash('success', 'Pengajuan booking berhasil diubah!');
-            $this->dispatch('refreshTablePengajuanBooking');
+            $this->refreshTable();
         } catch (\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'Gagal mengubah pengajuan: ' . $e->getMessage());
@@ -372,6 +372,11 @@ class FormPengajuanBookingEdit extends Component
             ->where('is_disabled', false)
             ->pluck('hari_operasional')
             ->toArray(); 
+    }
+
+    public function refreshTable()
+    {
+        $this->dispatch('pg:eventRefresh-pengajuan_bookings');
     }
 
     public function render()
