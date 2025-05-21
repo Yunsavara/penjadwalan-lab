@@ -101,7 +101,14 @@ class FormPengajuanBookingCreate extends Component
             ARRAY_FILTER_USE_KEY
         );
 
-        foreach ($value as $tgl) {
+        $this->setJamOperasionalFromTanggalMulti($value);
+    }
+
+    private function setJamOperasionalFromTanggalMulti(array $tanggalList): void
+    {
+        $this->jamOperasionalPerTanggal = [];
+
+        foreach ($tanggalList as $tgl) {
             try {
                 $carbon = Carbon::parse($tgl);
                 $hariKe = $carbon->dayOfWeek;
@@ -120,6 +127,7 @@ class FormPengajuanBookingCreate extends Component
                         })->toArray();
                 }
             } catch (\Exception $e) {
+                // Bisa log error kalau perlu
             }
         }
     }

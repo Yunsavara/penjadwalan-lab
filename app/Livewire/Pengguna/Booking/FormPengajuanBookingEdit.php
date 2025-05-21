@@ -6,6 +6,7 @@ use App\Models\HariOperasional;
 use App\Models\LaboratoriumUnpam;
 use App\Models\Lokasi;
 use App\Models\PengajuanBooking;
+use Carbon\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -42,32 +43,23 @@ class FormPengajuanBookingEdit extends Component
 
             $this->tanggalMulti = $tanggalMulti;
 
-            $jamPerTanggal = [];
+            $this->setJamOperasionalFromTanggalMulti($tanggalMulti);
+
             $jamTerpilih = [];
-
             foreach ($tanggalMulti as $tanggal) {
-                // Ambil hanya jadwal bookings yang sesuai tanggal
-                $jamBookings = $pengajuan->jadwalBookings->filter(function ($item) use ($tanggal) {
-                    return $item->tanggal_jadwal === $tanggal;
-                });
-
-                $jamOptions = [];
-
-                foreach ($jamBookings as $jb) {
-                    $jamRange = $jb->jam_mulai . ' - ' . $jb->jam_selesai;
-
-                    // Hindari duplikat jam
-                    if (!in_array($jamRange, $jamOptions)) {
-                        $jamOptions[] = $jamRange;
-                    }
-                }
-
-                $jamPerTanggal[$tanggal] = $jamOptions;
-                $jamTerpilih[$tanggal] = $jamOptions; 
+                $jamTerpilih[$tanggal] = $pengajuan->jadwalBookings
+                    ->where('tanggal_jadwal', $tanggal)
+                    ->map(function ($jb) {
+                        return Carbon::parse($jb->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($jb->jam_selesai)->format('H:i');
+                    })
+                    ->unique()
+                    ->values()
+                    ->toArray();
             }
 
-            $this->jamOperasionalPerTanggal = $jamPerTanggal;
             $this->jamTerpilih = $jamTerpilih;
+
+            // dump($this->jamTerpilih);
         }
     }
 
@@ -83,6 +75,34 @@ class FormPengajuanBookingEdit extends Component
             ->where('is_disabled', false)
             ->pluck('hari_operasional')
             ->toArray(); 
+    }
+
+    private function setJamOperasionalFromTanggalMulti(array $tanggalList): void
+    {
+        $this->jamOperasionalPerTanggal = [];
+
+        foreach ($tanggalList as $tgl) {
+            try {
+                $carbon = Carbon::parse($tgl);
+                $hariKe = $carbon->dayOfWeek;
+                $tanggalStr = $carbon->format('Y-m-d');
+
+                $data = HariOperasional::with('jamOperasionals')
+                    ->where('lokasi_id', $this->lokasiId)
+                    ->where('hari_operasional', $hariKe)
+                    ->where('is_disabled', false)
+                    ->first();
+
+                if ($data) {
+                    $this->jamOperasionalPerTanggal[$tanggalStr] = $data->jamOperasionals
+                        ->map(function ($jam) {
+                            return Carbon::parse($jam->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($jam->jam_selesai)->format('H:i');
+                        })->toArray();
+                }
+            } catch (\Exception $e) {
+                // Bisa log error kalau perlu
+            }
+        }
     }
     
     public function render()

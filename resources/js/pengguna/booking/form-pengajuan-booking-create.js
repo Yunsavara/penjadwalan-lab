@@ -134,8 +134,11 @@ function initTanggalRangeFlatpickr(tanggalRange, livewire) {
     tanggalRange.flatpickrInstance = instance;
 }
 
-function initJamOperasionalSelect2(jamOperasional, livewire, tanggalStr) {
+function initJamOperasionalSelect2(jamOperasional, livewire, tanggalStr, selectedValues = []) {
     const $select = $(jamOperasional);
+
+    console.log('Init Select2', tanggalStr, selectedValues);
+
 
     if ($select.hasClass('select2-hidden-accessible')) {
         return;
@@ -145,6 +148,10 @@ function initJamOperasionalSelect2(jamOperasional, livewire, tanggalStr) {
         theme: 'bootstrap-5',
         dropdownParent: $select.parent()
     });
+
+    if (selectedValues.length > 0) {
+        $select.val(selectedValues).trigger('change');
+    }
 
     if (livewire) {
         $select.on('change', function () {
