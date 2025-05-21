@@ -247,17 +247,89 @@ class FormPengajuanBookingCreate extends Component
         return $this->validate($rules);
     }
 
+    protected function checkPengajuanBookingMenunggu($laboratoriumId, $tanggal, $jamMulai, $jamSelesai)
+    {
+        return JadwalBooking::whereHas('pengajuanBooking', function($q) {
+                $q->where('user_id', auth()->id())
+                  ->where('status_pengajuan_booking', 'menunggu');
+            })
+            ->where('laboratorium_unpam_id', $laboratoriumId)
+            ->where('tanggal_jadwal', $tanggal)
+            ->where('jam_mulai', $jamMulai)
+            ->where('jam_selesai', $jamSelesai)
+            ->exists();
+    }
+
+    protected function prosesSimpanPengajuanBooking($pengajuan, $laboratoriumIds, $tanggalList, $jamTerpilih)
+    {
+        $errors = [];
+        foreach ($laboratoriumIds as $labId) {
+            $lab = LaboratoriumUnpam::find($labId);
+            foreach ($tanggalList as $tanggal) {
+                if (!isset($jamTerpilih[$tanggal])) continue;
+
+                foreach ($jamTerpilih[$tanggal] as $jam) {
+                    [$mulai, $selesai] = array_map('trim', explode('-', $jam));
+
+                    // Ambil data bentrok (bukan hanya exists)
+                    $bentrok = JadwalBooking::whereHas('pengajuanBooking', function($q) {
+                            $q->where('user_id', auth()->id());
+                        })
+                        ->where('laboratorium_unpam_id', $labId)
+                        ->where('tanggal_jadwal', $tanggal)
+                        ->where('jam_mulai', $mulai)
+                        ->where('jam_selesai', $selesai)
+                        ->with('pengajuanBooking')
+                        ->first();
+
+                    if ($bentrok) {
+                        $tanggalFormatted = Carbon::parse($tanggal)->locale('id')->translatedFormat('d F Y');
+                        $namaLab = $lab ? $lab->nama_laboratorium : 'Lab tidak ditemukan';
+                        $status = $bentrok->pengajuanBooking->status_pengajuan_booking ?? '-';
+                        $errors[] = "Tanggal <b>$tanggalFormatted</b> Jam <b>$mulai - $selesai</b> di <b>$namaLab</b> (<b>".ucfirst($status)."</b>)";
+                    }
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            session()->flash('error', [
+                'Pengajuan Bentrok:',
+                ...$errors
+            ]);
+            return false;
+        }
+
+        // Jika tidak ada error, baru simpan
+        foreach ($laboratoriumIds as $labId) {
+            foreach ($tanggalList as $tanggal) {
+                if (!isset($jamTerpilih[$tanggal])) continue;
+
+                foreach ($jamTerpilih[$tanggal] as $jam) {
+                    [$mulai, $selesai] = array_map('trim', explode('-', $jam));
+                    JadwalBooking::create([
+                        'pengajuan_booking_id' => $pengajuan->id,
+                        'laboratorium_unpam_id' => $labId,
+                        'tanggal_jadwal' => $tanggal,
+                        'jam_mulai' => $mulai,
+                        'jam_selesai' => $selesai,
+                        'status' => 'menunggu',
+                    ]);
+                }
+            }
+        }
+        return true;
+    }
+
     public function simpanPengajuanBooking()
     {
         $data = $this->validatePengajuanBooking();
-        // dd($data);
 
         DB::beginTransaction();
 
         try
         {
-
-            $kodeBooking = 'Book-' . strtoupper(Str::random(8));
+            $kodeBooking = 'Book-' . strtoupper(\Illuminate\Support\Str::random(8));
 
             $pengajuan = PengajuanBooking::create([
                 'kode_booking' => $kodeBooking,
@@ -268,47 +340,17 @@ class FormPengajuanBookingCreate extends Component
                 'user_id' => auth()->id(),
             ]);
 
-            foreach ($this->laboratoriumIds as $labId) {
-                if ($this->modeTanggal === 'multi') {
-                    foreach ($this->tanggalMulti as $tanggal) {
-                        if (!isset($this->jamTerpilih[$tanggal])) continue;
+            $tanggalList = $this->modeTanggal === 'multi' ? $this->tanggalMulti : $this->tanggalFiltered;
+            $result = $this->prosesSimpanPengajuanBooking($pengajuan, $this->laboratoriumIds, $tanggalList, $this->jamTerpilih);
 
-                        foreach ($this->jamTerpilih[$tanggal] as $jam) {
-                            [$mulai, $selesai] = array_map('trim', explode('-', $jam));
-
-                            JadwalBooking::create([
-                                'pengajuan_booking_id' => $pengajuan->id,
-                                'laboratorium_unpam_id' => $labId,
-                                'tanggal_jadwal' => $tanggal,
-                                'jam_mulai' => $mulai,
-                                'jam_selesai' => $selesai,
-                                'status' => 'menunggu',
-                            ]);
-                        }
-                    }
-                } elseif ($this->modeTanggal === 'range') {
-                    foreach ($this->tanggalFiltered as $tanggal) {
-                        if (!isset($this->jamTerpilih[$tanggal])) continue;
-
-                        foreach ($this->jamTerpilih[$tanggal] as $jam) {
-                            [$mulai, $selesai] = array_map('trim', explode('-', $jam));
-
-                            JadwalBooking::create([
-                                'pengajuan_booking_id' => $pengajuan->id,
-                                'laboratorium_unpam_id' => $labId,
-                                'tanggal_jadwal' => $tanggal,
-                                'jam_mulai' => $mulai,
-                                'jam_selesai' => $selesai,
-                                'status' => 'menunggu',
-                            ]);
-                        }
-                    }
-                }
+            if ($result === false) {
+                DB::rollBack();
+                return;
             }
 
             DB::commit();
 
-            // Reset form jika perlu
+            // Reset form
             $this->reset(['laboratoriumIds', 'laboratoriumList','tanggalMulti', 'tanggalRange', 'hariTerpilih', 'jamOperasionalPerTanggal', 'jamTerpilih', 'keperluanBooking']);
             $this->modeTanggal = 'multi';
             $this->dispatch('resetLokasiSelect');

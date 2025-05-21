@@ -13,8 +13,24 @@
                         <button type="button" class="btn-close" wire:click="$dispatchSelf('closeModalEdit')" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-
-                        {{-- Lokasi --}}
+                        @if (session()->has('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                @php $errors = (array) session('error'); @endphp
+                                @if (count($errors) > 1)
+                                    <div class="fw-bold mb-1">{!! $errors[0] !!}</div>
+                                    <ul class="mb-0">
+                                        @foreach ($errors as $i => $err)
+                                            @if ($i === 0) @continue @endif
+                                            <li>{!! $err !!}</li>
+                                        @endforeach
+                                    </ul>
+                                @else
+                                    <div>{!! $errors[0] !!}</div>
+                                @endif
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+                        
                         <div class="mb-3" x-data x-init="initFuncInput.initLokasiSelect2($el.querySelector('select'), $wire)" wire:key="lokasi-select" wire:ignore>
                             <label for="lokasiId" class="form-label">Lokasi</label>
                             <select id="lokasiId" class="form-select">
@@ -25,7 +41,6 @@
                             </select>
                         </div>
 
-                        {{-- Laboratorium --}}
                         @if(!empty($laboratoriumList))
                         <div class="mb-3" x-data x-init="initFuncInput.initLaboratoriumSelect2($el.querySelector('select'), $wire)" wire:key="laboratorium-list-{{ md5(json_encode($laboratoriumList)) }}" wire:ignore>
                             <label for="laboratoriumId" class="form-label">Laboratorium</label>
@@ -37,7 +52,6 @@
                         </div>
                         @endif
 
-                        {{-- Mode Tanggal --}}
                         @if(!empty($laboratoriumList))
                             <div class="mb-3">
                                 <label class="form-label">Mode Tanggal</label>
@@ -53,7 +67,6 @@
                                 </div>
                             </div>
 
-                            {{-- Mode Multi --}}
                             @if ($modeTanggal === "multi")
                                 <div class="mb-3" wire:key="tanggal-multi-{{ $lokasiId }}" x-data x-init="initFuncInput.initTanggalMultiFlatpickr($refs.tanggalMulti, $wire, @js($this->hariAktif))" wire:ignore>
                                     <label for="tanggalMulti" class="form-label">Tanggal (Manual)</label>
@@ -77,7 +90,6 @@
                                     @endforeach
                                 @endif
 
-                            {{-- Mode Range --}}
                             @elseif ($modeTanggal === "range")
                                 <div class="mb-3" wire:key="tanggal-range-{{ $lokasiId }}" x-data x-init="initFuncInput.initTanggalRangeFlatpickr($refs.tanggalRange, $wire)" wire:ignore>
                                     <label for="tanggalRange" class="form-label">Tanggal (Rentang)</label>
