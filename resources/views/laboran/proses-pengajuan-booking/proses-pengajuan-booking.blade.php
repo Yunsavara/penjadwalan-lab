@@ -12,5 +12,6 @@
 
         @livewire('laboran.prosespengajuanbooking.proses-pengajuan-booking-table')
         @livewire('laboran.prosespengajuanbooking.detail-proses-pengajuan-booking')
+        @livewire('laboran.prosespengajuanbooking.terima-proses-pengajuan-booking')
     </div>
 @endsection 
