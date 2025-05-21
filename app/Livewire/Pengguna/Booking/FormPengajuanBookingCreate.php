@@ -19,22 +19,72 @@ class FormPengajuanBookingCreate extends Component
     public $laboratoriumIds = [];
     public $laboratoriumList = [];
     public $modeTanggal = "multi";
-    public $tanggalMulti = []; // Tanggal Multi (Manual)
+    public $tanggalMulti = [];
     public $jamOperasionalPerTanggal = [];
     public $jamTerpilih = [];
-    public $hariOperasionalList = []; // Tanggal Range (Rentang)
+    public $hariOperasionalList = [];
     public $tanggalRange = ''; 
     public $hariTerpilih = []; 
     public $tanggalFiltered = []; 
     public $keperluanBooking;
-
     public bool $showModal = false;
+
+    protected function resetForm()
+    {
+        $this->reset([
+            'lokasiId','laboratoriumIds','laboratoriumList','tanggalMulti',
+            'jamOperasionalPerTanggal','jamTerpilih','tanggalRange','hariTerpilih',
+            'tanggalFiltered','keperluanBooking'
+        ]);
+        $this->modeTanggal = 'multi';
+    }
+
+    protected function getJamOperasionalForTanggal($tanggal)
+    {
+        try {
+            $carbon = Carbon::parse($tanggal);
+            $hariKe = $carbon->dayOfWeek;
+            $tanggalStr = $carbon->format('Y-m-d');
+
+            $data = HariOperasional::with('jamOperasionals')
+                ->where('lokasi_id', $this->lokasiId)
+                ->where('hari_operasional', $hariKe)
+                ->where('is_disabled', false)
+                ->first();
+
+            if ($data) {
+                return $data->jamOperasionals
+                    ->map(fn($jam) => Carbon::parse($jam->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($jam->jam_selesai)->format('H:i'))
+                    ->toArray();
+            }
+        } catch (\Exception $e) {}
+        return [];
+    }
+
+    protected function setJamOperasionalFromTanggalMulti(array $tanggalList): void
+    {
+        $this->jamOperasionalPerTanggal = [];
+        foreach ($tanggalList as $tgl) {
+            $this->jamOperasionalPerTanggal[$tgl] = $this->getJamOperasionalForTanggal($tgl);
+        }
+    }
+
+    protected function loadHariOperasionalByLokasi($lokasiId)
+    {
+        if ($lokasiId) {
+            return HariOperasional::where('lokasi_id', $lokasiId)
+                ->where('is_disabled', false)
+                ->orderBy('hari_operasional')
+                ->get();
+        }
+        return collect();
+    }
 
     #[On('openModalCreate')]
     public function openModalCreate()
     {
         $this->resetValidation();
-        $this->reset(['lokasiId','laboratoriumIds','laboratoriumList','tanggalMulti','jamOperasionalPerTanggal','jamTerpilih']);
+        $this->resetForm();
         $this->showModal = true;
     }
 
@@ -44,19 +94,39 @@ class FormPengajuanBookingCreate extends Component
         $this->showModal = false;
     }
 
-    // Set dan setting beda
     public function updatedLokasiId($value)
     {
-        if($value)
-        {
-            $this->laboratoriumList = LaboratoriumUnpam::where('lokasi_id',$value)->get();
-            $this->hariOperasionalList = HariOperasional::where('lokasi_id', $value)
-                ->where('is_disabled', false)
-                ->orderBy('hari_operasional')
-                ->get();
+        $this->onLokasiChanged($value);
+    }
+
+    public function updatedModeTanggal()
+    {
+        $this->onModeTanggalChanged();
+    }
+
+    public function updatedTanggalMulti($value)
+    {
+        $this->onTanggalMultiChanged($value);
+    }
+
+    public function updatedTanggalRange($value)
+    {
+        $this->onTanggalRangeChanged();
+    }
+
+    public function updatedHariTerpilih($value)
+    {
+        $this->onHariTerpilihChanged();
+    }
+
+    protected function onLokasiChanged($value)
+    {
+        if ($value) {
+            $this->laboratoriumList = LaboratoriumUnpam::where('lokasi_id', $value)->get();
+            $this->hariOperasionalList = $this->loadHariOperasionalByLokasi($value);
         } else {
             $this->laboratoriumList = [];
-            $this->hariOperasionalList = [];
+            $this->hariOperasionalList = collect();
         }
 
         $this->laboratoriumIds = [];
@@ -69,16 +139,7 @@ class FormPengajuanBookingCreate extends Component
         $this->dispatch('resetTanggalRangeFlatpickr');
     }
 
-    // Disabled Tanggal Multi(Manual) Flatpickr
-    public function getHariAktifProperty()
-    {
-        return HariOperasional::where('lokasi_id', $this->lokasiId)
-            ->where('is_disabled', false)
-            ->pluck('hari_operasional')
-            ->toArray(); 
-    }
-
-    public function updatedModeTanggal()
+    protected function onModeTanggalChanged()
     {
         $this->tanggalMulti = [];
         $this->jamOperasionalPerTanggal = [];
@@ -86,58 +147,27 @@ class FormPengajuanBookingCreate extends Component
         $this->hariTerpilih = [];
     }
 
-    public function updatedTanggalMulti($value)
+    protected function onTanggalMultiChanged($value)
     {
         $this->jamOperasionalPerTanggal = [];
-
         if (is_string($value)) {
             $value = explode(',', $value);
         }
-
         // Bersihkan jamTerpilih dari tanggal yang tidak ada di tanggalMulti
         $this->jamTerpilih = array_filter(
             $this->jamTerpilih,
             fn ($tanggal) => in_array($tanggal, $this->tanggalMulti),
             ARRAY_FILTER_USE_KEY
         );
-
         $this->setJamOperasionalFromTanggalMulti($value);
     }
 
-    private function setJamOperasionalFromTanggalMulti(array $tanggalList): void
-    {
-        $this->jamOperasionalPerTanggal = [];
-
-        foreach ($tanggalList as $tgl) {
-            try {
-                $carbon = Carbon::parse($tgl);
-                $hariKe = $carbon->dayOfWeek;
-                $tanggalStr = $carbon->format('Y-m-d');
-
-                $data = HariOperasional::with('jamOperasionals')
-                    ->where('lokasi_id', $this->lokasiId)
-                    ->where('hari_operasional', $hariKe)
-                    ->where('is_disabled', false)
-                    ->first();
-
-                if ($data) {
-                    $this->jamOperasionalPerTanggal[$tanggalStr] = $data->jamOperasionals
-                        ->map(function ($jam) {
-                            return Carbon::parse($jam->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($jam->jam_selesai)->format('H:i');
-                        })->toArray();
-                }
-            } catch (\Exception $e) {
-                // Bisa log error kalau perlu
-            }
-        }
-    }
-
-    public function updatedTanggalRange($value)
+    protected function onTanggalRangeChanged()
     {
         $this->filterTanggalByHari();
     }
 
-    public function updatedHariTerpilih($value)
+    protected function onHariTerpilihChanged()
     {
         $this->filterTanggalByHari();
     }
@@ -148,12 +178,11 @@ class FormPengajuanBookingCreate extends Component
         $this->jamOperasionalPerTanggal = [];
 
         if (!$this->tanggalRange || empty($this->hariTerpilih)) {
-            $this->jamTerpilih = []; // reset juga kalau kondisi tidak valid
+            $this->jamTerpilih = [];
             return;
         }
 
         $parts = explode(' - ', $this->tanggalRange);
-
         if (count($parts) !== 2) {
             $this->jamTerpilih = [];
             return;
@@ -168,26 +197,13 @@ class FormPengajuanBookingCreate extends Component
         }
 
         $current = $start->copy();
-
         while ($current->lte($end)) {
             $hari = $current->dayOfWeek;
             if (in_array($hari, array_map('intval', $this->hariTerpilih))) {
                 $tanggalStr = $current->format('Y-m-d');
                 $this->tanggalFiltered[] = $tanggalStr;
-
-                $data = HariOperasional::with('jamOperasionals')
-                    ->where('lokasi_id', $this->lokasiId)
-                    ->where('hari_operasional', $hari)
-                    ->where('is_disabled', false)
-                    ->first();
-
-                if ($data) {
-                    $this->jamOperasionalPerTanggal[$tanggalStr] = $data->jamOperasionals
-                        ->map(fn($jam) => Carbon::parse($jam->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($jam->jam_selesai)->format('H:i'))
-                        ->toArray();
-                }
+                $this->jamOperasionalPerTanggal[$tanggalStr] = $this->getJamOperasionalForTanggal($tanggalStr);
             }
-
             $current->addDay();
         }
 
@@ -305,6 +321,14 @@ class FormPengajuanBookingCreate extends Component
             DB::rollBack();
             session()->flash('error', 'Terjadi kesalahan saat menyimpan pengajuan: ' . $e->getMessage());
         }
+    }
+
+    public function getHariAktifProperty()
+    {
+        return HariOperasional::where('lokasi_id', $this->lokasiId)
+            ->where('is_disabled', false)
+            ->pluck('hari_operasional')
+            ->toArray(); 
     }
 
     public function render()

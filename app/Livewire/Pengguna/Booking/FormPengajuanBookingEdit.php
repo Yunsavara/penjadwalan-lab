@@ -22,6 +22,34 @@ class FormPengajuanBookingEdit extends Component
 
     public bool $showModal = false;
 
+    private function setJamOperasionalFromTanggalMulti(array $tanggalList): void
+    {
+        $this->jamOperasionalPerTanggal = [];
+
+        foreach ($tanggalList as $tgl) {
+            try {
+                $carbon = Carbon::parse($tgl);
+                $hariKe = $carbon->dayOfWeek;
+                $tanggalStr = $carbon->format('Y-m-d');
+
+                $data = HariOperasional::with('jamOperasionals')
+                    ->where('lokasi_id', $this->lokasiId)
+                    ->where('hari_operasional', $hariKe)
+                    ->where('is_disabled', false)
+                    ->first();
+
+                if ($data) {
+                    $this->jamOperasionalPerTanggal[$tanggalStr] = $data->jamOperasionals
+                        ->map(function ($jam) {
+                            return Carbon::parse($jam->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($jam->jam_selesai)->format('H:i');
+                        })->toArray();
+                }
+            } catch (\Exception $e) {
+                // Bisa log error kalau perlu
+            }
+        }
+    }
+
     #[On('openModalEdit')]
     public function openModalEdit($rowId): void
     {
@@ -58,8 +86,6 @@ class FormPengajuanBookingEdit extends Component
             }
 
             $this->jamTerpilih = $jamTerpilih;
-
-            // dump($this->jamTerpilih);
         }
     }
 
@@ -75,34 +101,6 @@ class FormPengajuanBookingEdit extends Component
             ->where('is_disabled', false)
             ->pluck('hari_operasional')
             ->toArray(); 
-    }
-
-    private function setJamOperasionalFromTanggalMulti(array $tanggalList): void
-    {
-        $this->jamOperasionalPerTanggal = [];
-
-        foreach ($tanggalList as $tgl) {
-            try {
-                $carbon = Carbon::parse($tgl);
-                $hariKe = $carbon->dayOfWeek;
-                $tanggalStr = $carbon->format('Y-m-d');
-
-                $data = HariOperasional::with('jamOperasionals')
-                    ->where('lokasi_id', $this->lokasiId)
-                    ->where('hari_operasional', $hariKe)
-                    ->where('is_disabled', false)
-                    ->first();
-
-                if ($data) {
-                    $this->jamOperasionalPerTanggal[$tanggalStr] = $data->jamOperasionals
-                        ->map(function ($jam) {
-                            return Carbon::parse($jam->jam_mulai)->format('H:i') . ' - ' . Carbon::parse($jam->jam_selesai)->format('H:i');
-                        })->toArray();
-                }
-            } catch (\Exception $e) {
-                // Bisa log error kalau perlu
-            }
-        }
     }
     
     public function render()
