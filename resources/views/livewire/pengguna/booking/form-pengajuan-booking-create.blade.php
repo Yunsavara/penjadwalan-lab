@@ -77,9 +77,7 @@
                                         @endforeach
                                     @endif
 
-                                @endif
-
-                                @if ($modeTanggal === "range")
+                                @elseif ($modeTanggal === "range")
                                     <div class="mb-3" x-data x-init="initFuncInput.initTanggalRangeFlatpickr($refs.tanggalRange, $wire)" wire:ignore>
                                         <label for="tanggalRange" class="form-label">Tanggal (Rentang)</label>
                                         <input type="text" x-ref="tanggalRange" class="form-control">

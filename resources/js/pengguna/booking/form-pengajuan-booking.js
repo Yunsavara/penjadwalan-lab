@@ -98,7 +98,7 @@ function initTanggalMultiFlatpickr(tanggalMultiInput, livewire, hariAktif) {
         altFormat: 'd F Y',
         dateFormat: 'Y-m-d',
         locale: 'id',
-        defaultDate: tanggalMultiFromLivewire, // ← ini penting
+        defaultDate: tanggalMultiFromLivewire,
         disable: [
             function(date) {
                 return !hariAktif.includes(date.getDay());
@@ -114,12 +114,15 @@ function initTanggalMultiFlatpickr(tanggalMultiInput, livewire, hariAktif) {
 }
 
 function initTanggalRangeFlatpickr(tanggalRange, livewire) {
+    const tanggalRangeFromLivewire = livewire.get('tanggalRange') || '';
+
     const instance = flatpickr(tanggalRange, {
         mode: 'range',
         altInput: 'true',
         altFormat: 'd F Y',
         dateFormat: 'Y-m-d',
         locale: 'id',
+        defaultDate: tanggalRangeFromLivewire,
         onChange: function(selectedDates, dateStr, instance) {
             if (selectedDates.length === 2) {
                 const start = instance.formatDate(selectedDates[0], 'Y-m-d');

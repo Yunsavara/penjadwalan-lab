@@ -45,78 +45,83 @@
 
                         {{-- Mode Tanggal --}}
                         @if(!empty($laboratoriumList))
-                        <div class="mb-3">
-                            <label class="form-label">Mode Tanggal</label>
-                            <div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="modeMulti" value="multi" wire:model.live="modeTanggal">
-                                    <label class="form-check-label" for="modeMulti">Manual</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="modeRange" value="range" wire:model.live="modeTanggal">
-                                    <label class="form-check-label" for="modeRange">Rentang</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Mode Multi --}}
-                        @if ($modeTanggal === "multi")
-                            <div class="mb-3" wire:key="tanggal-multi-{{ $lokasiId }}" x-data x-init="initFuncInput.initTanggalMultiFlatpickr($refs.tanggalMulti, $wire, @js($this->hariAktif))" wire:ignore>
-                                <label for="tanggalMulti" class="form-label">Tanggal (Manual)</label>
-                                <input type="text" x-ref="tanggalMulti" class="form-control" id="tanggalMulti">
-                            </div>
-
-                            @if (!empty($jamOperasionalPerTanggal))
-                                @foreach ($jamOperasionalPerTanggal as $tanggal => $jams)
-                                    <div class="mb-3" wire:key="jam-{{ $tanggal }}" x-data x-init="initFuncInput.initJamOperasionalSelect2($el.querySelector('select'), $wire, '{{ $tanggal }}', @js($jamTerpilih[$tanggal] ?? []))" wire:ignore>
-                                        <label class="form-label">
-                                            {{ Carbon::parse($tanggal)->locale('id')->translatedFormat('l, d F Y') }}
-                                        </label>
-                                        <select id="jamSelect{{ $tanggal }}" class="form-select" multiple>
-                                            @foreach ($jams as $jam)
-                                                <option value="{{ $jam }}" @if (in_array($jam, $jamTerpilih[$tanggal] ?? [])) selected @endif>
-                                                    {{ $jam }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                @endforeach
-                            @endif
-
-                        {{-- Mode Range --}}
-                        @elseif ($modeTanggal === "range")
-                            <div class="mb-3" wire:key="tanggal-range-{{ $lokasiId }}" x-data x-init="initFuncInput.initTanggalRangeFlatpickr($refs.tanggalRange, $wire)" wire:ignore>
-                                <label for="tanggalRange" class="form-label">Tanggal (Rentang)</label>
-                                <input type="text" x-ref="tanggalRange" class="form-control" id="tanggalRange">
-                            </div>
                             <div class="mb-3">
-                                <label class="form-label">Hari Aktif</label>
+                                <label class="form-label">Mode Tanggal</label>
                                 <div>
-                                    @foreach ([0 => 'Minggu', 1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu'] as $key => $label)
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="hariTerpilih{{ $key }}" value="{{ $key }}" wire:model="hariTerpilih">
-                                            <label class="form-check-label" for="hariTerpilih{{ $key }}">{{ $label }}</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="modeMulti" value="multi" wire:model.live="modeTanggal">
+                                        <label class="form-check-label" for="modeMulti">Manual</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="modeRange" value="range" wire:model.live="modeTanggal">
+                                        <label class="form-check-label" for="modeRange">Rentang</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Mode Multi --}}
+                            @if ($modeTanggal === "multi")
+                                <div class="mb-3" wire:key="tanggal-multi-{{ $lokasiId }}" x-data x-init="initFuncInput.initTanggalMultiFlatpickr($refs.tanggalMulti, $wire, @js($this->hariAktif))" wire:ignore>
+                                    <label for="tanggalMulti" class="form-label">Tanggal (Manual)</label>
+                                    <input type="text" x-ref="tanggalMulti" class="form-control" id="tanggalMulti">
+                                </div>
+
+                                @if (!empty($jamOperasionalPerTanggal))
+                                    @foreach ($jamOperasionalPerTanggal as $tanggal => $jams)
+                                        <div class="mb-3" wire:key="jam-{{ $tanggal }}" x-data x-init="initFuncInput.initJamOperasionalSelect2($el.querySelector('select'), $wire, '{{ $tanggal }}', @js($jamTerpilih[$tanggal] ?? []))" wire:ignore>
+                                            <label class="form-label">
+                                                {{ Carbon::parse($tanggal)->locale('id')->translatedFormat('l, d F Y') }}
+                                            </label>
+                                            <select id="jamSelect{{ $tanggal }}" class="form-select" multiple>
+                                                @foreach ($jams as $jam)
+                                                    <option value="{{ $jam }}" @if (in_array($jam, $jamTerpilih[$tanggal] ?? [])) selected @endif>
+                                                        {{ $jam }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     @endforeach
+                                @endif
+
+                            {{-- Mode Range --}}
+                            @elseif ($modeTanggal === "range")
+                                <div class="mb-3" wire:key="tanggal-range-{{ $lokasiId }}" x-data x-init="initFuncInput.initTanggalRangeFlatpickr($refs.tanggalRange, $wire)" wire:ignore>
+                                    <label for="tanggalRange" class="form-label">Tanggal (Rentang)</label>
+                                    <input type="text" x-ref="tanggalRange" class="form-control" id="tanggalRange">
                                 </div>
-                            </div>
-                            @if (!empty($jamOperasionalPerTanggal))
-                                @foreach ($jamOperasionalPerTanggal as $tanggal => $jams)
-                                    <div class="mb-3" wire:key="jam-{{ $tanggal }}" x-data x-init="initFuncInput.initJamOperasionalSelect2($el.querySelector('select'), $wire, '{{ $tanggal }}', @js($jamTerpilih[$tanggal] ?? []))" wire:ignore>
-                                        <label class="form-label">
-                                            {{ Carbon::parse($tanggal)->locale('id')->translatedFormat('l, d F Y') }}
-                                        </label>
-                                        <select id="jamSelect{{ $tanggal }}" class="form-select" multiple>
-                                            @foreach ($jams as $jam)
-                                                <option value="{{ $jam }}" @if (in_array($jam, $jamTerpilih[$tanggal] ?? [])) selected @endif>
-                                                    {{ $jam }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                <div class="mb-3">
+                                    <label class="form-label">Hari Aktif</label>
+                                    <div>
+                                        @foreach ([0 => 'Minggu', 1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu'] as $key => $label)
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="hariTerpilih{{ $key }}" value="{{ $key }}" wire:model="hariTerpilih">
+                                                <label class="form-check-label" for="hariTerpilih{{ $key }}">{{ $label }}</label>
+                                            </div>
+                                        @endforeach
                                     </div>
-                                @endforeach
+                                </div>
+                                @if (!empty($jamOperasionalPerTanggal))
+                                    @foreach ($jamOperasionalPerTanggal as $tanggal => $jams)
+                                        <div class="mb-3" wire:key="jam-{{ $tanggal }}" x-data x-init="initFuncInput.initJamOperasionalSelect2($el.querySelector('select'), $wire, '{{ $tanggal }}', @js($jamTerpilih[$tanggal] ?? []))" wire:ignore>
+                                            <label class="form-label">
+                                                {{ Carbon::parse($tanggal)->locale('id')->translatedFormat('l, d F Y') }}
+                                            </label>
+                                            <select id="jamSelect{{ $tanggal }}" class="form-select" multiple>
+                                                @foreach ($jams as $jam)
+                                                    <option value="{{ $jam }}" @if (in_array($jam, $jamTerpilih[$tanggal] ?? [])) selected @endif>
+                                                        {{ $jam }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endforeach
+                                @endif
                             @endif
-                        @endif
+
+                            <div class="mb-3">
+                                <label for="keperluanBooking">Keperluan</label>
+                                <textarea id="keperluanBooking" class="form-control" wire:model.defer="keperluanBooking" style="resize:none; max-height:100px; min-height:100px;"></textarea>
+                            </div>
                         @endif
 
                     </div>
