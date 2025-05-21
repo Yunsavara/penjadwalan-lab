@@ -49,7 +49,7 @@
         @endif
 
         @php
-            $isBookingActive = Route::is('pengajuan*') || Route::is('booking*')  || Route::is('laboran.proses-pengajuan*'); 
+            $isBookingActive = Route::is('proses-pengajuan*') || Route::is('booking*')  || Route::is('laboran.proses-pengajuan*'); 
         @endphp
 
         <li class="sidebar-item {{ $isBookingActive ? 'active' : '' }}">
@@ -72,8 +72,8 @@
 
 
                 @if ($userRole == "laboran" || $userRole == "admin")
-                    <li class="sidebar-item {{ Route::is('laboran.proses-pengajuan*') ? 'active' : '' }}">
-                        <a href="{{ route('laboran.proses-pengajuan') }}" class="sidebar-link">Proses Pengajuan</a>
+                    <li class="sidebar-item {{ Route::is('proses-pengajuan*') ? 'active' : '' }}">
+                        <a href="{{ route('proses-pengajuan.index') }}" class="sidebar-link">Proses Pengajuan</a>
                     </li>
                 @endif
             </ul>
