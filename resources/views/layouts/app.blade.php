@@ -15,7 +15,6 @@
 
     <title>@yield('title', 'Penjadwalan Lab')</title>
 
-
 </head>
 <body class="pt-4 bg-body-tertiary">
 
@@ -50,6 +49,5 @@
             feather.replace();
         })
     </script>
-
 </body>
 </html>

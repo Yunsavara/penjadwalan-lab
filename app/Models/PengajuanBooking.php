@@ -21,7 +21,7 @@ class PengajuanBooking extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function lokasis()
+    public function lokasi()
     {
         return $this->belongsTo(Lokasi::class);
     }
@@ -36,10 +36,10 @@ class PengajuanBooking extends Model
         return $this->hasManyThrough(
             LaboratoriumUnpam::class,
             JadwalBooking::class,
-            'pengajuan_booking_id', // Foreign key di JadwalBooking
-            'id',                    // Primary key di LaboratoriumUnpam
-            'id',                    // Local key di PengajuanBooking
-            'laboratorium_unpam_id' // Foreign key di JadwalBooking
+            'pengajuan_booking_id', 
+            'id',                    
+            'id',                    
+            'laboratorium_unpam_id' 
         );
     }
 }

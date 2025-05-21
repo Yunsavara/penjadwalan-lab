@@ -9,3 +9,6 @@ window.jQuery = $;
 
 // Script vanilla
 import './script';
+
+// Powergrid (Datatables)
+import './../../vendor/power-components/livewire-powergrid/dist/powergrid'
