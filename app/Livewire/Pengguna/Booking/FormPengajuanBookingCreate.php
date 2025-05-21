@@ -250,7 +250,7 @@ class FormPengajuanBookingCreate extends Component
     public function simpanPengajuanBooking()
     {
         $data = $this->validatePengajuanBooking();
-        // dd($data);
+        dd($data);
 
         DB::beginTransaction();
 

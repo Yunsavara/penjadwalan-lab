@@ -140,9 +140,6 @@ function initTanggalRangeFlatpickr(tanggalRange, livewire) {
 function initJamOperasionalSelect2(jamOperasional, livewire, tanggalStr, selectedValues = []) {
     const $select = $(jamOperasional);
 
-    console.log('Init Select2', tanggalStr, selectedValues);
-
-
     if ($select.hasClass('select2-hidden-accessible')) {
         return;
     }

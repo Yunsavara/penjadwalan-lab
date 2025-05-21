@@ -91,10 +91,8 @@ class FormPengajuanBookingEdit extends Component
         $this->pengajuanId = $pengajuan->id;
         $this->lokasiId = $pengajuan->lokasi_id;
         $this->laboratoriumList = LaboratoriumUnpam::where('lokasi_id', $this->lokasiId)->get();
-        $this->laboratoriumIds = $pengajuan->laboratorium->pluck('id')->toArray();
-        $this->modeTanggal = $pengajuan->mode_tanggal_pengajuan;
+        $this->laboratoriumIds = array_values(array_unique($pengajuan->laboratorium->pluck('id')->toArray()));
         $this->keperluanBooking = $pengajuan->keperluan_pengajuan_booking;
-
         $this->hariOperasionalList = $this->loadHariOperasionalByLokasi($this->lokasiId);
 
         if ($this->modeTanggal === "multi") {
@@ -317,9 +315,6 @@ class FormPengajuanBookingEdit extends Component
                 'keperluan_pengajuan_booking' => $this->keperluanBooking,
                 'mode_tanggal_pengajuan' => $this->modeTanggal,
             ]);
-
-            // Sync laboratorium
-            $pengajuan->laboratorium()->sync($this->laboratoriumIds);
 
             // Hapus jadwal lama
             $pengajuan->jadwalBookings()->delete();
