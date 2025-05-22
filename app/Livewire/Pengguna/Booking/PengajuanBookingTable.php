@@ -97,13 +97,23 @@ final class PengajuanBookingTable extends PowerGridComponent
 
     public function actions(PengajuanBooking $row): array
     {
-        return [
-            Button::add('edit')
+        $actions = [
+            Button::add('detail')
+                ->slot('Detail')
+                ->id()
+                ->class('btn btn-info')
+                ->dispatch('detailPengajuanBookingModal', ['rowId' => $row->id])
+        ];
+
+        if ($row->status_pengajuan_booking === 'menunggu') {
+            $actions[] = Button::add('edit')
                 ->slot('Ubah')
                 ->id()
                 ->class('btn btn-primary')
-                ->dispatch('openModalEdit', ['rowId' => $row->id])
-        ];
+                ->dispatch('openModalEdit', ['rowId' => $row->id]);
+        }
+
+        return $actions;
     }
 
     public function noDataLabel(): string|View
