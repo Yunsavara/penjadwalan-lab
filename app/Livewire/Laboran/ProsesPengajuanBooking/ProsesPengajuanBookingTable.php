@@ -51,7 +51,6 @@ final class ProsesPengajuanBookingTable extends PowerGridComponent
             ->add('kode_booking')
             ->add('status_pengajuan_booking')
             ->add('keperluan_pengajuan_booking')
-            ->add('balasan_pengajuan_booking', function ($dish) { return $dish->balasan_pengajuan_booking ?: '-';})
             ->add('nama_lokasi')
             ->add('nama_pengguna')
             ->add('created_at')
@@ -73,10 +72,6 @@ final class ProsesPengajuanBookingTable extends PowerGridComponent
                 ->searchable(),
 
             Column::make('Keperluan', 'keperluan_pengajuan_booking')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Balasan', 'balasan_pengajuan_booking')
                 ->sortable()
                 ->searchable(),
 
@@ -105,20 +100,29 @@ final class ProsesPengajuanBookingTable extends PowerGridComponent
 
     public function actions($row): array
     {
-        return [
-
+        $actions = [
             Button::add('detail')
                 ->slot('Detail')
                 ->id()
                 ->class('btn btn-info')
                 ->dispatch('detailProsesPengajuanBookingModal', ['rowId' => $row->id]),
+        ];
 
-            Button::add('Terima')
+        if ($row->status_pengajuan_booking === 'menunggu') {
+            $actions[] = Button::add('Terima')
                 ->slot('Terima')
                 ->id()
                 ->class('btn btn-success')
-                ->dispatch('terimaProsesPengajuanBookingModal', ['rowId' => $row->id]),
-        ];
+                ->dispatch('bukaModalTerimaPengajuan', ['rowId' => $row->id]);
+            
+            $actions[] = Button::add('Tolak')
+                ->slot('Tolak')
+                ->id()
+                ->class('btn btn-danger')
+                ->dispatch('bukaModalTolakPengajuan', ['rowId' => $row->id]);
+        }
+
+        return $actions;
     } 
 
     public function noDataLabel(): string|View

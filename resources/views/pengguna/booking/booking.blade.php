@@ -12,5 +12,7 @@
         @livewire('pengguna.booking.form-pengajuan-booking-create')
         @livewire('pengguna.booking.pengajuan-booking-table')
         @livewire('pengguna.booking.form-pengajuan-booking-edit')
+        @livewire('pengguna.booking.detail-pengajuan-booking')
+        @livewire('pengguna.booking.batalkan-pengajuan-booking')
     </div>
 @endsection 
