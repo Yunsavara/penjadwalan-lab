@@ -17,6 +17,7 @@
                         <p><strong>Prioritas:</strong><br>{{ $pengajuan->user->role->prioritas_peran ?? 'Tidak Diketahui' }}</p>
                         <p><strong>Lokasi:</strong><br>{{ $pengajuan->lokasi->nama_lokasi ?? 'Tidak Diketahui' }}</p>
                         <p><strong>Keperluan:</strong><br>{{ $pengajuan->keperluan_pengajuan_booking ?? 'Tidak Diketahui' }}</p>
+                        <p><strong>Balasan:</strong><br>{{ $pengajuan->balasan_pengajuan_booking ?? 'Tidak Diketahui' }}</p>
                         <p><strong>Detail Jadwal Booking:</strong></p>
                         <ul>
                             @forelse($pengajuan->jadwalBookings as $jadwal)
