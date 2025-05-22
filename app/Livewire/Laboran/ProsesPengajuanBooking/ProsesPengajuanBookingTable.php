@@ -105,20 +105,23 @@ final class ProsesPengajuanBookingTable extends PowerGridComponent
 
     public function actions($row): array
     {
-        return [
-
+        $actions = [
             Button::add('detail')
                 ->slot('Detail')
                 ->id()
                 ->class('btn btn-info')
                 ->dispatch('detailProsesPengajuanBookingModal', ['rowId' => $row->id]),
+        ];
 
-            Button::add('Terima')
+        if ($row->status_pengajuan_booking === 'menunggu') {
+            $actions[] = Button::add('Terima')
                 ->slot('Terima')
                 ->id()
                 ->class('btn btn-success')
-                ->dispatch('bukaModalTerimaPengajuan', ['rowId' => $row->id]),
-        ];
+                ->dispatch('bukaModalTerimaPengajuan', ['rowId' => $row->id]);
+        }
+
+        return $actions;
     } 
 
     public function noDataLabel(): string|View

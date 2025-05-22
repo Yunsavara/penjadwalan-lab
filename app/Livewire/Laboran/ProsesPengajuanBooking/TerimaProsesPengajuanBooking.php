@@ -169,6 +169,11 @@ class TerimaProsesPengajuanBooking extends Component
         ]);
     }
 
+    public function refreshTable()
+    {
+        $this->dispatch('pg:eventRefresh-pengajuan_bookings');
+    }
+
     public function prosesTerimaPengajuan(): void
     {
         // dd($this->validateProsesPengajuan());
@@ -202,7 +207,7 @@ class TerimaProsesPengajuanBooking extends Component
 
         session()->flash('success', 'Pengajuan booking berhasil diterima.');
         $this->showModal = false;
-        $this->dispatch('pengajuanDiterima');
+        $this->refreshTable();
     }
 
     public function render()
