@@ -49,8 +49,6 @@ class UserSeeder extends Seeder
             'role_id' => 4,
         ]); 
 
-        
-
         User::create([
             'nama_pengguna' => 'Mahasiswa',
             'email' => 'mahasiswa@example.com',

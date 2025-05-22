@@ -117,7 +117,7 @@ final class ProsesPengajuanBookingTable extends PowerGridComponent
                 ->slot('Terima')
                 ->id()
                 ->class('btn btn-success')
-                ->dispatch('terimaProsesPengajuanBookingModal', ['rowId' => $row->id]),
+                ->dispatch('bukaModalTerimaPengajuan', ['rowId' => $row->id]),
         ];
     } 
 

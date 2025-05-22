@@ -12,15 +12,22 @@ class TerimaProsesPengajuanBooking extends Component
     public bool $showModal = false;
     public $pengajuan = null;
 
-    #[On('terimaProsesPengajuanBookingModal')]
-    public function terimaProsesPengajuanBookingModal($rowId): void
+    public string $modeTolakOtomatis = 'otomatis'; 
+    public string $balasanPrioritasBawah = '';
+
+    #[On('bukaModalTerimaPengajuan')]
+    public function bukaModalTerimaPengajuan($rowId): void
     {
         $this->showModal = true;
         $this->pengajuan = PengajuanBooking::with(['user.role', 'jadwalBookings'])->find($rowId);
+        $this->modeTolakOtomatis = 'otomatis';
+        $this->balasanPrioritasBawah = '';
     }
 
-    public function terimaPengajuan(): void
+    public function prosesTerimaPengajuan(): void
     {
+        // dd($this->validateProsesPengajuan());
+
         if (!$this->pengajuan) {
             session()->flash('error', 'Pengajuan tidak ditemukan.');
             return;
@@ -28,17 +35,28 @@ class TerimaProsesPengajuanBooking extends Component
 
         $userPrioritas = $this->pengajuan->user->role->prioritas_peran;
 
-        if ($this->adaBentrokPrioritasSamaAtauLebihTinggi($userPrioritas)) {
-            session()->flash('error', 'Tidak dapat menerima pengajuan karena sudah ada booking dengan prioritas sama/lebih tinggi.');
-            $this->showModal = false;
-            return;
+        if ($this->modeTolakOtomatis === 'manual') {
+            // Hanya cek bentrok prioritas sama/lebih tinggi
+            if ($this->cekBentrokPrioritasTinggiAtauSama($userPrioritas)) {
+                session()->flash('error', 'Tidak dapat menerima pengajuan karena sudah ada booking dengan prioritas sama/lebih tinggi.');
+                $this->showModal = false;
+                return;
+            }
+            $this->setStatusPengajuanDiterima();
+            $this->tolakPengajuanMenungguYangBentrok();
+        } else {
+            // Otomatis batalkan prioritas bawah
+            if ($this->cekBentrokPrioritasTinggiAtauSama($userPrioritas)) {
+                session()->flash('error', 'Tidak dapat menerima pengajuan karena sudah ada booking dengan prioritas sama/lebih tinggi.');
+                $this->showModal = false;
+                return;
+            }
+            $this->batalkanJadwalPrioritasLebihRendah($userPrioritas, $this->balasanPrioritasBawah);
+            $this->setStatusPengajuanDiterima();
+            $this->tolakPengajuanMenungguYangBentrok();
         }
 
-        $this->batalkanJadwalBentrokPrioritasLebihRendah($userPrioritas);
-        $this->setujuiPengajuan();
-        $this->tolakPengajuanMenungguBentrok();
-
-        session()->flash('success', 'Pengajuan booking berhasil diterima dan jadwal bentrok prioritas lebih rendah dibatalkan.');
+        session()->flash('success', 'Pengajuan booking berhasil diterima.');
         $this->showModal = false;
         $this->dispatch('pengajuanDiterima');
     }
@@ -46,7 +64,7 @@ class TerimaProsesPengajuanBooking extends Component
     /**
      * Mengecek apakah ada jadwal bentrok dengan prioritas sama atau lebih tinggi.
      */
-    private function adaBentrokPrioritasSamaAtauLebihTinggi(int $userPrioritas): bool
+    private function cekBentrokPrioritasTinggiAtauSama(int $userPrioritas): bool
     {
         foreach ($this->pengajuan->jadwalBookings as $jadwalBaru) {
             $jadwalBentrok = JadwalBooking::where('laboratorium_unpam_id', $jadwalBaru->laboratorium_unpam_id)
@@ -73,8 +91,9 @@ class TerimaProsesPengajuanBooking extends Component
 
     /**
      * Membatalkan jadwal bentrok yang sudah diterima dengan prioritas lebih rendah.
+     * Sekarang menerima parameter balasanPrioritasBawah.
      */
-    private function batalkanJadwalBentrokPrioritasLebihRendah(int $userPrioritas): void
+    private function batalkanJadwalPrioritasLebihRendah(int $userPrioritas, string $balasanPrioritasBawah = ''): void
     {
         $jadwalBaruList = $this->pengajuan->jadwalBookings;
 
@@ -106,10 +125,11 @@ class TerimaProsesPengajuanBooking extends Component
                             $jadwalLama->status = 'dibatalkan';
                             $jadwalLama->save();
 
-                            // Jika semua jadwal pengajuan lama sudah dibatalkan, update status pengajuan
+                            // Jika semua jadwal pengajuan lama sudah dibatalkan, update status pengajuan & balasan
                             $jadwalLain = JadwalBooking::where('pengajuan_booking_id', $pengajuanLama->id)->get();
                             if ($jadwalLain->every(fn($j) => $j->status === 'dibatalkan')) {
                                 $pengajuanLama->status_pengajuan_booking = 'dibatalkan';
+                                $pengajuanLama->balasan_pengajuan_booking = $this->balasanPrioritasBawah; 
                                 $pengajuanLama->save();
                             }
                         }
@@ -123,7 +143,7 @@ class TerimaProsesPengajuanBooking extends Component
     /**
      * Menyetujui pengajuan dan seluruh jadwalnya.
      */
-    private function setujuiPengajuan(): void
+    private function setStatusPengajuanDiterima(): void
     {
         $this->pengajuan->status_pengajuan_booking = 'diterima';
         $this->pengajuan->save();
@@ -137,7 +157,7 @@ class TerimaProsesPengajuanBooking extends Component
     /**
      * Menolak semua pengajuan menunggu yang bentrok dengan pengajuan ini.
      */
-    private function tolakPengajuanMenungguBentrok(): void
+    private function tolakPengajuanMenungguYangBentrok(): void
     {
         $jadwalBaruList = $this->pengajuan->jadwalBookings;
         $pengajuanIdsUntukCek = collect();
@@ -171,10 +191,19 @@ class TerimaProsesPengajuanBooking extends Component
                 $pengajuan = PengajuanBooking::find($pengajuanId);
                 if ($pengajuan && $pengajuan->status_pengajuan_booking !== 'ditolak') {
                     $pengajuan->status_pengajuan_booking = 'ditolak';
+                    $pengajuan->balasan_pengajuan_booking = $this->balasanPrioritasBawah;
                     $pengajuan->save();
                 }
             }
         }
+    }
+
+    public function validateProsesPengajuan()
+    {
+        return $this->validate([
+            'modeTolakOtomatis' => 'required|in:otomatis,manual',
+            'balasanPrioritasBawah' => 'nullable|string|max:500',
+        ]);
     }
 
     public function render()
