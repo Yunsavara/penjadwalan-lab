@@ -111,6 +111,13 @@ final class PengajuanBookingTable extends PowerGridComponent
                 ->id()
                 ->class('btn btn-primary')
                 ->dispatch('openModalEdit', ['rowId' => $row->id]);
+
+            // Tambahkan tombol Batalkan
+            $actions[] = Button::add('batalkan')
+                ->slot('Batalkan')
+                ->id()
+                ->class('btn btn-danger')
+                ->dispatch('openModalBatalkan', ['rowId' => $row->id]);
         }
 
         return $actions;
