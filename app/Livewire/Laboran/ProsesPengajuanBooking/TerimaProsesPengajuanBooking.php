@@ -24,43 +24,6 @@ class TerimaProsesPengajuanBooking extends Component
         $this->balasanPrioritasBawah = '';
     }
 
-    public function prosesTerimaPengajuan(): void
-    {
-        // dd($this->validateProsesPengajuan());
-
-        if (!$this->pengajuan) {
-            session()->flash('error', 'Pengajuan tidak ditemukan.');
-            return;
-        }
-
-        $userPrioritas = $this->pengajuan->user->role->prioritas_peran;
-
-        if ($this->modeTolakOtomatis === 'manual') {
-            // Hanya cek bentrok prioritas sama/lebih tinggi
-            if ($this->cekBentrokPrioritasTinggiAtauSama($userPrioritas)) {
-                session()->flash('error', 'Tidak dapat menerima pengajuan karena sudah ada booking dengan prioritas sama/lebih tinggi.');
-                $this->showModal = false;
-                return;
-            }
-            $this->setStatusPengajuanDiterima();
-            $this->tolakPengajuanMenungguYangBentrok();
-        } else {
-            // Otomatis batalkan prioritas bawah
-            if ($this->cekBentrokPrioritasTinggiAtauSama($userPrioritas)) {
-                session()->flash('error', 'Tidak dapat menerima pengajuan karena sudah ada booking dengan prioritas sama/lebih tinggi.');
-                $this->showModal = false;
-                return;
-            }
-            $this->batalkanJadwalPrioritasLebihRendah($userPrioritas, $this->balasanPrioritasBawah);
-            $this->setStatusPengajuanDiterima();
-            $this->tolakPengajuanMenungguYangBentrok();
-        }
-
-        session()->flash('success', 'Pengajuan booking berhasil diterima.');
-        $this->showModal = false;
-        $this->dispatch('pengajuanDiterima');
-    }
-
     /**
      * Mengecek apakah ada jadwal bentrok dengan prioritas sama atau lebih tinggi.
      */
@@ -204,6 +167,42 @@ class TerimaProsesPengajuanBooking extends Component
             'modeTolakOtomatis' => 'required|in:otomatis,manual',
             'balasanPrioritasBawah' => 'nullable|string|max:500',
         ]);
+    }
+
+    public function prosesTerimaPengajuan(): void
+    {
+        // dd($this->validateProsesPengajuan());
+
+        if (!$this->pengajuan) {
+            session()->flash('error', 'Pengajuan tidak ditemukan.');
+            return;
+        }
+
+        $userPrioritas = $this->pengajuan->user->role->prioritas_peran;
+
+        if ($this->modeTolakOtomatis === 'manual') {
+            // Hanya cek bentrok prioritas sama/lebih tinggi
+            if ($this->cekBentrokPrioritasTinggiAtauSama($userPrioritas)) {
+                session()->flash('error', 'Tidak dapat menerima pengajuan karena sudah ada booking dengan prioritas sama/lebih tinggi.');
+                $this->showModal = false;
+                return;
+            }
+            $this->setStatusPengajuanDiterima();
+        } else {
+            // Otomatis batalkan prioritas bawah dan tolak menunggu
+            if ($this->cekBentrokPrioritasTinggiAtauSama($userPrioritas)) {
+                session()->flash('error', 'Tidak dapat menerima pengajuan karena sudah ada booking dengan prioritas sama/lebih tinggi.');
+                $this->showModal = false;
+                return;
+            }
+            $this->batalkanJadwalPrioritasLebihRendah($userPrioritas, $this->balasanPrioritasBawah);
+            $this->setStatusPengajuanDiterima();
+            $this->tolakPengajuanMenungguYangBentrok();
+        }
+
+        session()->flash('success', 'Pengajuan booking berhasil diterima.');
+        $this->showModal = false;
+        $this->dispatch('pengajuanDiterima');
     }
 
     public function render()
